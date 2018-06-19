@@ -1,0 +1,24 @@
+\begin{thebibliography}{1}
+
+\bibitem{Barreira}
+R.~Barreira, C.~M~Elliott, and A.~Madzvamuse.
+\newblock The surface finite element method for pattern formation on evolving
+  biological surfaces.
+\newblock 63:1095--119, 12 2011.
+
+\bibitem{Bartels}
+R.~H. Bartels and G.~W. Stewart.
+\newblock Solution of the matrix equation {AX + XB = C}.
+\newblock {\em Commun. ACM}, 15(9):820--826, Sept. 1972.
+
+\bibitem{Simoncini}
+V.~Simoncini.
+\newblock Computational methods for linear matrix equations.
+\newblock 58:377--441, 01 2016.
+
+\bibitem{Zhou}
+J.~Zhou, W.~Ruirui, and Q.~Niu.
+\newblock A preconditioned iteration method for solving {S}ylvester equations.
+\newblock 2012, 07 2012.
+
+\end{thebibliography}

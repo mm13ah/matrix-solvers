@@ -1,15 +1,14 @@
 \begin{thebibliography}{1}
 
-\bibitem{Barreira}
-R.~Barreira, C.~M~Elliott, and A.~Madzvamuse.
-\newblock The surface finite element method for pattern formation on evolving
-  biological surfaces.
-\newblock 63:1095--119, 12 2011.
-
 \bibitem{Bartels}
 R.~H. Bartels and G.~W. Stewart.
 \newblock Solution of the matrix equation {AX + XB = C}.
 \newblock {\em Commun. ACM}, 15(9):820--826, Sept. 1972.
+
+\bibitem{Golub}
+G.~H.~Golub, S.~Nash, and C.~Van~Loan.
+\newblock A {H}essenberg–schur method for the problem {AX + XB = C}.
+\newblock 24:909 -- 913, 01 1980.
 
 \bibitem{Simoncini}
 V.~Simoncini.

@@ -177,6 +177,7 @@ as a matrix equation. Here $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$, $U_{ij}
 \begin{figure}[H]
 \includegraphics[scale=.7]{img/U_sol.png}
 \centering
+\caption{Plot of the solution with $n=1000$}
 \end{figure} 
 
 Throughout the following section, the following measurements are given to evaluate the performance of each of the methods implemented:
@@ -209,11 +210,7 @@ where $\mathcal{F}$ is a vector of dimension $n^2$, $\mathcal{T} = I \otimes T +
 
 This is the exact linear system that would be obtained from equation (1.5), i.e. stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. Results solving this linear system using the direct sparse solver \texttt{sparse.linalg.spsolve} from the SciPy library are given below:
 
-\begin{figure}[H]
-\includegraphics[scale=.7]{img/U_sparse.png}
-\centering
-\end{figure}
-
+\begin{figure}
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|}
@@ -221,12 +218,14 @@ This is the exact linear system that would be obtained from equation (1.5), i.e.
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
 10 & 0.0026031 & 0.0066868 & 0.0034125 & - \\
-100 & 0.061922 & 8.0611e$^{-5}$ & 4.0315e$^{-5}$ & 1.9927 \\
-1000 & 36.681 & 8.2082e$^{-7}$ & 4.1041e$^{-7}$ & 1.9999  \\
-2000 & 428.06 & 2.0540e$^{-7}$ & 1.0270e$^{-7}$ & 2.0001 \\
+100 & 0.061922 & $8.0611 \times 10^{-5}$ & $4.0315 \times 10^{-5}$ & 1.9927 \\
+1000 & 36.681 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 1.9999  \\
+2000 & 428.06 & $2.0540 \times 10^{-7}$ & $1.0270 \times 10^{-7}$ & 2.0001 \\
 \hline
 \end{tabular}
 \end{table}
+\caption{Results obtained from solving the linear system $\mathcal{A} x = c$ using the direct solver  \texttt{sparse.linalg.spsolve} from the SciPy library}
+\end{figure}
 
 \subsubsection{Bartels-Stewart Algorithm}
 The Bartels-Stewart algorithm \cite{Bartels} can be used to solve the Sylvester equation $AX + XB = F$. In the general case the algorithm is as follows:
@@ -246,11 +245,7 @@ In this case $A=B=T$, $T=T^*$ and $X=U$, so the algorithm is as follows:
 
 Results using this algorithm are given below:
 
-\begin{figure}[H]
-\includegraphics[scale=.7]{img/U_bartels.png}
-\centering
-\end{figure}
-
+\begin{figure}
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
@@ -258,20 +253,18 @@ Results using this algorithm are given below:
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
 10 & 0.0076599 & 0.0066868 & 0.0034125 & - \\
-100 & 2.0357 & 8.0611e$^{-5}$ & 4.0315e$^{-5}$ & 1.9927 \\
-1000 & 1449.6 & 8.2083e$^{-7}$ & 4.1041e$^{-7}$ & 1.9999 \\
-2000 & 8675.8 & 2.0561e$^{-7}$ & 1.0276e$^{-7}$ & 1.9986 \\
+100 & 2.0357 & $8.0611 \times 10^{-5}$ & $4.0315 \times 10^{-5}$ & 1.9927 \\
+1000 & 1449.6 & $8.2083 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 1.9999 \\
+2000 & 8675.8 & $2.0561e \times 10^{-7}$ & $1.0276 \times 10^{-7}$ & 1.9986 \\
 \hline
 \end{tabular}
 \end{table}
-
-The SciPy library has a built in solver for solving Sylvester equations, \texttt{scipy.linalg solve\_sylvester}, which uses the Bartels-Stewart algorithm. Results using this solver are given below:
-
-\begin{figure}[H]
-\includegraphics[scale=.7]{img/U_scipy.png}
-\centering
+\caption{Results using the Bartels-Stewart algorithm}
 \end{figure}
 
+The SciPy library has a built in solver for solving Sylvester equations, \texttt{scipy.linalg.solve\_sylvester}, which uses the Bartels-Stewart algorithm. Results using this solver are given below:
+
+\begin{figure}
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|}
@@ -279,20 +272,22 @@ The SciPy library has a built in solver for solving Sylvester equations, \texttt
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
 10 & 0.00051880 & 0.0066868 & 0.0034125 & -  \\
-100 & 0.027365 & 8.0611e$^{-5}$ & 4.0315e$^{-5}$ & 1.9927  \\
-1000 & 20.248 & 8.2083e$^{-7}$ & 4.1041e$^{-7}$ & 1.9999 \\
-2000 & 244.27 & 2.0558e$^{-7}$ & 1.0277e$^{-7}$ & 1.9988  \\
-4000 & 2886.7 & 5.0158e$^{-8}$ & 2.4922e$^{-8}$ & 2.0359 \\
+100 & 0.027365 & $8.0611 \times 10^{-5}$ & $4.0315 \times 10^{-5}$ & 1.9927  \\
+1000 & 20.248 & $8.2083 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 1.9999 \\
+2000 & 244.27 & $2.0558 \times 10^{-7}$ & $1.0277 \times 10^{-7}$ & 1.9988  \\
+4000 & 2886.7 & $5.0158 \times 10^{-8}$ & $2.4922 \times 10^{-8}$ & 2.0359 \\
 %5000 & 6133.9 & 4.3474e$^{-8}$ & 2.1236e$^{-8}$ & 1.6962  \\
 \hline
 \end{tabular}
 \end{table}
+\caption{Results using SciPy's \texttt{scipy.linalg.solve\_sylvester}}
+\end{figure}
 
 As can be seen from the results above, using the built-in SciPy solver results in a significant speed-up in time as $n$ is increased. This is likely because it makes use of of LAPACK, which is an optimised software library for solving linear algebra problems.
 
 
-\subsubsection{Similarity Transformations}
-A similarity transformation \cite{Simoncini} can be used to solve the Sylvester equation $AX + XB = F$, where $A$ is a $n \times n$ matrix and $B$ is a $m \times m$ matrix. 
+\subsubsection{Hessenberg-Schur Method}
+The Hessenberg-Schur method uses a similarity transformation \cite{Golub} \cite{Simoncini} to solve the Sylvester equation $AX + XB = F$, where $A$ is a $n \times n$ matrix and $B$ is a $m \times m$ matrix. 
 
 Assuming matrices $A$ and $B$ can be diagonalised, let $P^{-1}AP = \text{diag}(\lambda_1, \dots, \lambda_n)$ and $Q^{-1}BQ = \text{diag}(\mu_1, \dots, \mu_m)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$ and $\mu_1, \dots, \mu_m$ are the eigenvalues values of $B$. Let $\tilde{F} = P^{-1}FQ$. The solution is then:
 \[ X = P \tilde{X} Q^{-1}, \text{ with } \tilde{x}_{ij} = \frac{\tilde{f}_{ij}}{\lambda_i + \mu_j} \]
@@ -303,11 +298,7 @@ In this case, $A=B=T$ and $X=U$, so $P=Q$ and $P^{-1}TP = \text{diag}(\lambda_1,
 \subsubsection*{Using numpy.linalg.eig}
 The eigenvalues and eigenvectors can be computed using NumPy's \texttt{linalg.eig} function. The results using this are given below:
 
-\begin{figure}[H]
-\includegraphics[scale=.7]{img/U_trans.png}
-\centering
-\end{figure}
-
+\begin{figure}
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|}
@@ -315,16 +306,18 @@ The eigenvalues and eigenvectors can be computed using NumPy's \texttt{linalg.ei
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
 10 & 0.023603 & 0.0066868 & 0.0034125 & - \\
-100 & 0.049893 & 8.0611e$^{-5}$ & 4.0315e$^{-5}$ & 1.9927  \\ 
-1000 & 4.8863 & 8.2083e$^{-7}$ & 4.1041e$^{-7}$ & 1.9999  \\
-2000 & 26.098 & 2.0560e$^{-7}$ & 1.0277e$^{-7}$ & 1.9987 \\
-4000 & 185.13 & 5.0151e$^{-8}$ & 2.4922e$^{-8}$ & 2.0362 \\
-8000 & 1274.5 & 1.2959e$^{-8}$ & 5.1767$^{-9}$ & 1.9527 \\
+100 & 0.049893 & $8.0611 \times 10^{-5}$ & $4.0315 \times 10^{-5}$ & 1.9927  \\ 
+1000 & 4.8863 & $8.2083 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 1.9999  \\
+2000 & 26.098 & $2.0560 \times 10^{-7}$ & $1.0277 \times 10^{-7}$ & 1.9987 \\
+4000 & 185.13 & $5.0151 \times 10^{-8}$ & $2.4922 \times 10^{-8}$ & 2.0362 \\
+8000 & 1274.5 & $1.2959 \times 10^{-8}$ & $5.1767 \times 10^{-9}$ & 1.9527 \\
 %5000 & 265.25 & 4.3041e$^{-8}$ & 2.1164e$^{-8}$ & 1.7072 \\
 %10000 & 2019.2 & 1.5349e$^{-9}$ & 6.8831e$^{-9}$ & 4.8102 \\
 \hline
 \end{tabular}
 \end{table}
+\caption{Results using the Hessenberg-Schur method, calculating the eigenvalues and eigenvectors using \texttt{numpy.linalg.eig}}
+\end{figure}
 
 Here the experimental order converges moves away from 2 as $n$ is increased. This is likely due to the fact that as there is no general formula for calculating eigenvalues and eigenvectors, the eigenvalues and eigenvectors are approximated by NumPy's \texttt{linalg.eig}.
 
@@ -339,6 +332,7 @@ This method can be split into component parts and each part can be timed, to see
 
 The results of doing so are given below:
 
+\begin{figure}
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -356,6 +350,8 @@ $n$ & 1 & 2 & 3 & 4 & 5 & Total \\
 \hline
 \end{tabular}
 \end{table}
+\caption{Timing results for each step of the Hessenberg-Schur method, calculating the eigenvalues and eigenvectors using \texttt{numpy.linalg.eig}}
+\end{figure}
 
 \subsubsection*{Calculating eigenvalues and eigenvectors explicitly}
 
@@ -366,11 +362,7 @@ and
 
 Results using this method for calculating the eigenvalues are eigenvectors are given below:
 
-\begin{figure}[H]
-\includegraphics[scale=.7]{img/U_trans2.png}
-\centering
-\end{figure}
-
+\begin{figure}
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|}
@@ -378,17 +370,20 @@ Results using this method for calculating the eigenvalues are eigenvectors are g
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
 10 & 0.0041900 & 0.0066868 & 0.0034125 & - \\
-100 & 0.076722 & 8.0610e$^{-5}$ & 4.0315e$^{-5}$ & 1.9927 \\
-1000 & 7.0524 & 8.2082e$^{-7}$ & 4.1041e$^{-7}$ & 1.9999 \\
-2000 & 29.164 & 2.0541e$^{-7}$ & 1.0270e$^{-7}$ & 2.0000 \\
-4000 & 103.42 & 5.1313e${-8}$ & 2.5655e$^{-8}$ & 2.0018 \\
-8000 & 593.77 & 1.2814e$^{-8}$ & 6.4065e$^{-9}$ & 2.0020 \\
+100 & 0.076722 & $8.0610 \times 10^{-5}$ & $4.0315 \times 10^{-5}$ & 1.9927 \\
+1000 & 7.0524 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 1.9999 \\
+2000 & 29.164 & $2.0541 \times 10^{-7}$ & $1.0270 \times 10^{-7}$ & 2.0000 \\
+4000 & 103.42 & $5.1313 \times 10^{-8}$ & $2.5655 \times 10^{-8}$ & 2.0018 \\
+8000 & 593.77 & $1.2814 \times 10^{-8}$ & $6.4065 \times 10^{-9}$ & 2.0020 \\
 %5000 & 224.29 & 3.3196e$^{-8}$ & 1.6598e$^{-8}$ & 1.9897 \\
 %10000 & 1190.3 & 8.2857e$^{-9}$ & 4.1418e$^{-9}$ & 2.0026 \\
 \hline
 \end{tabular}
 \end{table}
+\caption{Results using the Hessenberg-Schur method, calculating the eigenvalues and eigenvectors explicity}
+\end{figure}
 
+\begin{figure}
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -406,14 +401,17 @@ $n$ & 1 & 2 & 3 & 4 & 5 & Total \\
 \hline
 \end{tabular}
 \end{table}
+\caption{Timing results for each step of the Hessenberg-Schur method, calculating the eigenvalues and eigenvectors explicitly}
+\end{figure}
 
 As can be seen from the results above, calculating the eigenvalues and eigenvectors explicitly vastly outperforms calculating them using the NumPy library when $n$ is large.
 
 \subsection{Iterative Methods}
 
 \subsubsection{Kronecker Product}
-Similarly to Section 3.1.1, the Kronecker product can be used to write the matrix equation as a standard vector linear system. A a standard iterative solver can then be used to solve the system, which can provide a base case for comparison. Results using \texttt{scipy.sparse.linalg.cg}, which is a sparse solver that uses the conjugate gradient iterative method, are given below, using a convergence tolerance of 1be$^{-9}$.
+Similarly to Section 3.1.1, the Kronecker product can be used to write the matrix equation as a standard vector linear system. A a standard iterative solver can then be used to solve the system, which can provide a base case for comparison. Results using \texttt{scipy.sparse.linalg.cg}, which is a sparse solver that uses the conjugate gradient iterative method, are given below, using a convergence tolerance of $10^{-9}$.
 
+\begin{figure}
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|}
@@ -421,14 +419,16 @@ Similarly to Section 3.1.1, the Kronecker product can be used to write the matri
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
 10 & 0.0023940 & 0.0066868 & 0.0034124 & - \\
-100 & 0.0048580 & 8.0611e$^{-5}$ & 4.0315e$^{-5}$ & \\
-1000 & 0.61869 & 8.2082e$^{-7}$ & 4.1041e$^{-7}$ & \\
-2000 & 2.1425 & 2.0541e$^{-7}$ & 1.0271e$^{-7}$ & \\
-4000 & 23.065 & 5.1378e$^{-8}$ & 2.5689e$^{-8}$ & \\
-8000 & 160.09 & 1.2848e$^{-8}$ & 6.4239e$^{-9}$ & \\
+100 & 0.0048580 & $8.0611 \times 10^{-5}$ & $4.0315 \times 10^{-5}$ & \\
+1000 & 0.61869 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & \\
+2000 & 2.1425 & $2.0541 \times 10^{-7}$ & $1.0271 \times 10^{-7}$ & \\
+4000 & 23.065 & $5.1378 \times 10^{-8}$ & $2.5689 \times 10^{-8}$ & \\
+8000 & 160.09 & $1.2848 \times 10^{-8}$ & $6.4239 \times 10^{-9}$ & \\
 \hline
 \end{tabular}
 \end{table}
+\caption{Results obtained from solving the linear system $\mathcal{A} x = c$ using the iterative solver  \texttt{sparse.linalg.cg} from the SciPy library}
+\end{figure}
 
 \subsubsection{Gradient based method}
 In \cite{Zhou} a gradient based method for solving Sylvester equations is proposed. The equation $TU + UT = F$ can be written as two recursive sequences:

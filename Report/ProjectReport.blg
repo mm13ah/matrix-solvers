@@ -1,31 +1,31 @@
-This is BibTeX, Version 0.99d (TeX Live 2016)
-Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+This is BibTeX, Version 0.99d (TeX Live 2017/Debian)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: ProjectReport.aux
 The style file: abbrv.bst
 Database file #1: matrixsolvers.bib
-Warning--empty journal in Barreira
+Warning--empty journal in Golub
 Warning--empty journal in Simoncini
 Warning--empty journal in Zhou
 You've used 4 entries,
             2118 wiz_defined-function locations,
-            532 strings with 4322 characters,
-and the built_in function-call counts, 1277 in all, are:
-= -- 122
+            531 strings with 4292 characters,
+and the built_in function-call counts, 1286 in all, are:
+= -- 123
 > -- 56
 < -- 0
 + -- 24
 - -- 18
-* -- 100
-:= -- 222
+* -- 101
+:= -- 223
 add.period$ -- 12
 call.type$ -- 4
 change.case$ -- 21
 chr.to.int$ -- 0
 cite$ -- 7
 duplicate$ -- 43
-empty$ -- 98
+empty$ -- 99
 format.name$ -- 18
-if$ -- 254
+if$ -- 256
 int.to.chr$ -- 0
 int.to.str$ -- 4
 missing$ -- 4
@@ -37,7 +37,7 @@ purify$ -- 17
 quote$ -- 0
 skip$ -- 30
 stack$ -- 0
-substring$ -- 92
+substring$ -- 95
 swap$ -- 1
 text.length$ -- 0
 text.prefix$ -- 0

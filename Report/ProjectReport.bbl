@@ -2,22 +2,24 @@
 
 \bibitem{Bartels}
 R.~H. Bartels and G.~W. Stewart.
-\newblock Solution of the matrix equation {AX + XB = C}.
+\newblock {S}olution of the {M}atrix {E}quation {AX + XB = C}.
 \newblock {\em Commun. ACM}, 15(9):820--826, Sept. 1972.
 
-\bibitem{Golub}
-G.~H.~Golub, S.~Nash, and C.~Van~Loan.
-\newblock A {H}essenberg–{S}chur method for the problem {AX + XB = C}.
-\newblock 24:909 -- 913, 01 1980.
+\bibitem{Hou}
+J.~Hou, Q.~Lv, and M.~Xiao.
+\newblock A {P}arallel {P}reconditioned {M}odified {C}onjugate {G}radient
+  {M}ethod for {L}arge {S}ylvester {M}atrix {E}quation.
+\newblock 2014:1--7, 03 2014.
 
 \bibitem{Simoncini}
 V.~Simoncini.
-\newblock Computational methods for linear matrix equations.
+\newblock Computational {M}ethods for {L}inear {M}atrix {E}quations.
 \newblock 58:377--441, 01 2016.
 
 \bibitem{Zhou}
 J.~Zhou, W.~Ruirui, and Q.~Niu.
-\newblock A preconditioned iteration method for solving {S}ylvester equations.
+\newblock A {P}reconditioned {I}teration {M}ethod for {S}olving {S}ylvester
+  {E}quations.
 \newblock 2012, 07 2012.
 
 \end{thebibliography}

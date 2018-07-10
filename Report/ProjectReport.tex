@@ -24,11 +24,11 @@
 \maketitle
 \section{Introduction}
 
-The traditional approach to solving PDEs numerically involves stacking all unknowns of the problem into a single vector which ignores underlying structures. This prevents methods from being used which can take advantage of the problem structure to solve the problem more efficiently. An alternative approach is to formulate the problem as a matrix equation, which can be solved using a range of different methods. This project involves exploring how this alternative formulation can be solved using matrix solvers, and how these solvers compare against each other. As an example, let $u: \Omega \to \mathbb{R}$. Then let the equation:
+The traditional approach to solving PDEs numerically involves stacking all unknowns of the problem into a single vector which ignores underlying structures. This prevents methods from being used which can take advantage of the problem structure to solve the problem more efficiently. This can come at a significant cost when uncertainty is introduced into the equation. An alternative approach is to formulate the problem as a matrix equation, which can be solved using a range of different methods. This project involves exploring how this alternative formulation can be solved using matrix solvers, and how these solvers compare against each other. As an example, let $u: \Omega \to \mathbb{R}$. Then let the equation:
 	\begin{equation} 
 	-u_{xx} - u_{yy} = f
 	\end{equation}
-be defined on $\Omega = (0,1) \times(0,1)$, with boundary conditions $u(x,y)=0$, as shown below:
+be defined on $\Omega = (0,1) \times(0,1)$, with boundary conditions $u(x,y)=0$, as shown in Figure 1.
 
 \begin{figure}[H]
 \begin{tikzpicture}
@@ -60,7 +60,7 @@ The domain of this PDE can be discretised into a mesh with uniform spacing $h$ u
 	\begin{equation}
 	u_{yy} \approx \frac{u_{ij-1} - 2u_{ij} + u_{ij+1}}{h^2}
 	\end{equation}
-where $u_{ij} = u(x_i, y_j)$. The mesh is shown below:
+where $u_{ij} = u(x_i, y_j)$. The mesh is shown in Figure 2.
 
 \begin{figure}[H]
 \begin{tikzpicture}
@@ -121,7 +121,7 @@ The aim of this project is to first study, implement and compare a range of matr
 \subsection{Objectives}
 The objectives of this project are as follows:
 \begin{itemize}
-\item To carry out an extensive, in-depth literature review on methods (both iterative and direct) for solving matrix equations from a wide range of sources. To decide which of these methods are appropriate to implement and to gain a solid understanding of how they work. 
+\item To carry out an extensive, in-depth literature review on methods (both direct and iterative) for solving matrix equations from a wide range of sources. To decide which of these methods are appropriate to implement and to gain a solid understanding of how they work. 
 \item To use and expand upon my programming experience to implement the chosen methods for solving matrix equations to solve the specified problem. 
 \item To evaluate the implementation by comparing and contrasting the methods implemented to try to decide which is the best method for solving the given problem.
 \item To derive a suitable application equation so that the methods studied in this project can be applied to a specific problem. 
@@ -185,9 +185,9 @@ Throughout the following section, the following measurements are given to evalua
 \begin{itemize}
 \item $n$: The total number of unknowns for the system.
 \item Time(s): The time taken in seconds for the method to compute the solution to the problem.
-\item L$_{\text{max}}$: Measures the maximum difference between the actual solution and computed solution for each $u$, defined as:
+\item $|| u - u_h ||_{L^\infty} $: Measures the maximum difference between the actual solution and computed solution for each $u$, defined as:
  \[ || u - u_h ||_{L^\infty} = \text{max}_{ij} | u(x_i, y_i) - u_{ij} | \]
-\item L$_{\text{squared}}$: A measure of error that takes into account the difference between all actual and computed solutions, as well as the step size. Defined as:
+\item $|| u - u_h ||_{L^2} $: A measure of error that takes into account the difference between all actual and computed solutions, as well as the step size. Defined as:
 \[ || u - u_h ||_{L^2} = \sqrt{h^2 \sum | u(x_i,y_j) - u_{ij} |^2} \]
 \item Experimental order of convergence: Measures the rate of convergence of a method, which should approach 2 as the step size is increased. Defined as:
 \[ \text{eoc}(i) = \frac{\log{(\nicefrac{E_i}{E_{i-1}})}}{\log{(\nicefrac{h_i}{h_{i-1}})}} \]
@@ -228,15 +228,15 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \end{figure}
 
 \subsubsection{Bartels-Stewart Algorithm}
-The Bartels-Stewart algorithm \cite{Bartels} \cite{Simoncini} can be used to solve the Sylvester equation $AX + XB = F$. In the general case the algorithm is as follows:
+The Bartels-Stewart algorithm \cite{Bartels} can be used to solve the Sylvester equation $AX + XB = C$. In the general case the algorithm is as follows:
 \begin{enumerate}
 \item Compute the Schur forms $A^* = PRP^*$ and $B=QSQ^*$
-\item Solve $R^*V + VS = P^*FQ$ for $V$
+\item Solve $R^*V + VS = P^*CQ$ for $V$
 \item Compute $X=PVQ^*$
 \end{enumerate}
 where $A^*$ denotes the conjugate transpose of $A$.
 
-In this case $A=B=T$, $T=T^*$ and $X=U$, so the algorithm is as follows:
+In this case $A=B=T$, $T=T^*$, $X=U$ and $C=F$ so the algorithm is as follows:
 \begin{enumerate}
 \item Compute the Schur form $T=PRP^*$
 \item Solve $R^*V + VR = P^*FP$ for $V$
@@ -283,16 +283,16 @@ As can be seen from the results above, using the built-in SciPy solver results i
 
 
 \subsubsection{Similarity Transformation}
-A similarity transformation \cite{Simoncini} can be used to solve the Sylvester equation $AX + XB = F$, where $A$ is a $n \times n$ matrix and $B$ is a $m \times m$ matrix. 
+A similarity transformation \cite{Simoncini} can be used to solve the Sylvester equation $AX + XB = C$, where $A$ is a $n \times n$ matrix and $B$ is a $m \times m$ matrix. 
 
-Assuming matrices $A$ and $B$ can be diagonalised, let $P^{-1}AP = \text{diag}(\lambda_1, \dots, \lambda_n)$ and $Q^{-1}BQ = \text{diag}(\mu_1, \dots, \mu_m)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$ and $\mu_1, \dots, \mu_m$ are the eigenvalues values of $B$. Let $\tilde{F} = P^{-1}FQ$. The solution is then:
-\[ X = P \tilde{X} Q^{-1}, \text{ with } \tilde{x}_{ij} = \frac{\tilde{f}_{ij}}{\lambda_i + \mu_j} \]
+Assuming matrices $A$ and $B$ can be diagonalised, let $P^{-1}AP = \text{diag}(\lambda_1, \dots, \lambda_n)$ and $Q^{-1}BQ = \text{diag}(\mu_1, \dots, \mu_m)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$ and $\mu_1, \dots, \mu_m$ are the eigenvalues values of $B$. Let $\tilde{C} = P^{-1}CQ$. The solution is then:
+\[ X = P \tilde{X} Q^{-1}, \text{ with } \tilde{x}_{ij} = \frac{\tilde{c}_{ij}}{\lambda_i + \mu_j} \]
 
-In this case, $A=B=T$ and $X=U$, so $P=Q$ and $P^{-1}TP = \text{diag}(\lambda_1, \dots, \lambda_n)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $T$. Letting $\tilde{F}=P^{-1}FP$, the solution is:
+In this case, $A=B=T$, $X=U$ and $C=F$ so $P=Q$ and $P^{-1}TP = \text{diag}(\lambda_1, \dots, \lambda_n)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $T$. Letting $\tilde{F}=P^{-1}FP$, the solution is:
 \[ U = P \tilde{U} P^{-1}, \text{ with } \tilde{u}_{ij} = \frac{\tilde{f}_{ij}}{\lambda_i + \lambda_j} \]
 
 \subsubsection*{Using numpy.linalg.eig}
-The eigenvalues and eigenvectors can be computed using NumPy's \texttt{linalg.eig} function. The results using this are given in Figure 7.
+Using the method above, the eigenvalues and eigenvectors can be computed using NumPy's \texttt{linalg.eig} function. The results doing this are given in Figure 7.
 
 \begin{figure}[H]
 \centering
@@ -314,7 +314,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \caption{Results using a similarity transformation, calculating the eigenvalues and eigenvectors using \texttt{numpy.linalg.eig}.}
 \end{figure}
 
-Here the experimental order of convergence moves away from 2 as $n$ is increased. This is likely due to the fact that as there is no general formula for calculating eigenvalues and eigenvectors of any matrix, the eigenvalues and eigenvectors are approximated by NumPy's \texttt{linalg.eig}.
+Here the experimental order of convergence moves away from 2 as $n$ is increased. This is likely due to the fact that as there is no general formula for calculating eigenvalues and eigenvectors for an arbitrary matrix, the eigenvalues and eigenvectors are most likely approximated by NumPy's \texttt{linalg.eig}.
 
 This method can be split into component parts and each part can be timed, to see which part is the most costly. The steps of the method are:
 \begin{enumerate}
@@ -406,6 +406,7 @@ A projection method \cite{Simoncini} can be used on a Sylvester equation $AX + X
 \item For $i=1$ to $n$, solve the system $(A+s_i I)(\hat{X})_i = (\hat{C}_i)$
 \item Compute solution $X = \hat{X}W$
 \end{enumerate}
+where $(\hat{X})_i$ denotes the $i^{\text{th}}$ column of $\hat{X}$.
 
 In the case of $TU + UT = F$, the steps are as follows:
 \begin{enumerate}
@@ -440,7 +441,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \end{figure}
 
 \subsubsection{Gradient Based Method}
-In \cite{Zhou} a gradient based method for solving Sylvester equations is proposed. The equation $TU + UT = F$ can be written as two recursive sequences:
+In \cite{Zhou} a gradient based method for solving Sylvester equations is given. The equation $TU + UT = F$ can be written as two recursive sequences:
 	\begin{equation}
 	U_k^{(1)} = U_{k-1}^{(1)} + \kappa T(F-TU_{k-1}^{(1)} - U_{k-1}^{(1)}T)
 	\end{equation}
@@ -462,13 +463,24 @@ where $\lambda_{\text{max}}(T^2)$ denotes the maximum eigenvalue of $T^2$. Using
 $\lambda_{\text{max}}(T^2)$ therefore scales with $\frac{1}{h^4}$ meaning its reciprocal scales with $h^4$, implying $\kappa$ will need to be significantly small as $n$ is increased for the solution to converge. Even for small values of $n$, this is impractical and therefore this method is not appropriate for solving this equation.
 
 \subsubsection{Modified Conjugate Gradient Algorithm}
-In \cite{Hou} a modified conjugate gradient (MCG) algorithm is proposed, which is adapted for Sylvester Equations. The algorithm is as follows:
+In \cite{Hou} a modified conjugate gradient (MCG) algorithm is proposed, which is adapted for solving Sylvester Equations. The algorithm is as follows:
 \begin{enumerate}
-\item Choose initial guess $X^{0}$, let $k=0$ and calculate:
+\item Choose initial guess $X^{(0)}$, let $k=0$ and calculate:
 	\begin{itemize}
-	\item $R^{(0)} = $
+	\item $R^{(0)} = F - AX^{(0)} - X^{(0)}B$
+	\item $Q^{(0)} = A^T R^{(0)} + R^{(0)} + R^{(0)} B^T$
+	\item $Z^{(0)} = Q^{(0)}$
 	\end{itemize}
+\item If $R^{(k)} = 0$, or $R^{(k)} \neq 0$ but $Z^{(k)} = 0$, stop
 \end{enumerate}
+
+\newpage
+
+\section{Uncertainty}
+By introducing a random diffusion coefficient $\varepsilon$ into (1.1), the PDE to be solved now becomes:
+\begin{equation}
+- \varepsilon u_{xx} - \varepsilon u_{yy} = f
+\end{equation}
 
 \newpage
 

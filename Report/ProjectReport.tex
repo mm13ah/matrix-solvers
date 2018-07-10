@@ -49,7 +49,7 @@ be defined on $\Omega = (0,1) \times(0,1)$, with boundary conditions $u(x,y)=0$,
 \node at (6.75,0.5) {$y$};
 \end{tikzpicture}
 \centering
-\caption{Domain for $-u_{xx}-u_{yy}=f$}
+\caption{Domain for $-u_{xx}-u_{yy}=f$.}
 \end{figure}
 
 The domain of this PDE can be discretised into a mesh with uniform spacing $h$ using the centred finite difference approximations:
@@ -92,7 +92,7 @@ where $u_{ij} = u(x_i, y_j)$. The mesh is shown below:
 
 \end{tikzpicture}
 \centering
-\caption{Discretised domain for $-u_{xx}-u_{yy}=f$}
+\caption{Discretised domain for $-u_{xx}-u_{yy}=f$.}
 \end{figure}
 
 The discretised form of this PDE can then be solved by computing the equation:
@@ -177,7 +177,7 @@ as a matrix equation. Here $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$, $U_{ij}
 \begin{figure}[H]
 \includegraphics[scale=.7]{img/solution.png}
 \centering
-\caption{Plot of the solution with $n=1000$}
+\caption{Plot of the solution with $n=1000$.}
 \end{figure} 
 
 Throughout the following section, the following measurements are given to evaluate the performance of each of the methods implemented:
@@ -224,7 +224,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
 \end{tabular}
 \end{table}
-\caption{Results obtained from solving the linear system $\mathcal{A} x = c$ using the direct solver  \texttt{sparse.linalg.spsolve} from the SciPy library}
+\caption{Results obtained from solving the linear system $\mathcal{A} x = c$ using the direct solver  \texttt{sparse.linalg.spsolve} from the SciPy library.}
 \end{figure}
 
 \subsubsection{Bartels-Stewart Algorithm}
@@ -259,7 +259,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
 \end{tabular}
 \end{table}
-\caption{Results using the Bartels-Stewart algorithm}
+\caption{Results using the Bartels-Stewart algorithm.}
 \end{figure}
 
 The SciPy library has a built in solver for solving Sylvester equations, \texttt{scipy.linalg.solve\_sylvester}, which uses the Bartels-Stewart algorithm. Results using this solver are given below:
@@ -280,7 +280,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
 \end{tabular}
 \end{table}
-\caption{Results using SciPy's \texttt{scipy.linalg.solve\_sylvester}}
+\caption{Results using SciPy's \texttt{scipy.linalg.solve\_sylvester}.}
 \end{figure}
 
 As can be seen from the results above, using the built-in SciPy solver results in a significant speed-up in time as $n$ is increased. This is likely because it makes use of of LAPACK, which is an optimised software library for solving linear algebra problems.
@@ -316,7 +316,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
 \end{tabular}
 \end{table}
-\caption{Results using the Hessenberg-Schur method, calculating the eigenvalues and eigenvectors using \texttt{numpy.linalg.eig}}
+\caption{Results using the Hessenberg-Schur method, calculating the eigenvalues and eigenvectors using \texttt{numpy.linalg.eig}.}
 \end{figure}
 
 Here the experimental order converges moves away from 2 as $n$ is increased. This is likely due to the fact that as there is no general formula for calculating eigenvalues and eigenvectors, the eigenvalues and eigenvectors are approximated by NumPy's \texttt{linalg.eig}.
@@ -350,7 +350,7 @@ $n$ & 1 & 2 & 3 & 4 & 5 & Total \\
 \hline
 \end{tabular}
 \end{table}
-\caption{Timing results for each step of the Hessenberg-Schur method, calculating the eigenvalues and eigenvectors using \texttt{numpy.linalg.eig}}
+\caption{Timing results for each step of the Hessenberg-Schur method, calculating the eigenvalues and eigenvectors using \texttt{numpy.linalg.eig}.}
 \end{figure}
 
 \subsubsection*{Calculating eigenvalues and eigenvectors explicitly}
@@ -380,7 +380,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
 \end{tabular}
 \end{table}
-\caption{Results using the Hessenberg-Schur method, calculating the eigenvalues and eigenvectors explicity}
+\caption{Results using the Hessenberg-Schur method, calculating the eigenvalues and eigenvectors explicity.}
 \end{figure}
 
 \begin{figure}
@@ -401,7 +401,7 @@ $n$ & 1 & 2 & 3 & 4 & 5 & Total \\
 \hline
 \end{tabular}
 \end{table}
-\caption{Timing results for each step of the Hessenberg-Schur method, calculating the eigenvalues and eigenvectors explicitly}
+\caption{Timing results for each step of the Hessenberg-Schur method, calculating the eigenvalues and eigenvectors explicitly.}
 \end{figure}
 
 As can be seen from the results above, calculating the eigenvalues and eigenvectors explicitly vastly outperforms calculating them using the NumPy library when $n$ is large.
@@ -419,15 +419,15 @@ Similarly to Section 3.1.1, the Kronecker product can be used to write the matri
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
 10 & 0.0023940 & 0.0066868 & 0.0034124 & - \\
-100 & 0.0048580 & $8.0611 \times 10^{-5}$ & $4.0315 \times 10^{-5}$ & \\
-1000 & 0.61869 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & \\
-2000 & 2.1425 & $2.0541 \times 10^{-7}$ & $1.0271 \times 10^{-7}$ & \\
-4000 & 23.065 & $5.1378 \times 10^{-8}$ & $2.5689 \times 10^{-8}$ & \\
-8000 & 160.09 & $1.2848 \times 10^{-8}$ & $6.4239 \times 10^{-9}$ & \\
+100 & 0.0048580 & $8.0611 \times 10^{-5}$ & $4.0315 \times 10^{-5}$ & 1.9927 \\
+1000 & 0.61869 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 1.9999 \\
+2000 & 2.1425 & $2.0541 \times 10^{-7}$ & $1.0271 \times 10^{-7}$ & 2.0000 \\
+4000 & 23.065 & $5.1378 \times 10^{-8}$ & $2.5689 \times 10^{-8}$ & 2.0000 \\
+8000 & 160.09 & $1.2848 \times 10^{-8}$ & $6.4239 \times 10^{-9}$ & 1.9999 \\
 \hline
 \end{tabular}
 \end{table}
-\caption{Results obtained from solving the linear system $\mathcal{A} x = c$ using the iterative solver  \texttt{sparse.linalg.cg} from the SciPy library}
+\caption{Results obtained from solving the linear system $\mathcal{A} x = c$ using the iterative solver  \texttt{sparse.linalg.cg} from the SciPy library.}
 \end{figure}
 
 \subsubsection{Gradient based method}
@@ -451,80 +451,6 @@ where $\lambda_{\text{max}}(T^2)$ denotes the maximum eigenvalue of $T^2$. Using
 \lambda_{\text{max}}(T^2) = \frac{4}{h^4} \text{max} \Big( \big( \cos{\Big(\frac{i \pi}{n+1} \Big) } -1 \big)^2 \Big)
 \end{equation}
 $\lambda_{\text{max}}(T^2)$ therefore scales with $\frac{1}{h^4}$ meaning its reciprocal scales with $h^4$, implying $\kappa$ will need to be significantly small as $n$ is increased for the solution to converge. Even for small values of $n$, this is impractical and therefore this method is not appropriate for solving this equation.
-
-
-
-
-
-
-%\begin{itemize}
-%\item Naive approach \cite{Simoncini}: (1.6) can be written in the form of a standard linear system:
-%	\begin{equation}
-%	\mathcal{T}u = \mathcal{F}
-%	\end{equation}
-%where $\mathcal{F}$ is a vector of dimension $n^2$, $\mathcal{T} = I \otimes T + T \otimes I$ and $u = \text{vec}(U)$. Here $\otimes$ denotes the Kronecker product and vec is an operator that reshapes a matrix into a vector by stacking the columns one after another. 
-%This is the exact linear system that would be obtained from equation (1.5), i.e. stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard sparse iterative or direct solver (e.g. \texttt{sparse.linalg.spsolve} from the SciPy library). This approach provides a good base case for comparison.
-%\item Bartels-Stewart algorithm \cite{Bartels} \cite{Simoncini}: A common algorithm for solving Sylvester equations is the Bartels-Stewart algorithm. This algorithm transforms (1.6) into a simpler but equivalent problem by computing the Schur decomposition of $T$ so that the resulting matrices are lower/upper triangular. The resulting unknown matrix can then be solved sequentially and the solution $U$ can be computed. The algorithm is as follows:
-%	\begin{enumerate}
-%	\item Compute the Schur form $T=PRP^*$
-%	\item Solve $R^*V + VR = P^*FP$ for $V$
-%	\item Compute $U=PVP^*$
-%	\end{enumerate}
-%where $P^*$ denotes the conjugate transpose of $P$. The SciPy library has a built-in  solver for solving Sylvester equations, \texttt{linalg.solve\_sylvester}, which uses this algorithm.
-%\item Similarity transformations \cite{Simoncini}: This approach assumes that the matrix $T$ can be diagonalised in the form $P^{-1}TP = \text{diag}(\lambda_1, \dots, \lambda_n)$, where $\lambda_1, \dots, \lambda_n$ denote the eigenvalues of $T$. Here the columns of $P$ are the eigenvectors of $T$. By computing the matrix $\tilde{F} = P^{-1}FP$, the solution can be computed as:
-%	\begin{equation}
-%	U = P \tilde{U} P^{-1}, \; \text{ with } \tilde{u}_{ij} = \frac{\tilde{f}_{ij}}{\lambda_i + \lambda_j}
-%	\end{equation}
-%The eigenvalues and eigenvectors of $T$ can be computed using, for example, \texttt{linalg.eig} from the NumPy library, or can alternatively be computed explicitly as:
-%	\begin{equation}\lambda_i = \frac{2}{h^2} \Big( \cos \Big( \frac{i \pi}{n+1} \Big) - 1 \Big)
-%	\end{equation}
-%	\begin{equation}
-%	t_{ij} = \sqrt{\frac{2}{n+1}} \sin \Big( \frac{ij \pi}{n+1}  \Big) 
-%	\end{equation}
-%which leads to a significant speed up in time for large $n$. 
-%\item Iterative gradient based method \cite{Zhou}: (1.6) can be written as two recursive sequences:
-%	\begin{equation}
-%	U_k^{(1)} = U_{k-1}^{(1)} + \kappa T(F-TU_{k-1}^{(1)} - U_{k-1}^{(1)}T)
-%	\end{equation}
-%	\begin{equation}
-%	U_k^{(2)} = U_{k-1}^{(2)} + \kappa (F-TU_{k-1}^{(2)} - U_{k-1}^{(2)}T)T
-%	\end{equation}
-%where $\kappa$ represents the relative step size. The approximate solution $U_k$ is taken as the average of these two sequences:
-%	\begin{equation}
-%	U_k = \frac{U_k^{(1)} + U_k^{(2)}}{2}
-%	\end{equation}
-%This solution only converges if:
-%	\begin{equation}
-%	0 < \kappa < \frac{1}{\lambda_{\text{max}}(T^2)} 
-%	\end{equation}
-%where $\lambda_{\text{max}}(T^2)$ denotes the maximum eigenvalue of $T^2$. Using the method given previously for calculating eigenvalues we can compute:
-%\begin{equation}
-%\lambda_{\text{max}}(T^2) = \frac{4}{h^4} \text{max} \Big( \big( \cos{\Big(\frac{i \pi}{n+1} \Big) } -1 \big)^2 \Big)
-%\end{equation}
-%$\lambda_{\text{max}}(T^2)$ therefore scales with $\frac{1}{h^4}$ meaning its reciprocal scales with $h^4$, implying $\kappa$ will need to be significantly small as $n$ is increased for the solution to converge. Even for small values of $n$, this is impractical and therefore this method is not appropriate for solving this equation.
-%\end{itemize}
-%
-%\cite{Simoncini} proposes other method that can be used to solve (1.6), including integral of resolvents, integral of exponentials, finite power sum, a Newton based iterative method and various others. One of the main aims of this project is to explore these methods as well as methods from other papers for solving the given matrix equation, implement them for an application problem and evaluate them to see how they compare and which is the most effective. 
-%
-%\subsection{Application}
-%The matrix methods explored so far in this project have been implemented for a test problem, with the exact solution defined as:
-%	\begin{equation}
-%	u=\sin{(\pi x)} \sin{(\pi y)}
-%	\end{equation}
-%which gives the PDE in (1.1) as:
-%	\begin{equation}
-%	-u_{xx} - u_{yy} = 2 \pi^2 \sin{(\pi x)} \sin{(\pi y)}
-%	\end{equation}
-%After more matrix solvers have been explored, another goal of this project is to, with the help of my supervisor, derive a model and discretisation of a reaction-diffusion equation so that the methods explored can be applied to a particular problem. This has been discussed with my supervisor so far and seems like a good way to apply the more broad aspect of this project to a specific problem. 
-%
-%\subsubsection{Uncertainty}
-%By introducing a random diffusion coefficient $\varepsilon$, where $1 \leq \varepsilon \leq 2$, into (1.17) we have:
-%\begin{equation}
-%-\varepsilon u_{xx} - \varepsilon u_{yy} = 2 \pi^2 \sin{(\pi x)} \sin{(\pi y)} 
-%\end{equation}
-%As $\varepsilon$ is unknown, this problem is significantly harder to solve. A basic approach to solving this problem is to use the Monte Carlo method, which samples random $\varepsilon$ $M$ times over its range and then solves (1.18) for each of these samples using one of the matrix methods given above. The mean solution $\mathbb{E}(u)$ and variance $\text{Var}(u)$ can then be measured using these solutions, and can be compared against the true mean and variance calculated using the sampled values of $\varepsilon$.
-%
-%In \cite{Barreira}, a reaction-diffusion equation that models evolving surfaces is derived, which relate to pattern formation on a growing biological surface, and they are solved numerically using the surface finite element method. A similar application problem will be derived for this project, but instead of modelling the surface as evolving, the height will be modelled as being random and the methods studied in this project will be used to solve this problem and evaluate the results. 
 
 \newpage
 

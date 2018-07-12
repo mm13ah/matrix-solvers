@@ -163,7 +163,7 @@ which gives:
 u_{xx} = u_{yy} = - \pi^2 \sin{(\pi x)} \sin{(\pi y)}
 \end{equation}
 \begin{equation}
-\implies F = 2 \pi^2 \sin{(\pi x)} \sin {(\pi y)}
+\implies f = 2 \pi^2 \sin{(\pi x)} \sin {(\pi y)}
 \end{equation}
 The PDE to be solved is now:
 \begin{equation}
@@ -176,7 +176,7 @@ at each grid point, or equivalently:
 as a matrix equation. Here $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$, $U_{ij} = u(x_i, y_j)$ and $F_{ij} = 2 \pi^2 \sin{(\pi x_i)} \sin{(\pi y_j)}$, where $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. As stated previously this equation is in the form of a Sylvester equation and can be solved using a range of different methods. A graph of the exact solution, with $n=1000$, is given below:
 
 \begin{figure}[H]
-\includegraphics[scale=.5]{img/solution.png}
+\includegraphics[scale=.5]{img/solution2.png}
 \centering
 \caption{Plot of the solution with $n=1000$.}
 \end{figure} 
@@ -251,10 +251,11 @@ Results using this algorithm are shown in Figure 5.
 \hline
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
-10 & 0.0076599 & 0.0066868 & 0.0034125 & - \\
-100 & 2.0357 & $8.0611 \times 10^{-5}$ & $4.0315 \times 10^{-5}$ & 1.9927 \\
-1000 & 1449.6 & $8.2083 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 1.9999 \\
-2000 & 8675.8 & $2.0561e \times 10^{-7}$ & $1.0276 \times 10^{-7}$ & 1.9986 \\
+125 & 1.2486 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - \\
+250 & 9.6712 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & - \\
+500 & 77.888 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & - \\ 
+1000 & 640.22 & $8.2083 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 1.9999 \\
+2000 & 5093.1 & $2.0561 \times 10^{-7}$ & $1.0276 \times 10^{-7}$ & 1.9986 \\
 \hline
 \end{tabular}
 \caption{Results using the Bartels-Stewart algorithm.}
@@ -268,12 +269,12 @@ The SciPy library has a built in solver for solving Sylvester equations, \texttt
 \hline
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
-10 & 0.00051880 & 0.0066868 & 0.0034125 & -  \\
-100 & 0.027365 & $8.0611 \times 10^{-5}$ & $4.0315 \times 10^{-5}$ & 1.9927  \\
-1000 & 20.248 & $8.2083 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 1.9999 \\
-2000 & 244.27 & $2.0558 \times 10^{-7}$ & $1.0277 \times 10^{-7}$ & 1.9988  \\
-4000 & 2886.7 & $5.0158 \times 10^{-8}$ & $2.4922 \times 10^{-8}$ & 2.0359 \\
-%5000 & 6133.9 & 4.3474e$^{-8}$ & 2.1236e$^{-8}$ & 1.6962  \\
+125 & 0.059959 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - \\
+250 & 0.11421 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & - \\
+500 & 1.9383 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & - \\
+1000 & 4.0920 & $8.2084 \times 10^{-7}$ & $4.1042 \times 10^{-7}$ & - \\
+2000 & 32.029 & $2.0558 \times 10^{-7}$ & $1.0277 \times 10^{-7}$ & -  \\
+4000 & 279.95 & $5.0158 \times 10^{-8}$ & $2.4922 \times 10^{-8}$ & - \\
 \hline
 \end{tabular}
 \caption{Results using SciPy's \texttt{linalg.solve\_sylvester}.}
@@ -300,21 +301,20 @@ Using the method above, the eigenvalues and eigenvectors can be computed using N
 \hline
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc \\
 \hline
-10 & 0.023603 & 0.0066868 & 0.0034125 & - \\
-100 & 0.049893 & $8.0611 \times 10^{-5}$ & $4.0315 \times 10^{-5}$ & 1.9927  \\ 
-1000 & 4.8863 & $8.2083 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 1.9999  \\
-2000 & 26.098 & $2.0560 \times 10^{-7}$ & $1.0277 \times 10^{-7}$ & 1.9987 \\
-4000 & 185.13 & $5.0151 \times 10^{-8}$ & $2.4922 \times 10^{-8}$ & 2.0362 \\
-8000 & 1274.5 & $1.2959 \times 10^{-8}$ & $5.1767 \times 10^{-9}$ & 1.9527 \\
-%5000 & 265.25 & 4.3041e$^{-8}$ & 2.1164e$^{-8}$ & 1.7072 \\
-%10000 & 2019.2 & 1.5349e$^{-9}$ & 6.8831e$^{-9}$ & 4.8102 \\
+125 & 0.034534 & $5.1802 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - \\
+250 & 0.13690 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & - \\
+500 & 0.59718 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & - \\
+1000 & 2.2211 & $8.2083 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & - \\
+2000 & 11.571 & $2.0560 \times 10^{-7}$ & $1.0277 \times 10^{-7}$ & 1.9987 \\
+4000 & 70.984 & $5.0151 \times 10^{-8}$ & $2.4922 \times 10^{-8}$ & 2.0362 \\
+8000 & 466.83 & $1.2959 \times 10^{-8}$ & $5.1767 \times 10^{-9}$ & 1.9527 \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
 \caption{Results using a similarity transformation, calculating the eigenvalues and eigenvectors using \texttt{numpy.linalg.eig}.}
 \end{figure}
 
-Here the experimental order of convergence moves away from 2 as $n$ is increased. This is likely due to the fact that as there is no general formula for calculating eigenvalues and eigenvectors for an arbitrary matrix, the eigenvalues and eigenvectors are most likely approximated by NumPy's \texttt{linalg.eig}.
+Here the experimental order of convergence moves away from 2 as $n$ is increased. This is likely due to the fact that there is no general formula for calculating eigenvalues and eigenvectors for an arbitrary matrix, meaning the eigenvalues and eigenvectors are most likely approximated by NumPy's \texttt{linalg.eig}.
 
 This method can be split into component parts and each part can be timed, to see which part is the most costly. The steps of the method are:
 \begin{enumerate}
@@ -351,7 +351,7 @@ $n$ & 1 & 2 & 3 & 4 & 5 & Total \\
 
 As can be seen from the results above, the most costly part of this method is calculating the eigenvalues and eigenvectors. As $T$ is a matrix in Toeplitz form, the eigenvalues and eigenvectors can be calculated directly as:
 \[ \lambda_i = \frac{2}{h^2} \Big( \cos \Big( \frac{i \pi}{n+1} \Big) - 1 \Big) \]
-and 
+and:
 \[ t_{ij} = \sqrt{\frac{2}{n+1}} \sin \Big( \frac{ij \pi}{n+1}  \Big) \]
 
 Results using this method for calculating the eigenvalues are eigenvectors are given in Figure 9, and timings for each step are given in Figure 10.
@@ -462,7 +462,7 @@ where $\lambda_{\text{max}}(T^2)$ denotes the maximum eigenvalue of $T^2$. Using
 \end{equation}
 $\lambda_{\text{max}}(T^2)$ therefore scales with $\frac{1}{h^4}$ meaning its reciprocal scales with $h^4$, implying $\kappa$ will need to be significantly small as $n$ is increased for the solution to converge. Even for small values of $n$, this is impractical and therefore this method is not appropriate for solving this equation.
 
-\subsubsection{Modified Conjugate Gradient Algorithm}
+\subsubsection{Modified Conjugate Gradient}
 In \cite{Hou} a modified conjugate gradient (MCG) algorithm is proposed, which is adapted for solving Sylvester Equations. The algorithm is as follows:
 \begin{enumerate}
 \item Choose initial guess $X^{(0)}$, let $k=0$ and calculate:
@@ -471,16 +471,61 @@ In \cite{Hou} a modified conjugate gradient (MCG) algorithm is proposed, which i
 	\item $Q^{(0)} = A^T R^{(0)} + R^{(0)} + R^{(0)} B^T$
 	\item $Z^{(0)} = Q^{(0)}$
 	\end{itemize}
-\item If $R^{(k)} = 0$, or $R^{(k)} \neq 0$ but $Z^{(k)} = 0$, stop
+\item If $R^{(k)} = 0$, or $R^{(k)} \neq 0$ but $Z^{(k)} = 0$, stop. Else, calculate:
+\[ \gamma_k = \frac{[R^{(k)}, R^{(k)}]}{[Z^{(k)}, Z^{(k)}]} \]
+where $[R,R] = \text{tr}(R^T R)$ is the trace of matrix $R^T R$.
+\item Calculate:
+	\begin{itemize}
+	\item $R^{(k+1)} = F - AX^{(k+1)} - X^{(k+1)} B$
+	\item $Q^{(k+1)} = A^T R^{(k+1)} + R^{(k+1)} + R^{(k+1)} B^T$
+	\end{itemize}
+	and return to Step 2.
 \end{enumerate}
-
 \newpage
 
 \section{Uncertainty}
-By introducing a random diffusion coefficient $\varepsilon$ into (1.1), the PDE to be solved now becomes:
+Uncertainty can be introduced into the PDE (1.1) by introducing a random diffusion coefficient $\varepsilon = \varepsilon(\omega)$, $\varepsilon \neq 0$ such that:
 \begin{equation}
 - \varepsilon u_{xx} - \varepsilon u_{yy} = f
 \end{equation}
+Redefining $u$ as:
+\begin{equation}
+u(x,y,\varepsilon) = \sin(\pi x) \sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y)
+\end{equation}
+gives:
+\begin{align}
+u_{xx} =& - \pi^2 \sin(\pi x) \sin (\pi y) - 9 \pi^2 \varepsilon \sin(3 \pi x) \sin(5 \pi y) \\
+u_{yy} =& - \pi^2 \sin(\pi x) \sin (\pi y) - 25 \pi^2 \varepsilon \sin(3 \pi x) \sin(5 \pi y)
+\end{align}
+\begin{equation}
+\implies f = 2\pi^2 \varepsilon \sin(\pi x) \sin(\pi y)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x) \sin(5 \pi y)
+\end{equation}
+
+
+The PDE to be solved is now:
+\begin{equation}
+- \varepsilon u_{xx} - \varepsilon u_{yy} = 2\pi^2 \varepsilon \sin(\pi x) \sin(\pi y)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x) \sin(5 \pi y)
+\end{equation}
+As before this can be formed as a matrix equation:
+\begin{equation}
+TU + UT = F
+\end{equation}
+with $T = -\frac{\varepsilon}{h^2} \text{tridiag}(1,-2,1)$, $U = u(x_i, y_j)$ and $F = 2\pi^2 \varepsilon \sin(\pi x_i) \sin(\pi y_j)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x_i) \sin(5 \pi y_j)$. This equation is significantly harder to solve accurately and efficiently than the equation in the previous section due to the fact that $\varepsilon$ is an unknown coefficient.
+
+\subsection{Monte Carlo}
+A simple way of solving (4.7) is to use the Monte Carlo method. The Monte Carlo method works by taking $M$ random samples of $\varepsilon$ over its range, and then solves the PDE for each of these samples. 
+This allows the most effective method from Section 3 to be used as a `black box' strategy. Once solved, the mean of all computed solutions can be calculated. If the probability distribution $\rho(\omega)$ for $\varepsilon$ is known, then the expectation of $u$ can be computed as:
+\begin{equation}
+\mathbb{E}(u) = \int u(x,y,\varepsilon) \rho(\omega) d \omega
+\end{equation}
+The error can be computed by comparing the mean solution and the expectation. The error is defined as: 
+\begin{equation}
+\text{Error} = \bigg{|} \bigg{|} \mathbb{E}(u) - \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon) \bigg{|}\bigg{|}
+\end{equation}
+where $M$ is the number of samples used in the Monte Carlo method and $u_h$ is the solution obtained from the finite difference method using a mesh of size $h$.
+
+Results are given in Figure 12
+
 
 \newpage
 

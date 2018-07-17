@@ -243,7 +243,7 @@ In this case $A=B=T$, $T=T^*$, $X=U$ and $C=F$ so the algorithm is as follows:
 \item Compute $U=PVP^*$
 \end{enumerate}
 
-Results using this algorithm are shown in Figure 5.
+Results using this algorithm are shown in Figure 5. These results show that both errors increase as $n$ is increased. Also the eoc is close enough to 2 to conclude that this algorithm converges. The eog demonstrates that this algorithm has an approximate cubic time complexity. 
 
 \begin{figure}[H]
 \centering
@@ -261,7 +261,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 \caption{Results using the Bartels-Stewart algorithm.}
 \end{figure}
 
-The SciPy library has a built in solver for solving Sylvester equations, \texttt{linalg.solve \_sylvester}, which uses the Bartels-Stewart algorithm. Results using this solver are given in Figure 6.
+The SciPy library has a built in solver for solving Sylvester equations, \texttt{linalg.solve \_sylvester}, which uses the Bartels-Stewart algorithm. Results using this solver are given in Figure 6. The errors here are similar to the errors given in Figure 5. Again the eoc is close enough to 2 to conclude that this algorithm converges. However, the eog seems to vary depending on the problem size $n$. 
 
 \begin{figure}[H]
 \centering
@@ -293,7 +293,7 @@ In this case, $A=B=T$, $X=U$ and $C=F$ so $P=Q$ and $P^{-1}TP = \text{diag}(\lam
 \[ U = P \tilde{U} P^{-1}, \text{ with } \tilde{u}_{ij} = \frac{\tilde{f}_{ij}}{\lambda_i + \lambda_j} \]
 
 \subsubsection*{Using numpy.linalg.eig}
-Using the method above, the eigenvalues and eigenvectors can be computed using NumPy's \texttt{linalg.eig} function. The results doing this are given in Figure 7.
+Using the method above, the eigenvalues and eigenvectors can be computed using NumPy's \texttt{linalg.eig} function. The results doing this are given in Figure 7. The errors are again similar to the previous methods. However, here the eoc moves away from 2 as $n$ is increased. This is likely due to the fact that there is no general formula for calculating eigenvalues and eigenvectors for an arbitrary matrix, meaning the eigenvalues and eigenvectors are most likely approximated by NumPy's \texttt{linalg.eig}. Also the eog is slightly better with this algorithm.
 
 \begin{figure}[H]
 \centering
@@ -313,8 +313,6 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 \captionsetup{justification=centering}
 \caption{Results using a similarity transformation, calculating the eigenvalues and eigenvectors using \texttt{numpy.linalg.eig}.}
 \end{figure}
-
-Here the experimental order of convergence moves away from 2 as $n$ is increased. This is likely due to the fact that there is no general formula for calculating eigenvalues and eigenvectors for an arbitrary matrix, meaning the eigenvalues and eigenvectors are most likely approximated by NumPy's \texttt{linalg.eig}.
 
 This method can be split into component parts and each part can be timed, to see which part is the most costly. The steps of the method are:
 \begin{enumerate}
@@ -353,7 +351,7 @@ As can be seen from the results above, the most costly part of this method is ca
 and:
 \[ t_{ij} = \sqrt{\frac{2}{n+1}} \sin \Big( \frac{ij \pi}{n+1}  \Big) \]
 
-Results using this method for calculating the eigenvalues are eigenvectors are given in Figure 9, and timings for each step are given in Figure 10.
+Results using this method for calculating the eigenvalues are eigenvectors are given in Figure 9, and timings for each step are given in Figure 10. Similar errors are given by this method, however now the eoc is much closer to 2 as $n$ is increased. The eog is also significantly less demonstrating that using this algorithm and computing the eigenvalues explicity achieves a near square time complexity. 
 
 \begin{figure}[H]
 \centering
@@ -413,19 +411,19 @@ In the case of $TU + UT = F$, the steps are as follows:
 \item Compute solution $U = \hat{U}W$
 \end{enumerate}
 
-Results using this method are given in Figure 11.
+Results using this method are given in Figure 11. The errors are approximately the same as the errors given previously. The eoc is approximately 2 and the eog is $> 3$ as $n$ is increased demonstrating that this algorithm converges with a worse than cubic time complexity. 
 \begin{figure}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
 \hline
-125 & 0.092085 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & -  \\
-250 & 0.43609 & $1.3054 \times 10^{-5}$ & $6.5274 \times 10^{-6}$ & - & -  \\
-500 & 2.1851 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & - & -  \\
-1000 & 19.498 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & - & -  \\
-2000 & 194.13 & $2.0541 \times 10^{-7}$ & $1.0271 \times 10^{-7}$ & - & -  \\
-4000 & 2452.5 & $5.1347 \times 10^{-8}$ & $2.5674 \times 10^{-8}$ & - & -  \\
+125 & 0.092085 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
+250 & 0.43609 & $1.3054 \times 10^{-5}$ & $6.5274 \times 10^{-6}$ & 2.0001 & 2.2436 \\
+500 & 2.1851 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999 & 2.3250 \\
+1000 & 19.498 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 3.1576 \\
+2000 & 194.13 & $2.0541 \times 10^{-7}$ & $1.0271 \times 10^{-7}$ & 2.0000 & 3.3156 \\
+4000 & 2452.5 & $5.1347 \times 10^{-8}$ & $2.5674 \times 10^{-8}$ & 2.0009 & 3.6592  \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -436,7 +434,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 \subsection{Iterative Methods}
 
 \subsubsection{Kronecker Product}
-Similarly to Section 3.1.1, the Kronecker product can be used to write the matrix equation as a standard vector linear system. A a standard iterative solver can then be used to solve the system, which can provide a base case for comparison. Results using \texttt{scipy.sparse.linalg.cg}, which is a sparse solver that uses the conjugate gradient iterative method, are given in Figure 12, using a convergence tolerance of $10^{-9}$.
+Similarly to Section 3.1.1, the Kronecker product can be used to write the matrix equation as a standard vector linear system. A a standard iterative solver can then be used to solve the system, which can provide a base case for comparison. Results using \texttt{scipy.sparse.linalg.cg}, which is a sparse solver that uses the conjugate gradient iterative method, are given in Figure 12, using a convergence tolerance of $10^{-9}$. The results show errors similar to all the direct methods. The eoc demonstrates that the algorithm converges very well. Although this algorithm is much faster than all the previous direct methods, the eog demonstrates that when $n$ is significantly large, the algorithm exhibits a worse than cubic time complexity, which is shown here when $n=8000$.  
 
 \begin{figure}[H]
 \centering
@@ -444,12 +442,13 @@ Similarly to Section 3.1.1, the Kronecker product can be used to write the matri
 \hline
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
 \hline
-10 & 0.0023940 & 0.0066868 & 0.0034124 & -  & - \\
-100 & 0.0048580 & $8.0611 \times 10^{-5}$ & $4.0315 \times 10^{-5}$ & -  & - \\
-1000 & 0.61869 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & - & -  \\
-2000 & 2.1425 & $2.0541 \times 10^{-7}$ & $1.0271 \times 10^{-7}$ & - & -  \\
-4000 & 23.065 & $5.1378 \times 10^{-8}$ & $2.5689 \times 10^{-8}$ & - & -  \\
-8000 & 160.09 & $1.2848 \times 10^{-8}$ & $6.4239 \times 10^{-9}$ & - & -  \\
+125 & 0.014182 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & 2.0001 & - \\
+250 & 0.042605 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 1.9999 & 1.5870 \\
+500 & 0.14136 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 2.0000 & 1.7303 \\
+1000 & 0.54308 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 1.9418 \\
+2000 & 2.3162 & $2.0541 \times 10^{-7}$ & $1.0271 \times 10^{-7}$ & 2.0000 & 2.0925 \\
+4000 & 9.8487 & $5.1379 \times 10^{-8}$ & $2.5689 \times 10^{-8}$ & 2.0000 & 2.0882 \\
+8000 & 103.34 & $1.2848 \times 10^{-8}$ & $6.4239 \times 10^{-9}$ & 2.0000 & 3.3913 \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}

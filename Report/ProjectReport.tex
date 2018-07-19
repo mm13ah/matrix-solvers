@@ -212,7 +212,7 @@ For the system in (3.6), we have $A=B=T$, $X=U$, $C=F$ and $T=T^*$, so the stand
 \end{equation}
 where $\mathcal{F} = \text{vec}(F)$, $\mathcal{T} = I \otimes T + T \otimes I$ and $u = \text{vec}(U)$. 
 
-This is the exact linear system that would be obtained from equation (1.5), i.e. stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. Results solving this linear system using the direct sparse solver \texttt{sparse.linalg.spsolve} from the SciPy library are shown in Figure 4.
+This is the exact linear system that would be obtained from equation (1.5), i.e. stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. Results solving this linear system using the direct sparse solver \texttt{sparse.linalg.spsolve} from the SciPy library are shown in Figure 4. As can be seen from the results, both errors decrease as the problem size $n$ is increased. The eoc is very close to 2 for all $n$, demonstrating the algorithm converges. As $n$ is increased the eog grows beyond $3$, which shows this algorithm has worse than cubic time complexity for large $n$. 
 
 \begin{figure}[H]
 \centering
@@ -220,7 +220,11 @@ This is the exact linear system that would be obtained from equation (1.5), i.e.
 \hline
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
 \hline
-125 & & & & & \\
+125 & 0.18141 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
+250 & 0.60371 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 2.0001 & 1.7346 \\
+500 & 4.1663 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999 & 2.7868 \\
+1000 & 36.113 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 3.1157 \\
+2000 & 404.48 & $2.0539 \times 10^{-7}$ & $1.0267 \times 10^{-7}$ & 2.0001 & 3.4855 \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -442,9 +446,9 @@ Similarly to Section 3.1.1, the Kronecker product can be used to write the matri
 \hline
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
 \hline
-125 & 0.014182 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & 2.0001 & - \\
-250 & 0.042605 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 1.9999 & 1.5870 \\
-500 & 0.14136 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 2.0000 & 1.7303 \\
+125 & 0.014182 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
+250 & 0.042605 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 2.0001 & 1.5870 \\
+500 & 0.14136 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999 & 1.7303 \\
 1000 & 0.54308 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 1.9418 \\
 2000 & 2.3162 & $2.0541 \times 10^{-7}$ & $1.0271 \times 10^{-7}$ & 2.0000 & 2.0925 \\
 4000 & 9.8487 & $5.1379 \times 10^{-8}$ & $2.5689 \times 10^{-8}$ & 2.0000 & 2.0882 \\
@@ -538,9 +542,6 @@ The error can be computed by comparing the mean solution and the expectation. Th
 \text{Error} = \bigg{|} \bigg{|} \mathbb{E}(u) - \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon) \bigg{|}\bigg{|}
 \end{equation}
 where $M$ is the number of samples used in the Monte Carlo method and $u_h$ is the solution obtained from the finite difference method using a mesh of size $h$.
-
-Results are given in Figure 
-
 
 \newpage
 

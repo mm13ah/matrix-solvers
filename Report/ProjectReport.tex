@@ -22,13 +22,22 @@
 \begin{document}
 
 \maketitle
+
+\newpage
+
+\tableofcontents
+
+\clearpage
+
 \section{Introduction}
 
-The traditional approach to solving PDEs numerically involves stacking all unknowns of the problem into a single vector which ignores underlying structures. This prevents methods from being used which can take advantage of the problem structure to solve the problem more efficiently. This can come at a significant cost when uncertainty is introduced into the equation. An alternative approach is to formulate the problem as a matrix equation, which can be solved using a range of different methods. This project involves exploring how this alternative formulation can be solved using matrix solvers, and how these solvers compare against each other. As an example, let $u: \Omega \to \mathbb{R}$. Then let the equation:
+The traditional approach to solving PDEs numerically involves stacking all unknowns of the problem into a single vector which ignores underlying structures. This prevents methods from being used which can take advantage of the problem structure to solve the problem more efficiently. This can come at a significant cost when uncertainty is introduced into the equation. An alternative approach is to formulate the problem as a matrix equation, which can be solved using a range of different methods. This project involves exploring how this alternative formulation can be solved using matrix solvers, and how these solvers compare against each other. 
+
+As an example, define spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and let $u: \mathcal{D} \to \mathbb{R}$ be the solution of the equation
 	\begin{equation} 
 	-u_{xx} - u_{yy} = f
 	\end{equation}
-be defined on $\Omega = (0,1) \times(0,1)$, with boundary conditions $u(x,y)=0$, as shown in Figure 1.
+with boundary conditions $u(x,y)=0$, as shown in Figure 1.
 
 \begin{figure}[H]
 \begin{tikzpicture}
@@ -100,7 +109,9 @@ The discretised form of this PDE can then be solved by computing the equation:
 	\begin{equation}
 	f_{ij} = -\frac{1}{h^2} \big( u_{i-1j} - 2u_{ij} + u_{i+1j} \big) - \frac{1}{h^2} \big( u_{ij-1} - 2u_{ij} + u_{ij+1} \big)
 	\end{equation}
-at each internal grid point, meaning the system has $n^2$ unknowns with $n=N-2$. The traditional approach to solving this discretised form would be to write (1.4) as:
+at each internal grid point, meaning the system has $n^2$ unknowns with $n=N-2$. 
+
+The traditional approach to solving this discretised form would be to write (1.4) as:
 	\begin{equation}
 	f_{ij} = -\frac{1}{h^2} \big( u_{i-1j} + u_{ij-1} - 4u_{ij} + u_{i+1j} + u_{ij+1}  \big)
 	\end{equation}
@@ -110,7 +121,7 @@ By keeping (1.4) in its original form we can instead write the system as a matri
 	\begin{equation} 
 	TU + UT = F
 	\end{equation}
-with $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$ and $U_{ij} = u(x_i, y_j)$ where $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. This equation is in the form of a Sylvester equation $AX + XB = C$, with $A=B=T$, $X=U$ and $C=F$, and there many different methods that can be used to solve equations of this type. This project will explore different methods for solving equations in this form. 
+with $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$ and $U_{ij} = u(x_i, y_j)$ where $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. This equation is in the form of a Sylvester equation $AX + XB = C$, with $A=B=T$, $X=U$ and $C=F$, and there are many different methods that can be used to solve equations of this type. This project will explore different methods for solving equations in this form. 
 
 \newpage
 
@@ -138,7 +149,7 @@ The deliverables of this project include:
 \subsection{Methodology}
 The methodology of this project will first involve studying academic publishings to gain an understanding of various methods for solving matrix equations. Python will be used as the programming language of choice for the implementation because of my familiarity with it, the extensive amount of documentation available for it and the excellent libraries it has available (e.g. NumPy and SciPy). GitHub will be used for version control and the final report will be written using \LaTeX. 
 
-\subsection{Tasks, milestones and timeline}
+\subsection{Tasks, Milestones and Timeline}
 The steps of this project will be divided into iterations, with the problem in each iteration becoming successively more complex and difficult to solve. This is because understanding is a key part of this project, and so each iteration will build on the understanding of the last. Each iteration will consist of studying and applying matrix methods to the problem, implementing them in Python to solve the problem, evaluating the results and write up. Also rough deadlines will be given for when each iteration should be completed by, to ensure the project is on track at any given stage.
 
 The iterations are as follows:
@@ -154,7 +165,7 @@ If the project deadlines are met the remaining time will be dedicated to project
 \newpage
 
 \section{Matrix Solvers}
-As an example problem, let the exact solution, $u$, of (1.1) be defined as:
+As an example problem, let the exact solution $u$ of (1.1) be defined as:
 \begin{equation} 
 u = \sin{(\pi x)} \sin{(\pi y)}
 \end{equation}
@@ -169,11 +180,11 @@ The PDE to be solved is now:
 \begin{equation}
 -u_{xx} - u_{yy}  = 2 \pi^2 \sin{(\pi x)} \sin {(\pi y)}
 \end{equation}
-at each grid point, or equivalently:
+at each grid point, with $u(x,y) = 0$ on the boundary. The matrix form of this equation is:
 	\begin{equation}
 	TU + UT = F
 	\end{equation}
-as a matrix equation. Here $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$, $U_{ij} = u(x_i, y_j)$ and $F_{ij} = 2 \pi^2 \sin{(\pi x_i)} \sin{(\pi y_j)}$, where $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. As stated previously this equation is in the form of a Sylvester equation and can be solved using a range of different methods. A graph of the exact solution, with $n=1000$, is given below:
+Here $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$, $U_{ij} = u(x_i, y_j)$ and $F_{ij} = 2 \pi^2 \sin{(\pi x_i)} \sin{(\pi y_j)}$, where $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. As stated previously this equation is in the form of a Sylvester equation and can be solved using a range of different methods. A graph of the exact solution, with $n=1000$, is given below:
 
 \begin{figure}[H]
 \includegraphics[scale=.5]{img/solution2.png}
@@ -197,6 +208,8 @@ where $E_i$ is the error and $h_i$ is the mesh size at level $i$.
 where $t_i$ is the total execution time and $n_i$ is the problem size at level $i$.
 \end{itemize}
 
+Note that as $n$ is the number of unknowns in each direction, the number of unknowns and hence the problem size is $n^2$. This means that an optimal solver will have time complexity $O(n^2)$ as each unknown must be updated. 
+
 \subsection{Direct Methods}
 
 \subsubsection{Kronecker Product}
@@ -212,7 +225,7 @@ For the system in (3.6), we have $A=B=T$, $X=U$, $C=F$ and $T=T^*$, so the stand
 \end{equation}
 where $\mathcal{F} = \text{vec}(F)$, $\mathcal{T} = I \otimes T + T \otimes I$ and $u = \text{vec}(U)$. 
 
-This is the exact linear system that would be obtained from equation (1.5), i.e. stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. Results solving this linear system using the direct sparse solver \texttt{sparse.linalg.spsolve} from the SciPy library are shown in Figure 4. As can be seen from the results, both errors decrease as the problem size $n$ is increased. The eoc is very close to 2 for all $n$, demonstrating the algorithm converges. As $n$ is increased the eog grows beyond $3$, which shows this algorithm has worse than cubic time complexity for large $n$. 
+This is the exact linear system that would be obtained from equation (1.5), i.e. stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. Results solving this linear system using the direct sparse solver \texttt{sparse.linalg.spsolve} from the SciPy library are shown in Figure 4. As can be seen from the results, both errors decrease as the problem size $n$ is increased. The eoc is very close to 2 for all $n$, demonstrating the convergence of the algorithm. As $n$ is increased the eog grows beyond $3$, which shows this algorithm has worse than cubic time complexity for large $n$. 
 
 \begin{figure}[H]
 \centering
@@ -415,7 +428,7 @@ In the case of $TU + UT = F$, the steps are as follows:
 \item Compute solution $U = \hat{U}W$
 \end{enumerate}
 
-Results using this method are given in Figure 11. The errors are approximately the same as the errors given previously. The eoc is approximately 2 and the eog is $> 3$ as $n$ is increased demonstrating that this algorithm converges with a worse than cubic time complexity. 
+Results using this method are given in Figure 11. The errors are approximately the same as the errors given previously. The eoc is approximately 2 and the eog is $> 3$ for large $n$ demonstrating that this algorithm converges with a worse than cubic time complexity. 
 \begin{figure}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
@@ -492,7 +505,7 @@ In \cite{Hou} a modified conjugate gradient (MCG) algorithm is proposed, which i
 	\end{itemize}
 \item If $R^{(k)} = 0$, or $R^{(k)} \neq 0$ but $Z^{(k)} = 0$, stop. Else, calculate:
 \[ \gamma_k = \frac{[R^{(k)}, R^{(k)}]}{[Z^{(k)}, Z^{(k)}]} \]
-where $[R,R] = \text{tr}(R^T R)$ is the trace of matrix $R^T R$.
+where $[R,R] = \text{tr}(R^T R)$ is the trace of the matrix $R^T R$.
 \item Calculate:
 	\begin{itemize}
 	\item $R^{(k+1)} = F - AX^{(k+1)} - X^{(k+1)} B$

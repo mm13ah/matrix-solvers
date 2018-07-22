@@ -30,10 +30,11 @@
 \clearpage
 
 \section{Introduction}
+\subsection{Problem Statement}
 
-The traditional approach to solving PDEs numerically involves stacking all unknowns of the problem into a single vector which ignores underlying structures. This prevents methods from being used which can take advantage of the problem structure to solve the problem more efficiently. This can come at a significant cost when uncertainty is introduced into the equation. An alternative approach is to formulate the problem as a matrix equation, which can be solved using a range of different methods. This project involves exploring how this alternative formulation can be solved using matrix solvers, and how these solvers compare against each other. 
+The traditional approach to solving partial differential equations numerically involves stacking all the unknowns of the problem into a single vector which ignores underlying structures. This prevents methods from being used which can take advantage of the problem structure to solve the problem more efficiently. This can come at a significant cost when uncertainty is introduced into the system. An alternative approach is to formulate the problem as a matrix equation, which can be solved using a range of different methods. This project involves exploring how this alternative formulation can be solved using matrix solvers, and how these solvers compare against each other. 
 
-As an example, define spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and let $u: \mathcal{D} \to \mathbb{R}$ be the solution of the equation
+As an example, define spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and let $u: \mathcal{D} \to \mathbb{R}$ be the solution of the equation:
 	\begin{equation} 
 	-u_{xx} - u_{yy} = f
 	\end{equation}
@@ -115,13 +116,54 @@ The traditional approach to solving this discretised form would be to write (1.4
 	\begin{equation}
 	f_{ij} = -\frac{1}{h^2} \big( u_{i-1j} + u_{ij-1} - 4u_{ij} + u_{i+1j} + u_{ij+1}  \big)
 	\end{equation}
-and then stack all unknowns $u_{ij}$ into a single vector $U$, resulting in the linear system $AU=F$. As stated, this ignores the underlying structure of the problem.
+and then stack all unknowns $u_{ij}$ into a single vector $U$, resulting in the linear system $AU=F$. As stated previously, this ignores the underlying structure of the problem.
 
-By keeping (1.4) in its original form we can instead write the system as a matrix equation:
-	\begin{equation} 
+\subsection{Sylvester Equation}
+A Sylvester equation is a matrix equation of the form $AX + XB = C$, where $A$ is a $n \times n$ matrix, $B$ is a $m \times m$ matrix, and $X$ and $C$ are $n \times m$ matrices. We can write (1.4) as a Sylvester equation in the form:
+	\begin{equation}
 	TU + UT = F
 	\end{equation}
-with $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$ and $U_{ij} = u(x_i, y_j)$ where $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. This equation is in the form of a Sylvester equation $AX + XB = C$, with $A=B=T$, $X=U$ and $C=F$, and there are many different methods that can be used to solve equations of this type. This project will explore different methods for solving equations in this form. 
+where $T$, $U$ and $F$ are of size $n \times n$.
+Here $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$ and $U_{ij} = u(x_i, y_j)$, where $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. The system has $n$ unknowns in each direction meaning there is a total of $n^2$ unknowns. The matrix equation is visualised below:
+\begin{eqnarray}
+\frac{-1}{h^2} 
+\begin{pmatrix}
+-2 & 1 & 0 & \dots & 0 & 0 \\
+1 & -2 & 1 & \dots & 0 & 0 \\
+0 & 1 & -2 & \dots & 0 & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+0 & 0 & 0 & \dots & -2 & 1 \\
+0 & 0 & 0 & \dots & 1 & -2 \\
+\end{pmatrix}
+\begin{pmatrix}
+u_{11} & u_{12} & \dots & u_{1j} & \dots & u_{1n} \\
+u_{21} & u_{22} & \dots & u_{2j} & \dots & u_{2n} \\
+\vdots & \vdots & \ddots & \vdots & \dots & \vdots \\
+u_{i1} & u_{i2} & \dots & u_{ij} & \dots & u_{in} \\
+\vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+u_{n1} & u_{n2} & \dots & u_{nj} & \dots & u_{nn}
+\end{pmatrix} \nonumber \\ \nonumber
++
+\begin{pmatrix}
+u_{11} & u_{12} & \dots & u_{1j} & \dots & u_{1n} \\
+u_{21} & u_{22} & \dots & u_{2j} & \dots & u_{2n} \\
+\vdots & \vdots & \ddots & \vdots & \dots & \vdots \\
+u_{i1} & u_{i2} & \dots & u_{ij} & \dots & u_{in} \\
+\vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+u_{n1} & u_{n2} & \dots & u_{nj} & \dots & u_{nn}
+\end{pmatrix}
+\frac{-1}{h^2} 
+\begin{pmatrix}
+-2 & 1 & 0 & \dots & 0 & 0 \\
+1 & -2 & 1 & \dots & 0 & 0 \\
+0 & 1 & -2 & \dots & 0 & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+0 & 0 & 0 & \dots & -2 & 1 \\
+0 & 0 & 0 & \dots & 1 & -2 \\
+\end{pmatrix}
+= F
+\end{eqnarray}
+There are a variety of methods that can be used to solve Sylvester equations. This project will explore and compare different methods for solving equations in this form. 
 
 \newpage
 
@@ -165,26 +207,36 @@ If the project deadlines are met the remaining time will be dedicated to project
 \newpage
 
 \section{Matrix Solvers}
-As an example problem, let the exact solution $u$ of (1.1) be defined as:
-\begin{equation} 
-u = \sin{(\pi x)} \sin{(\pi y)}
-\end{equation}
-which gives:
+For spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and $u: \mathcal{D} \rightarrow \mathbb{R}$, let $u(x,y) = \sin{(\pi x)} \sin{(\pi y)}$ be the exact solution of the system:
+\begin{eqnarray}
+-u_{xx} -u_{yy} = f & \text{ on } & \mathcal{D} \nonumber \\
+u = 0 & \text{ on } & \partial \mathcal{D}
+\end{eqnarray}
+
+This gives:
 \begin{equation} 
 u_{xx} = u_{yy} = - \pi^2 \sin{(\pi x)} \sin{(\pi y)}
 \end{equation}
 \begin{equation}
 \implies f = 2 \pi^2 \sin{(\pi x)} \sin {(\pi y)}
 \end{equation}
-The PDE to be solved is now:
+The system to be be solved is therefore:
+\begin{eqnarray}
+-u_{xx} -u_{yy} = 2 \pi^2 \sin{(\pi x)} \sin {(\pi y)} & \text{ on } & \mathcal{D} \nonumber \\
+u = 0 & \text{ on } & \partial \mathcal{D}
+\end{eqnarray}
+
+Using the centred finite difference approximations ((1.2) and (1.3)) with uniform grid spacing $h$ to discretise the domain of this system, we have:
+	\begin{eqnarray}
+	& -\frac{1}{h^2} \big( u_{i-1j} - 2u_{ij} + u_{i+1j} \big) - \frac{1}{h^2} \big( u_{ij-1} - 2u_{ij} + u_{ij+1} \big) \nonumber \\ & = 2\pi^2 \sin(\pi x_i) \sin(\pi y_j)
+	\end{eqnarray}
+to be solved at each grid point for $i, j = 1, \dots n$, where $n$ is the total number of unknowns in each direction. The matrix form of this equation is therefore:
 \begin{equation}
--u_{xx} - u_{yy}  = 2 \pi^2 \sin{(\pi x)} \sin {(\pi y)}
-\end{equation}
-at each grid point, with $u(x,y) = 0$ on the boundary. The matrix form of this equation is:
-	\begin{equation}
 	TU + UT = F
 	\end{equation}
-Here $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$, $U_{ij} = u(x_i, y_j)$ and $F_{ij} = 2 \pi^2 \sin{(\pi x_i)} \sin{(\pi y_j)}$, where $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. As stated previously this equation is in the form of a Sylvester equation and can be solved using a range of different methods. A graph of the exact solution, with $n=1000$, is given below:
+where $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$, $U_{ij} = u(x_i, y_j)$ and $F_{ij} = 2 \pi^2 \sin(\pi x_i) \sin(\pi y_j)$ are all matrices of size $n \times n$ and $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$.
+
+This form allows us to explore different methods for solving this equation and compare them to the exact solution $u = \sin(\pi x) \sin(\pi y)$. A plot of the exact solution, with $n=1000$, is given in Figure 3. 
 
 \begin{figure}[H]
 \includegraphics[scale=.5]{img/solution2.png}
@@ -208,7 +260,7 @@ where $E_i$ is the error and $h_i$ is the mesh size at level $i$.
 where $t_i$ is the total execution time and $n_i$ is the problem size at level $i$.
 \end{itemize}
 
-Note that as $n$ is the number of unknowns in each direction, the number of unknowns and hence the problem size is $n^2$. This means that an optimal solver will have time complexity $O(n^2)$ as each unknown must be updated. 
+It is worth noting that as the total number of unknowns and hence the problem size is $n^2$, the best time complexity that an optimal solver can achieve is $O(n^2)$, as it must compute a solution for each unknown. 
 
 \subsection{Direct Methods}
 
@@ -260,7 +312,7 @@ In this case $A=B=T$, $T=T^*$, $X=U$ and $C=F$ so the algorithm is as follows:
 \item Compute $U=PVP^*$
 \end{enumerate}
 
-Results using this algorithm are shown in Figure 5. These results show that both errors increase as $n$ is increased. Also the eoc is close enough to 2 to conclude that this algorithm converges. The eog demonstrates that this algorithm has an approximate cubic time complexity. 
+Results using this algorithm are shown in Figure 5. These results show that both errors decrease as $n$ is increased. Also the eoc is close enough to 2 to conclude that this algorithm converges. The eog demonstrates that this algorithm has an approximate cubic time complexity. 
 
 \begin{figure}[H]
 \centering
@@ -516,6 +568,9 @@ where $[R,R] = \text{tr}(R^T R)$ is the trace of the matrix $R^T R$.
 \newpage
 
 \section{Uncertainty}
+Uncertainty 
+
+\subsection{Single Parameter}
 Uncertainty can be introduced into the PDE (1.1) by introducing a random diffusion coefficient $\varepsilon = \varepsilon(\omega)$, $\varepsilon \neq 0$ such that:
 \begin{equation}
 - \varepsilon u_{xx} - \varepsilon u_{yy} = f

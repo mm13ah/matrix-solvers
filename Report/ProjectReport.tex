@@ -207,20 +207,19 @@ If the project deadlines are met the remaining time will be dedicated to project
 \newpage
 
 \section{Matrix Solvers}
-For spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and $u: \mathcal{D} \rightarrow \mathbb{R}$, let $u(x,y) = \sin{(\pi x)} \sin{(\pi y)}$ be the exact solution of the system:
+For spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and $u: \mathcal{D} \rightarrow \mathbb{R}$, let $u(x,y) = \sin{(\pi x)} \sin{(\pi y)}$ be the exact solution of the equation:
 \begin{eqnarray}
 -u_{xx} -u_{yy} = f & \text{ on } & \mathcal{D} \nonumber \\
 u = 0 & \text{ on } & \partial \mathcal{D}
 \end{eqnarray}
 
 This gives:
-\begin{equation} 
-u_{xx} = u_{yy} = - \pi^2 \sin{(\pi x)} \sin{(\pi y)}
-\end{equation}
-\begin{equation}
+\begin{eqnarray} 
+u_{xx} = u_{yy} = - \pi^2 \sin{(\pi x)} \sin{(\pi y)} \nonumber \\
 \implies f = 2 \pi^2 \sin{(\pi x)} \sin {(\pi y)}
-\end{equation}
-The system to be be solved is therefore:
+\end{eqnarray}
+
+The equation to be be solved is therefore:
 \begin{eqnarray}
 -u_{xx} -u_{yy} = 2 \pi^2 \sin{(\pi x)} \sin {(\pi y)} & \text{ on } & \mathcal{D} \nonumber \\
 u = 0 & \text{ on } & \partial \mathcal{D}
@@ -277,9 +276,9 @@ For the system in (3.6), we have $A=B=T$, $X=U$, $C=F$ and $T=T^*$, so the stand
 \end{equation}
 where $\mathcal{F} = \text{vec}(F)$, $\mathcal{T} = I \otimes T + T \otimes I$ and $u = \text{vec}(U)$. 
 
-This is the exact linear system that would be obtained from equation (1.5), i.e. stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. Results solving this linear system using the direct sparse solver \texttt{sparse.linalg.spsolve} from the SciPy library are shown in Figure 4. As can be seen from the results, both errors decrease as the problem size $n$ is increased. The eoc is very close to 2 for all $n$, demonstrating the convergence of the algorithm. As $n$ is increased the eog grows beyond $3$, which shows this algorithm has worse than cubic time complexity for large $n$. 
+This is the exact linear system that would be obtained from equation (1.5), i.e. stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. Results solving this linear system using the direct sparse solver \texttt{sparse.linalg.spsolve} from the SciPy library are shown in Table 1. As can be seen from the results, both errors decrease as the problem size $n$ is increased. The eoc is very close to 2 for all $n$, demonstrating the convergence of the algorithm. As $n$ is increased the eog grows beyond $3$, which shows this algorithm has worse than cubic time complexity for large $n$. 
 
-\begin{figure}[H]
+\begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -294,7 +293,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 \end{tabular}
 \captionsetup{justification=centering}
 \caption{Results obtained from solving the linear system $\mathcal{A} x = c$ using the direct solver  \texttt{sparse.linalg.spsolve} from the SciPy library.}
-\end{figure}
+\end{table}
 
 \subsubsection{Bartels-Stewart Algorithm}
 The Bartels-Stewart algorithm \cite{Bartels} can be used to solve the Sylvester equation $AX + XB = C$. In the general case the algorithm is as follows:
@@ -312,9 +311,9 @@ In this case $A=B=T$, $T=T^*$, $X=U$ and $C=F$ so the algorithm is as follows:
 \item Compute $U=PVP^*$
 \end{enumerate}
 
-Results using this algorithm are shown in Figure 5. These results show that both errors decrease as $n$ is increased. Also the eoc is close enough to 2 to conclude that this algorithm converges. The eog demonstrates that this algorithm has an approximate cubic time complexity. 
+Results using this algorithm are shown in Table 2. These results show that both errors decrease as $n$ is increased. Also the eoc is close enough to 2 to conclude that this algorithm converges. The eog demonstrates that this algorithm has an approximate cubic time complexity. 
 
-\begin{figure}[H]
+\begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -328,11 +327,37 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 \hline
 \end{tabular}
 \caption{Results using the Bartels-Stewart algorithm.}
-\end{figure}
+\end{table}
 
-The SciPy library has a built in solver for solving Sylvester equations, \texttt{linalg.solve \_sylvester}, which uses the Bartels-Stewart algorithm. Results using this solver are given in Figure 6. The errors here are similar to the errors given in Figure 5. Again the eoc is close enough to 2 to conclude that this algorithm converges. However, the eog seems to vary depending on the problem size $n$. 
+By breaking this algorithm down into its component parts, we can time each step to see which is the most costly. The results of doing so are given in Table 3, where the steps are:
 
-\begin{figure}[H]
+\begin{enumerate}
+\item Compute the Schur form $T=PRP^*$ (using \texttt{linalg.schur} from the SciPy library)
+\item Solve the $R^*V + VR = P^*FP$ for $V$, which is a triangular system
+\item Compute the solution $U=PVP^*$
+\end{enumerate}
+
+As can be seen from the results in Table 3, the most costly part of the algorithm is by far the second step, which is due to the fact that solving the triangular system uses back substitution which requires multiple nested \texttt{for} loops.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$n$ & 1 & 2 & 3 & Total \\
+\hline
+125 & 0.012667 & 1.2357 & 0.00023031 & 1.2486 \\
+250 & 0.048434 & 9.6218 & 0.0010102 & 9.6712 \\
+500 & 0.26262 & 77.619 & 0.0064600 & 77.888 \\ 
+1000 & 0.083478 & 639.34 & 0.043818 & 640.22 \\
+2000 & 5.1290 & 5087.5 & 0.41275 & 5093.1 \\
+\hline
+\end{tabular}
+\caption{Timings for each step using the Bartels-Stewart algorithm.}
+\end{table}
+
+The SciPy library has a built in solver for solving Sylvester equations, \texttt{linalg.solve \_sylvester}, which uses the Bartels-Stewart algorithm. Results using this solver are given in Table 4. The errors here are similar to the errors given in Table 2. Again the eoc is close enough to 2 to conclude that this algorithm converges. However, the eog seems to vary depending on the problem size $n$. 
+
+\begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -347,24 +372,22 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 \hline
 \end{tabular}
 \caption{Results using SciPy's \texttt{linalg.solve\_sylvester}.}
-\end{figure}
+\end{table}
 
 As can be seen from the results above, using the built-in SciPy solver results in a significant speed-up in time as $n$ is increased. This is likely because it makes use of of LAPACK, which is an optimised software library for solving linear algebra problems.
 
 
 \subsubsection{Similarity Transformation}
-A similarity transformation \cite{Simoncini} can be used to solve the Sylvester equation $AX + XB = C$, where $A$ is a $n \times n$ matrix and $B$ is a $m \times m$ matrix. 
-
-Assuming matrices $A$ and $B$ can be diagonalised, let $P^{-1}AP = \text{diag}(\lambda_1, \dots, \lambda_n)$ and $Q^{-1}BQ = \text{diag}(\mu_1, \dots, \mu_m)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$ and $\mu_1, \dots, \mu_m$ are the eigenvalues values of $B$. Let $\tilde{C} = P^{-1}CQ$. The solution is then:
+A similarity transformation \cite{Simoncini} can be used to solve the Sylvester equation $AX + XB = C$. Assuming matrices $A$ and $B$ can be diagonalised, let $P^{-1}AP = \text{diag}(\lambda_1, \dots, \lambda_n)$ and $Q^{-1}BQ = \text{diag}(\mu_1, \dots, \mu_m)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$, $\mu_1, \dots, \mu_m$ are the eigenvalues values of $B$ and the columns of $P$ and $Q$ are the eigenvectors of $A$ and $B$, respectively. Letting $\tilde{C} = P^{-1}CQ$, the solution is then:
 \[ X = P \tilde{X} Q^{-1}, \text{ with } \tilde{x}_{ij} = \frac{\tilde{c}_{ij}}{\lambda_i + \mu_j} \]
 
-In this case, $A=B=T$, $X=U$ and $C=F$ so $P=Q$ and $P^{-1}TP = \text{diag}(\lambda_1, \dots, \lambda_n)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $T$. Letting $\tilde{F}=P^{-1}FP$, the solution is:
+In this case, $A=B=T$, $X=U$ and $C=F$ so $P=Q$ and $P^{-1}TP = \text{diag}(\lambda_1, \dots, \lambda_n)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $T$ and the columns of $P$ are the eigenvectors of $T$. Letting $\tilde{F}=P^{-1}FP$, the solution is then:
 \[ U = P \tilde{U} P^{-1}, \text{ with } \tilde{u}_{ij} = \frac{\tilde{f}_{ij}}{\lambda_i + \lambda_j} \]
 
 \subsubsection*{Using numpy.linalg.eig}
-Using the method above, the eigenvalues and eigenvectors can be computed using NumPy's \texttt{linalg.eig} function. The results doing this are given in Figure 7. The errors are again similar to the previous methods. However, here the eoc moves away from 2 as $n$ is increased. This is likely due to the fact that there is no general formula for calculating eigenvalues and eigenvectors for an arbitrary matrix, meaning the eigenvalues and eigenvectors are most likely approximated by NumPy's \texttt{linalg.eig}. Also the eog is slightly better with this algorithm.
+Using the method above, the eigenvalues and eigenvectors can be computed using NumPy's \texttt{linalg.eig} function. The results doing this are given in Table 5. The errors are again similar to the previous methods. However, here the eoc moves away from 2 as $n$ is increased. This is likely due to the fact that there is no general formula for calculating eigenvalues and eigenvectors for an arbitrary matrix, meaning the eigenvalues and eigenvectors are most likely approximated by NumPy's \texttt{linalg.eig}. It is likely that the approximations become less accurate as $n$ is increased. The eog here is however slightly better than the previous methods. 
 
-\begin{figure}[H]
+\begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -381,9 +404,9 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 \end{tabular}
 \captionsetup{justification=centering}
 \caption{Results using a similarity transformation, calculating the eigenvalues and eigenvectors using \texttt{numpy.linalg.eig}.}
-\end{figure}
+\end{table}
 
-This method can be split into component parts and each part can be timed, to see which part is the most costly. The steps of the method are:
+Similarly to the Bartels-Stewart algorithm, this method can be split into component parts and each part can be timed, to see which part is the most costly. The steps of the method are:
 \begin{enumerate}
 \item Calculate eigenvalues and eigenvectors of $T$
 \item Diagonalise $T$ (i.e. calculate $P$ and $P^{-1}$)
@@ -392,9 +415,9 @@ This method can be split into component parts and each part can be timed, to see
 \item Calculate solution $U=P \tilde{U}P^{-1}$
 \end{enumerate}
 
-The results of doing so are shown in Figure 8.
+The results of doing so are shown in Table 6.
 
-\begin{figure}[H]
+\begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
@@ -411,18 +434,18 @@ $n$ & 1 & 2 & 3 & 4 & 5 & Total \\
 \end{tabular}
 \captionsetup{justification=centering}
 \caption{Timing results for each step of the similarity transformation method, calculating the eigenvalues and eigenvectors using \texttt{numpy.linalg.eig}.}
-\end{figure}
+\end{table}
 
 \subsubsection*{Calculating eigenvalues and eigenvectors explicitly}
 
-As can be seen from the results above, the most costly part of this method is calculating the eigenvalues and eigenvectors. As $T$ is a matrix in Toeplitz form, the eigenvalues and eigenvectors can be calculated directly as:
+As can be seen from the results in Table 6, the most costly part of this method is calculating the eigenvalues and eigenvectors. As $T$ is a matrix in Toeplitz form, the eigenvalues and eigenvectors can be calculated directly as:
 \[ \lambda_i = \frac{2}{h^2} \Big( \cos \Big( \frac{i \pi}{n+1} \Big) - 1 \Big) \]
 and:
 \[ t_{ij} = \sqrt{\frac{2}{n+1}} \sin \Big( \frac{ij \pi}{n+1}  \Big) \]
 
-Results using this method for calculating the eigenvalues are eigenvectors are given in Figure 9, and timings for each step are given in Figure 10. Similar errors are given by this method, however now the eoc is much closer to 2 as $n$ is increased. The eog is also significantly less demonstrating that using this algorithm and computing the eigenvalues explicity achieves a near square time complexity. 
+Results using this method for calculating the eigenvalues are eigenvectors are given in Table 7, and timings for each step are given in Table 8. Similar errors are given by this method, however now the eoc is much closer to 2 as $n$ is increased. The eog is also significantly less demonstrating that using this algorithm and computing the eigenvalues explicity achieves a near square time complexity. 
 
-\begin{figure}[H]
+\begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -439,9 +462,9 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 \end{tabular}
 \captionsetup{justification=centering}
 \caption{Results using a similarity transformation, calculating the eigenvalues and eigenvectors explicity.}
-\end{figure}
+\end{table}
 
-\begin{figure}[H]
+\begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
@@ -458,15 +481,15 @@ $n$ & 1 & 2 & 3 & 4 & 5 & Total \\
 \end{tabular}
 \captionsetup{justification=centering}
 \caption{Timing results for each step of the similarity transformation method, calculating the eigenvalues and eigenvectors explicitly.}
-\end{figure}
+\end{table}
 
-As can be seen from the results above, calculating the eigenvalues and eigenvectors explicitly vastly outperforms calculating them using the NumPy library when $n$ is large.
+As can be seen from the results in Table 8, calculating the eigenvalues and eigenvectors explicitly  outperforms calculating them using the NumPy library when $n$ is large.
 
 \subsubsection{Shifted System}
 A projection method \cite{Simoncini} can be used on a Sylvester equation $AX + XB =C$ by decomposing $B$ to obtain $n$ linear systems, each of which can be solved simultaneously (and in parallel) to obtain the solution $X$. The steps of this method are as follows:
 \begin{enumerate}
-\item Compute $B = WSW^{-1}$ with $S = \text{diag}(s_1, \dots, s_n)$
-\item Let $\hat{C} = CW$
+\item Compute $B = WSW^{-1}$, where $S = \text{diag}(s_1, \dots, s_n)$ are the eigenvalues of $B$ and the columns of $W$ are the eigenvectors of $B$
+\item Compute $\hat{C} = CW$
 \item For $i=1$ to $n$, solve the system $(A+s_i I)(\hat{X})_i = (\hat{C})_i$
 \item Compute solution $X = \hat{X}W$
 \end{enumerate}
@@ -474,14 +497,14 @@ where $(\hat{X})_i$ denotes the $i^{\text{th}}$ column of $\hat{X}$.
 
 In the case of $TU + UT = F$, the steps are as follows:
 \begin{enumerate}
-\item Compute $T = WSW^{-1}$ with $S = \text{diag}(s_1, \dots, s_n)$
-\item Let $\hat{F} = FW$
+\item Compute $T = WSW^{-1}$, where $S = \text{diag}(s_1, \dots, s_n)$ are the eigenvalues of $T$ and the columns of $W$ are the eigenvectors of $T$
+\item Compute $\hat{F} = FW$
 \item For $i=1$ to $n$, solve the system $(T+s_i I)(\hat{U})_i = (\hat{F})_i$
 \item Compute solution $U = \hat{U}W$
 \end{enumerate}
 
-Results using this method are given in Figure 11. The errors are approximately the same as the errors given previously. The eoc is approximately 2 and the eog is $> 3$ for large $n$ demonstrating that this algorithm converges with a worse than cubic time complexity. 
-\begin{figure}[H]
+Results using this method are given in Table 9. The errors are approximately the same as the errors given previously. The eoc is approximately 2 and the eog is $> 3$ for large $n$ demonstrating that this algorithm converges with a worse than cubic time complexity. 
+\begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -496,16 +519,35 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
-\caption{Results using a similarity transformation, calculating the eigenvalues and eigenvectors explicity.}
-\end{figure}
+\caption{Results using a projection method to solve $n$ linear systems.}
+\end{table}
 
+The steps of this method can also be broken down into component parts and each part timed. The results of doing so are given in Table 10. Unsuprisingly, the most costly part of the algorithm is solving the $n$ linear systems. 
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+$n$ & 1 & 2 & 3 & 4 & Total \\
+\hline
+125 & 0.057421 & 0.0043032 & 0.3028 & $7.1764 \times 10^{-7}$ & 0.092085 \\
+250 & 0.23967 & 0.0041912 & 0.19177 & 0.00046206 & 0.43609  \\
+500 & 0.85408 & 0.0079994 & 1.3200 & 0.0030336 & 2.1851 \\
+1000 & 3.3709 & 0.026276 & 16.079 & 0.021675 & 19.498 \\
+2000 & 13.278 & 0.50065 & 180.81 & 0.16621 & 194.13 \\
+4000 & 53.300 & 1.8301 & 2396.1 & 1.2866 & 2452.5  \\
+\hline
+\end{tabular}
+\captionsetup{justification=centering}
+\caption{Timing results of each step using a projection method to solve $n$ linear systems.}
+\end{table}
 
 \subsection{Iterative Methods}
 
 \subsubsection{Kronecker Product}
-Similarly to Section 3.1.1, the Kronecker product can be used to write the matrix equation as a standard vector linear system. A a standard iterative solver can then be used to solve the system, which can provide a base case for comparison. Results using \texttt{scipy.sparse.linalg.cg}, which is a sparse solver that uses the conjugate gradient iterative method, are given in Figure 12, using a convergence tolerance of $10^{-9}$. The results show errors similar to all the direct methods. The eoc demonstrates that the algorithm converges very well. Although this algorithm is much faster than all the previous direct methods, the eog demonstrates that when $n$ is significantly large, the algorithm exhibits a worse than cubic time complexity, which is shown here when $n=8000$.  
+Similarly to Section 3.1.1, the Kronecker product can be used to write the matrix equation as a standard vector linear system. A a standard iterative solver can then be used to solve the system, which can provide a base case for comparison. Results using \texttt{scipy.sparse.linalg.cg}, which is a sparse solver that uses the conjugate gradient iterative method, are given in Table 11, using a convergence tolerance of $10^{-9}$. The results show errors similar to all the direct methods. The eoc demonstrates that the algorithm converges very well. Although this algorithm is much faster than all the previous direct methods, the eog demonstrates that when $n$ is significantly large, the algorithm exhibits a worse than cubic time complexity, which is shown here when $n=8000$.  
 
-\begin{figure}[H]
+\begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -522,7 +564,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 \end{tabular}
 \captionsetup{justification=centering}
 \caption{Results obtained from solving the linear system $\mathcal{A} x = c$ using the iterative solver  \texttt{sparse.linalg.cg} from the SciPy library.}
-\end{figure}
+\end{table}
 
 \subsubsection{Gradient Based Method}
 In \cite{Zhou} a gradient based method for solving Sylvester equations is given. The equation $TU + UT = F$ can be written as two recursive sequences:
@@ -568,48 +610,108 @@ where $[R,R] = \text{tr}(R^T R)$ is the trace of the matrix $R^T R$.
 \newpage
 
 \section{Uncertainty}
-Uncertainty 
+Uncertainty can arise in partial differential equations if, for example, coefficients, boundary conditions or initial conditions are unknown. A solution to dealing with uncertainty is to model unknown parameters as random variables, and then appropriate methods can be used to solve the system. 
 
 \subsection{Single Parameter}
-Uncertainty can be introduced into the PDE (1.1) by introducing a random diffusion coefficient $\varepsilon = \varepsilon(\omega)$, $\varepsilon \neq 0$ such that:
-\begin{equation}
-- \varepsilon u_{xx} - \varepsilon u_{yy} = f
-\end{equation}
-Redefining $u$ as:
-\begin{equation}
-u(x,y,\varepsilon) = \sin(\pi x) \sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y)
-\end{equation}
-gives:
-\begin{align}
-u_{xx} =& - \pi^2 \sin(\pi x) \sin (\pi y) - 9 \pi^2 \varepsilon \sin(3 \pi x) \sin(5 \pi y) \\
-u_{yy} =& - \pi^2 \sin(\pi x) \sin (\pi y) - 25 \pi^2 \varepsilon \sin(3 \pi x) \sin(5 \pi y)
-\end{align}
-\begin{equation}
-\implies f = 2\pi^2 \varepsilon \sin(\pi x) \sin(\pi y)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x) \sin(5 \pi y)
-\end{equation}
+The simplest way to introduce uncertainty into a partial differential equation is by introducing a single unknown parameter. Define the spatial domain $\mathcal{D}$ as $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$, and let $\Omega$ denote the sample space. We can introduce an unknown coefficient $\varepsilon(\omega)$, where $\omega \in \Omega$ and $\varepsilon: \Omega \rightarrow \mathbb{R}$ is uniformly distributed over the interval $[-1,1]$ with $\varepsilon \neq 0$. Let $u(x,y,\varepsilon) = \sin(\pi x)\sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y)$ be the exact solution of the equation:
+\begin{eqnarray}
+-\varepsilon u_{xx} -\varepsilon u_{yy} = f & \text{ on } & \mathcal{D} \nonumber \\
+u = 0 & \text{ on } & \partial \mathcal{D}
+\end{eqnarray}
+which gives:
+\begin{eqnarray}
+u_{xx} = -\pi^2 \sin(\pi x) \sin(\pi y) - 9\pi^2 \varepsilon \sin(3\pi x) \sin(5\pi y) \nonumber \\
+u_{xx} = -\pi^2 \sin(\pi x) \sin(\pi y) - 25\pi^2 \varepsilon \sin(3\pi x) \sin(5\pi y) \nonumber \\
+\implies f = 2\pi^2 \sin(\pi x) \sin(\pi y) + 34\pi^2 \varepsilon \sin(3\pi x) \sin(5\pi y)
+\end{eqnarray}
 
+The equation to be solved is therefore:
+\begin{eqnarray}
+- \varepsilon u_{xx} - \varepsilon u_{yy} = 2\pi^2 \varepsilon \sin(\pi x) \sin(\pi y)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x) \sin(5 \pi y) & \text{ on } & \mathcal{D} \times \Omega \nonumber \\
+u = 0 & \text{ on } & \partial \mathcal{D} \times \Omega \nonumber \\
+\end{eqnarray}
 
-The PDE to be solved is now:
-\begin{equation}
-- \varepsilon u_{xx} - \varepsilon u_{yy} = 2\pi^2 \varepsilon \sin(\pi x) \sin(\pi y)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x) \sin(5 \pi y)
-\end{equation}
-As before this can be formed as a matrix equation:
+By discretising the domain using the centred finite difference approximations, (4.3) can be formed as a matrix equation:
 \begin{equation}
 TU + UT = F
 \end{equation}
-with $T = -\frac{\varepsilon}{h^2} \text{tridiag}(1,-2,1)$, $U = u(x_i, y_j)$ and $F = 2\pi^2 \varepsilon \sin(\pi x_i) \sin(\pi y_j)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x_i) \sin(5 \pi y_j)$. This equation is significantly harder to solve accurately and efficiently than the equation in the previous section due to the fact that $\varepsilon$ is an unknown coefficient.
+with $T = -\frac{\varepsilon}{h^2} \text{tridiag}(1,-2,1)$, $U = u(x_i, y_j)$ and $F = 2\pi^2 \varepsilon \sin(\pi x_i) \sin(\pi y_j)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x_i) \sin(5 \pi y_j)$. This problem is significantly harder to solve accurately and efficiently than the problem in Section 3 due to the fact that $\varepsilon$ is an unknown, random coefficient.
 
-\subsection{Monte Carlo}
-A simple way of solving (4.7) is to use the Monte Carlo method. The Monte Carlo method works by taking $M$ random samples of $\varepsilon$ over its range, and then solves the PDE for each of these samples. 
-This allows the most effective method from Section 3 to be used as a `black box' strategy. Once solved, the mean of all computed solutions can be calculated. If the probability distribution $\rho(\omega)$ for $\varepsilon$ is known, then the expectation of $u$ can be computed as:
+As $\varepsilon$ is unknown, the exact solution to (4.3) cannot be computed and therefore solutions to (4.4) cannot be compared to the true solution. Instead, certain quantities of interest can be computed using the probability density function $\rho(\omega)$ of $\varepsilon$. Firstly, the expectation $\mathbb{E}[u]$ can be computed as:
 \begin{equation}
-\mathbb{E}(u) = \int u(x,y,\varepsilon) \rho(\omega) d \omega
+\mathbb{E}[u] = \int u(x,y,\varepsilon) \rho(\omega) d \omega
 \end{equation}
-The error can be computed by comparing the mean solution and the expectation. The error is defined as: 
+
+The variance $\text{Var}[u]$ can also be computed as:
 \begin{equation}
-\text{Error} = \bigg{|} \bigg{|} \mathbb{E}(u) - \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon) \bigg{|}\bigg{|}
+\text{Var}[u] = \int \left(u(x,y,\varepsilon) - \mathbb{E}[u] \right)^2 \rho(\omega) d \omega
 \end{equation}
-where $M$ is the number of samples used in the Monte Carlo method and $u_h$ is the solution obtained from the finite difference method using a mesh of size $h$.
+and the standard deviation $\text{Std}[u]$ as:
+\begin{equation}
+\text{Std}[u] = \sqrt{\text{Var}[u]}
+\end{equation}
+
+As $\varepsilon$ is uniformly distributed over the interval $[-1,1]$, it has a probability distribution function:
+\begin{equation}
+\rho(\omega) = \frac{1}{2}
+\end{equation}
+
+The expectation is therefore:
+\begin{equation}
+\begin{split}
+\mathbb{E}[u] = & \frac{1}{2} \int_{-1}^1 \sin(\pi x)\sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y) d \omega \\
+= & \frac{1}{2} \left[\varepsilon \sin(\pi x) \sin(\pi y) + \frac{\varepsilon^2}{2} \sin(3 \pi x) \sin(5 \pi y)\right]_{-1}^{1} \\
+= & \sin(\pi x) \sin(\pi y)
+\end{split}
+\end{equation}
+
+and the variance is:
+\begin{equation}
+\begin{split}
+\text{Var}[u] = & \frac{1}{2} \int_{-1}^1 (\sin(\pi x) \sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y) - \sin(\pi x) \sin(\pi y))^2 d \omega \\
+= & \frac{1}{2} \int_{-1}^1 \varepsilon^2 \sin^2 (3 \pi x) \sin^2 (5 \pi y) d \omega \\
+= & \frac{1}{2} \left[ \frac{\varepsilon^3}{3} \sin^2 (3 \pi x) \sin^2 (5 \pi y) \right]_{-1}^1 \\
+= & \frac{1}{3} \sin^2 (3 \pi x) \sin^2 (5 \pi y)
+\end{split}
+\end{equation}
+
+which gives the standard deviation as:
+\begin{equation}
+\text{Std}[u] = \frac{1}{\sqrt{3}} \sin(3 \pi x) \sin(5 \pi y)
+\end{equation}
+
+Once solutions to (4.4) are computed they can be compared to the known expectation, variance and standard deviation.
+
+\subsubsection{Monte Carlo}
+A simple way of solving (4.4) is to use the Monte Carlo method. The Monte Carlo method works by taking $M$ random samples of $\varepsilon$ over its range, and then solves (4.4) for each of these samples. 
+This allows the most effective method from Section 3 to be used as a `black box' strategy. Once solved, the expectation can be calculated as:
+\begin{equation}
+\mathbb{E}_M[u] = \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon)
+\end{equation}
+where $M$ is the number of samples used in the Monte Carlo method and $u_h$ is the solution obtained from the finite difference method using a mesh of size $h$. This expectation is denoted as $\mathbb{E}_M[u]$ to indicate that it is the expectation computed from the Monte Carlo method, rather than the known expectation (that is, (4.5)). 
+
+Similarly, the variance and standard deviation can also be computed as:
+\begin{equation}
+\text{Var}_M[u] = \frac{1}{M-1}\sum_{i=1}^M (u_h - \mathbb{E}_M[u])^2
+\end{equation}
+and:
+\begin{equation}
+\text{Std}_M[u] = \sqrt{\text{Var}[u]}
+\end{equation}
+
+
+Any of these quantites can then be chosen and compared to the known values as a measure of error for the problem. By choosing the mean we can measure the error as:
+\begin{equation}
+\begin{split}
+\text{Error} = & \bigg{|} \bigg{|} \mathbb{E}[u] - \mathbb{E}_M[u] \bigg{|} \bigg{|} \\
+= & \bigg{|} \bigg{|} \mathbb{E}[u] - \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon) \bigg{|}\bigg{|}
+\end{split}
+\end{equation}
+
+
+\subsubsection{Stochastic Galerkin}
+
+\subsection{Multiple Parameters}
 
 \newpage
 

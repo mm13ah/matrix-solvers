@@ -5,6 +5,12 @@ R.~H. Bartels and G.~W. Stewart.
 \newblock {S}olution of the {M}atrix {E}quation {AX + XB = C}.
 \newblock {\em Commun. ACM}, 15(9):820--826, Sept. 1972.
 
+\bibitem{Bishop}
+J.~Bishop and O.~E.~Strack.
+\newblock A statistical method for verifying mesh convergence in {M}onte
+  {C}arlo simulations with application to fragmentation.
+\newblock 88:279 -- 306, 10 2011.
+
 \bibitem{Hou}
 J.~Hou, Q.~Lv, and M.~Xiao.
 \newblock A {P}arallel {P}reconditioned {M}odified {C}onjugate {G}radient

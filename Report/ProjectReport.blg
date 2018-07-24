@@ -3,48 +3,49 @@ Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: ProjectReport.aux
 The style file: abbrv.bst
 Database file #1: matrixsolvers.bib
+Warning--empty journal in Bishop
 Warning--empty journal in Hou
 Warning--empty journal in Simoncini
 Warning--empty journal in Zhou
-You've used 4 entries,
+You've used 5 entries,
             2118 wiz_defined-function locations,
-            531 strings with 4348 characters,
-and the built_in function-call counts, 1232 in all, are:
-= -- 117
-> -- 56
+            540 strings with 4580 characters,
+and the built_in function-call counts, 1571 in all, are:
+= -- 150
+> -- 69
 < -- 0
-+ -- 24
-- -- 18
-* -- 95
-:= -- 217
-add.period$ -- 12
-call.type$ -- 4
-change.case$ -- 21
++ -- 30
+- -- 22
+* -- 121
+:= -- 272
+add.period$ -- 15
+call.type$ -- 5
+change.case$ -- 26
 chr.to.int$ -- 0
-cite$ -- 7
-duplicate$ -- 43
-empty$ -- 93
-format.name$ -- 18
-if$ -- 244
+cite$ -- 9
+duplicate$ -- 54
+empty$ -- 121
+format.name$ -- 22
+if$ -- 314
 int.to.chr$ -- 0
-int.to.str$ -- 4
-missing$ -- 4
-newline$ -- 23
-num.names$ -- 8
-pop$ -- 19
+int.to.str$ -- 5
+missing$ -- 5
+newline$ -- 28
+num.names$ -- 10
+pop$ -- 24
 preamble$ -- 1
-purify$ -- 17
+purify$ -- 21
 quote$ -- 0
-skip$ -- 30
+skip$ -- 38
 stack$ -- 0
-substring$ -- 77
+substring$ -- 110
 swap$ -- 1
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 16
-warning$ -- 3
-while$ -- 12
-width$ -- 5
-write$ -- 43
-(There were 3 warnings)
+type$ -- 20
+warning$ -- 4
+while$ -- 15
+width$ -- 6
+write$ -- 53
+(There were 4 warnings)

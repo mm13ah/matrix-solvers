@@ -443,7 +443,7 @@ As can be seen from the results in Table 6, the most costly part of this method 
 and:
 \[ t_{ij} = \sqrt{\frac{2}{n+1}} \sin \Big( \frac{ij \pi}{n+1}  \Big) \]
 
-Results using this method for calculating the eigenvalues are eigenvectors are given in Table 7, and timings for each step are given in Table 8. Similar errors are given by this method, however now the eoc is much closer to 2 as $n$ is increased. The eog is also significantly less demonstrating that using this algorithm and computing the eigenvalues explicity achieves a near square time complexity. 
+Results using this method for calculating the eigenvalues are eigenvectors are given in Table 7, and timings for each step are given in Table 8. Similar errors are given by this method, however the eoc is  closer to 2 as for $n \leq 8000$. When $n=16000$ the eoc increases significantly, however the errors here are so small that this result can be overlooked. The eog is also significantly less demonstrating that using this algorithm and computing the eigenvalues explicity achieves a near square time complexity. Also this is the only method so far that has been able to solve the problem with $n=16000$ without running out of memory. 
 
 \begin{table}[H]
 \centering
@@ -458,6 +458,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 2000 & 20.247 & $2.0541 \times 10^{-7}$ & $1.0270 \times 10^{-7}$ & 2.0000 & 1.8567 \\
 4000 & 82.243 & $5.1314 \times 10^{-8}$ & $2.5656 \times 10^{-8}$ & 2.0018 & 2.0222  \\
 8000 & 360.35 & $1.2814 \times 10^{-8}$ & $6.4065 \times 10^{-9}$ & 2.0020 & 2.1314  \\
+16000 & 1771.9 & $7.7761 \times 10^{-10}$ & $3.8764 \times 10^{-10}$ & 4.0429 & 2.2978 \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -477,6 +478,7 @@ $n$ & 1 & 2 & 3 & 4 & 5 & Total \\
 2000 & 13.812 & 0.0092294 & 1.3690 & 4.4495 & 0.60793 & 20.247 \\
 4000 & 54.907 & 0.0068946 & 4.9050 & 17.381 & 4.5936 & 82.243 \\
 8000 & 217.26 & 0.026015 & 35.357 & 71.581 & 36.129 & 360.35 \\
+16000 & 892.51 & 168.51 & 217.68 & 288.92 & 204.25 & 1771.9 \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -696,7 +698,7 @@ Similarly, the variance and standard deviation can also be computed as:
 \end{equation}
 and:
 \begin{equation}
-\text{Std}_M[u] = \sqrt{\text{Var}[u]}
+\text{Std}_M[u] = \sqrt{\text{Var}_M[u]}
 \end{equation}
 
 
@@ -707,6 +709,25 @@ Any of these quantites can then be chosen and compared to the known values as a 
 = & \bigg{|} \bigg{|} \mathbb{E}[u] - \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon) \bigg{|}\bigg{|}
 \end{split}
 \end{equation}
+
+As noted in \cite{Bishop}, for the error to converge to 0 the mesh size must be decreased as the number of samples is increased. This is because the error depends both on the mesh size and the number of samples, so by changing only one of these factors the method will be converging to the error of factor is not being changed, rather than to 0. 
+
+Results using the Monte Carlo method, with a single uncertain parameter, are given in Table 12.
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+$n$ & $M$ & Time(s) & Error \\
+\hline
+125 & & & \\
+250 & & & \\
+500 & & & \\
+1000 & & & \\
+\hline
+\end{tabular}
+\captionsetup{justification=centering}
+\caption{Results using the Monte Carlo method with a single uncertain parameter.}
+\end{table}
 
 
 \subsubsection{Stochastic Galerkin}

@@ -32,7 +32,7 @@
 \section{Introduction}
 \subsection{Problem Statement}
 
-The traditional approach to solving partial differential equations numerically involves stacking all the unknowns of the problem into a single vector which ignores underlying structures. This prevents methods from being used which can take advantage of the problem structure to solve the problem more efficiently. This can come at a significant cost when uncertainty is introduced into the system. An alternative approach is to formulate the problem as a matrix equation, which can be solved using a range of different methods. This project involves exploring how this alternative formulation can be solved using matrix solvers, and how these solvers compare against each other. 
+The traditional approach to solving partial differential equations (PDEs) numerically involves stacking all the unknowns of the problem into a single vector which ignores underlying structures. This prevents methods from being used which can take advantage of the problem structure to solve the problem more efficiently. This can come at a significant cost when uncertainty is introduced into the system. An alternative approach is to formulate the problem as a matrix equation, which can be solved using a range of different methods. This project involves exploring how this alternative formulation can be solved using matrix solvers, and how these solvers compare against each other. 
 
 As an example, define spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and let $u: \mathcal{D} \to \mathbb{R}$ be the solution of the equation:
 	\begin{equation} 
@@ -378,11 +378,11 @@ As can be seen from the results above, using the built-in SciPy solver results i
 
 
 \subsubsection{Similarity Transformation}
-A similarity transformation \cite{Simoncini} can be used to solve the Sylvester equation $AX + XB = C$. Assuming matrices $A$ and $B$ can be diagonalised, let $P^{-1}AP = \text{diag}(\lambda_1, \dots, \lambda_n)$ and $Q^{-1}BQ = \text{diag}(\mu_1, \dots, \mu_m)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$, $\mu_1, \dots, \mu_m$ are the eigenvalues values of $B$ and the columns of $P$ and $Q$ are the eigenvectors of $A$ and $B$, respectively. Letting $\tilde{C} = P^{-1}CQ$, the solution is then:
-\[ X = P \tilde{X} Q^{-1}, \text{ with } \tilde{x}_{ij} = \frac{\tilde{c}_{ij}}{\lambda_i + \mu_j} \]
+A similarity transformation \cite{Simoncini} can be used to solve the Sylvester equation $AX + XB = C$. Assuming matrices $A$ and $B$ can be diagonalised, let $P^{-1}AP = \text{diag}(\lambda_1, \dots, \lambda_n)$ and $Q^{-1}BQ = \text{diag}(\mu_1, \dots, \mu_m)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$, $\mu_1, \dots, \mu_m$ are the eigenvalues values of $B$ and the columns of $P$ and $Q$ are the eigenvectors of $A$ and $B$, respectively. Letting $\widetilde{C} = P^{-1}CQ$, the solution is then:
+\[ X = P \widetilde{X} Q^{-1}, \text{ with } \widetilde{x}_{ij} = \frac{\widetilde{c}_{ij}}{\lambda_i + \mu_j} \]
 
-In this case, $A=B=T$, $X=U$ and $C=F$ so $P=Q$ and $P^{-1}TP = \text{diag}(\lambda_1, \dots, \lambda_n)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $T$ and the columns of $P$ are the eigenvectors of $T$. Letting $\tilde{F}=P^{-1}FP$, the solution is then:
-\[ U = P \tilde{U} P^{-1}, \text{ with } \tilde{u}_{ij} = \frac{\tilde{f}_{ij}}{\lambda_i + \lambda_j} \]
+In this case, $A=B=T$, $X=U$ and $C=F$ so $P=Q$ and $P^{-1}TP = \text{diag}(\lambda_1, \dots, \lambda_n)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $T$ and the columns of $P$ are the eigenvectors of $T$. Letting $\widetilde{F}=P^{-1}FP$, the solution is then:
+\[ U = P \widetilde{U} P^{-1}, \text{ with } \widetilde{u}_{ij} = \frac{\widetilde{f}_{ij}}{\lambda_i + \lambda_j} \]
 
 \subsubsection*{Using numpy.linalg.eig}
 Using the method above, the eigenvalues and eigenvectors can be computed using NumPy's \texttt{linalg.eig} function. The results doing this are given in Table 5. The errors are again similar to the previous methods. However, here the eoc moves away from 2 as $n$ is increased. This is likely due to the fact that there is no general formula for calculating eigenvalues and eigenvectors for an arbitrary matrix, meaning the eigenvalues and eigenvectors are most likely approximated by NumPy's \texttt{linalg.eig}. It is likely that the approximations become less accurate as $n$ is increased. The eog here is however slightly better than the previous methods. 
@@ -410,9 +410,9 @@ Similarly to the Bartels-Stewart algorithm, this method can be split into compon
 \begin{enumerate}
 \item Calculate eigenvalues and eigenvectors of $T$
 \item Diagonalise $T$ (i.e. calculate $P$ and $P^{-1}$)
-\item Calculate $\tilde{F}=P^{-1}FP$
-\item Calculate $\tilde{U}$, where $\tilde{u}_{ij} = \frac{\tilde{f}_{ij}}{\lambda_i + \lambda_j}$
-\item Calculate solution $U=P \tilde{U}P^{-1}$
+\item Calculate $\widetilde{F}=P^{-1}FP$
+\item Calculate $\widetilde{U}$, where $\widetilde{u}_{ij} = \frac{\widetilde{f}_{ij}}{\lambda_i + \lambda_j}$
+\item Calculate solution $U=P \widetilde{U}P^{-1}$
 \end{enumerate}
 
 The results of doing so are shown in Table 6.
@@ -591,31 +591,143 @@ where $\lambda_{\text{max}}(T^2)$ denotes the maximum eigenvalue of $T^2$. Using
 $\lambda_{\text{max}}(T^2)$ therefore scales with $\frac{1}{h^4}$ meaning its reciprocal scales with $h^4$, implying $\kappa$ will need to be significantly small as $n$ is increased for the solution to converge. Even for small values of $n$, this is impractical and therefore this method is not appropriate for solving this equation.
 
 \subsubsection{Modified Conjugate Gradient}
-In \cite{Hou} a modified conjugate gradient (MCG) algorithm is proposed, which is adapted for solving Sylvester Equations. The algorithm is as follows:
+In \cite{Hou} a modified conjugate gradient (MCG) algorithm is proposed, which is adapted for solving Sylvester Equations. The general algorithm for solving $AX+XB=C$, where $A, B, C$ and $X$ are all $n \times n$ matrices, is as follows:
 \begin{enumerate}
-\item Choose initial guess $X^{(0)}$, let $k=0$ and calculate:
+\item Choose initial guess $X^{(0)}$ and calculate:
 	\begin{itemize}
-	\item $R^{(0)} = F - AX^{(0)} - X^{(0)}B$
+	\item $R^{(0)} = C - AX^{(0)} - X^{(0)}B$
 	\item $Q^{(0)} = A^T R^{(0)} + R^{(0)} + R^{(0)} B^T$
 	\item $Z^{(0)} = Q^{(0)}$
 	\end{itemize}
-\item If $R^{(k)} = 0$, or $R^{(k)} \neq 0$ but $Z^{(k)} = 0$, stop. Else, calculate:
-\[ \gamma_k = \frac{[R^{(k)}, R^{(k)}]}{[Z^{(k)}, Z^{(k)}]} \]
-where $[R,R] = \text{tr}(R^T R)$ is the trace of the matrix $R^T R$.
+\item If $R^{(k)} < \text{tol}$ or $Z^{(k)} < \text{tol}$, stop. Else, go to 3.
 \item Calculate:
 	\begin{itemize}
-	\item $R^{(k+1)} = F - AX^{(k+1)} - X^{(k+1)} B$
+	\item $\gamma_k = \frac{[R^{(k)}, R^{(k)}]}{[Z^{(k)}, Z^{(k)}]}$, where $[R,R] = \text{tr}(R^T R)$ is the trace of the matrix $R^T R$
+	\item $X^{(k+1)} = X^{(k)} + \gamma_k Z^{(k)}$
+	\item $R^{(k+1)} = C - AX^{(k+1)} - X^{(k+1)} B$
 	\item $Q^{(k+1)} = A^T R^{(k+1)} + R^{(k+1)} + R^{(k+1)} B^T$
 	\end{itemize}
 	and return to Step 2.
 \end{enumerate}
+
+In the case of the matrix equation $TU+UT=F$, the algorithm is as follows:
+\begin{enumerate}
+\item Choose initial guess $U^{(0)}$ and calculate:
+	\begin{itemize}
+	\item $R^{(0)} = F - TU^{(0)} - U^{(0)}T$
+	\item $Q^{(0)} = T R^{(0)} + R^{(0)} + R^{(0)} T$
+	\item $Z^{(0)} = Q^{(0)}$
+	\end{itemize}
+\item If $R^{(k)} < \text{tol}$ or $Z^{(k)} < \text{tol}$, stop. Else, go to 3.
+\item Calculate:
+	\begin{itemize}
+	\item $\gamma_k = \frac{[R^{(k)}, R^{(k)}]}{[Z^{(k)}, Z^{(k)}]}$
+	\item $U^{(k+1)} = U^{(k)} + \gamma_k Z^{(k)}$
+	\item $R^{(k+1)} = F - TU^{(k+1)} - U^{(k+1)} T$
+	\item $Q^{(k+1)} = T R^{(k+1)} + R^{(k+1)} + R^{(k+1)} T$
+	\end{itemize}
+	and return to Step 2.
+\end{enumerate}
+
+Results using this algorithm with a convergence tolerance of $10^{-3}$ are given in Table 12. These results show that, even when using this relatively large convergence tolerance, this algorithm is slow. Also the errors does not always decrease as $n$ is increased, which is reflected in the eoc. The errors here are also bigger than those for previous methods for large $n$, which is due to the large convergence tolerance. The eog demonstrates that this algorithm has a worse than cubic time complexity for large $n$.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+$n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
+\hline
+125 & 11.006 & $1.1451 \times 10^{-6}$ & $5.7254 \times 10^{-7}$ & - & - \\
+250 & 53.234 & $3.7599 \times 10^{-5}$ & $1.8800 \times 10^{-5}$ & -5.0662 & 2.2741 \\
+500 & 397.11 & $4.6673 \times 10^{-5}$ & $2.3337 \times 10^{-5}$ & -0.31294 & 2.8991 \\
+1000 & 3865.5 & $3.3353 \times 10^{-5}$ & $1.6677 \times 10^{-5}$ & 0.48547 & 3.2830 \\
+\hline
+\end{tabular}
+\captionsetup{justification=centering}
+\caption{Results obtained using the MCG algorithm.}
+\end{table}
+
+\subsubsection{Preconditioned MCG}
+\cite{Hou} also proposes a preconditioned version of the MCG algorithm which accelerates the speed of convergence. This version of the algorithm solves $AX + XB = C$ by solving the equation 
+$X^{(k+1)} = \widetilde{A}X^{(k)} \widetilde{B} + \widetilde{C}$, with:
+\[ \widetilde{A} = I + 2(\alpha A - I)^{-1} \]
+\[ \widetilde{B} = I + 2(\alpha B - I)^{-1} \]
+\[ \widetilde{C} = -2\alpha(\alpha A - I)^{-1} C (\alpha B - I)^{-1} \]
+where $\alpha$ is a parameter that needs to be chosen and $I$ is the identity matrix. \cite{Hou} suggests choosing $\alpha = \pm \nicefrac{\sqrt{n}}{||A||_F}$ or $\alpha = \pm \nicefrac{\sqrt{n}}{||B||_F}$, where $||A||_F = \sqrt{[A,A]} = \sqrt{\text{tr}(A^TA)}$, for good convergence. Once $\alpha$ has been chosen and $\widetilde{A}, \widetilde{B}$ and $\widetilde{C}$ have been calculated, the algorithm is as follows:
+\begin{enumerate}
+\item Choose initial guess $X^{(0)}$ and calculate:
+	\begin{itemize}
+	\item $R^{(0)} = -\widetilde{C} + X^{(0)} - \widetilde{A}X^{(0)} \widetilde{B}$
+	\item $Q^{(0)} = \widetilde{A}^T R^{(0)}\widetilde{B}^T + R^{(0)}$
+	\item $Z^{(0)} = Q^{(0)}$
+	\end{itemize}
+\item If $R^{(k)} < \text{tol}$ or $Z^{(k)} < \text{tol}$, stop. Else, go to 3.
+\item Calculate:
+	\begin{itemize}
+	\item $ \gamma_k = \frac{[R^{(k)}, R^{(k)}]}{[Z^{(k)}, Z^{(k)}]}$
+	\item $X^{(k+1)} = X^{(k)} + \gamma_k Z^{(k)} $
+	\item $R^{(k+1)} = -\widetilde{C} + X^{(k+1)} - \widetilde{A}X^{(k+1)} \widetilde{B}$
+	\item $Q^{(k+1)} = \widetilde{A}^T R^{(k+1)}\widetilde{B}^T - R^{(k+1)}$
+	\item $\eta_k = \frac{[R^{(k+1)}, R^{(k+1)}]}{[R^{(k)}, R^{(k)}]}$ 
+	\item $Z^{(k+1)} = Q^{(k+1)} + \eta_k Z^{(k)}$
+	\end{itemize}
+	and return to Step 2.
+\end{enumerate}
+
+To solve the matrix equation $TU + UT = F$, we instead solve the equation $U^{(k+1)} = \widetilde{T}U^{(k)} \widetilde{T} + \widetilde{F}$, with:
+\[ \widetilde{T} = I + 2(\alpha T - I)^{-1} \]
+\[ \widetilde{F} = -2\alpha(\alpha A - I)^{-1} C (\alpha B - I)^{-1} \]
+
+Choosing $\alpha = \pm \nicefrac{\sqrt{n}}{||T||_F}$ and calculating $\widetilde{T}$ and $\widetilde{F}$, the algorithm proceeds as follows:
+\begin{enumerate}
+\item Choose initial guess $U^{(0)}$ and calculate:
+	\begin{itemize}
+	\item $R^{(0)} = -\widetilde{F} + U^{(0)} - \widetilde{T}U^{(0)} \widetilde{T}$
+	\item $Q^{(0)} = \widetilde{T} R^{(0)}\widetilde{T} + R^{(0)}$
+	\item $Z^{(0)} = Q^{(0)}$
+	\end{itemize}
+\item If $R^{(k)} < \text{tol}$ or $Z^{(k)} < \text{tol}$, stop. Else, go to 3.
+\item Calculate:
+	\begin{itemize}
+	\item $ \gamma_k = \frac{[R^{(k)}, R^{(k)}]}{[Z^{(k)}, Z^{(k)}]}$
+	\item $U^{(k+1)} = U^{(k)} + \gamma_k Z^{(k)} $
+	\item $R^{(k+1)} = -\widetilde{F} + U^{(k+1)} - \widetilde{T}U^{(k+1)} \widetilde{T}$
+	\item $Q^{(k+1)} = \widetilde{T} R^{(k+1)}\widetilde{T} - R^{(k+1)}$
+	\item $\eta_k = \frac{[R^{(k+1)}, R^{(k+1)}]}{[R^{(k)}, R^{(k)}]}$ 
+	\item $Z^{(k+1)} = Q^{(k+1)} + \eta_k Z^{(k)}$
+	\end{itemize}
+	and return to Step 2.
+\end{enumerate}
+
+Results using the preconditioned MCG algorithm with a tolerance of $10^{-9}$ are given in Table 13. These results demonstrate that this method vastly outperforms the standard MCG algorithm. The errors are similar to previous methods (excluding the MCG algorithm) and the eoc is close to 2 in most cases demonstrating that this algorithm converges well apart from in the case where $n=8000$, which could be because the error is approaching the convergence tolerance. The eog shows that although this algorithm is fast, for large $n$ it has close to cubic time complexity. 
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+$n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
+\hline
+125 & 0.0010328 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
+250 & 0.0040712 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 2.0001 & 1.9789 \\
+500 & 0.027955 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999 & 2.7796 \\
+1000 & 0.58508 & $8.2078 \times 10^{-7}$ & $4.1038 \times 10^{-7}$ & 2.0001 & 4.3875 \\
+2000 & 3.5886 & $2.0585 \times 10^{-7}$ & $1.0275 \times 10^{-7}$ & 1.9968 & 2.6167 \\
+4000 & 39.681 & $5.3078 \times 10^{-8}$ & $2.6012 \times 10^{-8}$ & 1.9561 & 3.4670 \\
+8000 & 336.49 & $1.7720 \times 10^{-8}$ & $6.6084 \times 10^{-9}$ & 1.5830 & 3.0840 \\
+\hline
+\end{tabular}
+\captionsetup{justification=centering}
+\caption{Results obtained using the preconditioned MCG algorithm.}
+\end{table}
+
+
 \newpage
 
 \section{Uncertainty}
-Uncertainty can arise in partial differential equations if, for example, coefficients, boundary conditions or initial conditions are unknown. A solution to dealing with uncertainty is to model unknown parameters as random variables, and then appropriate methods can be used to solve the system. 
+Uncertainty can arise in PDEs if, for example, coefficients, boundary conditions or initial conditions are unknown. A solution to dealing with uncertainty is to model unknown parameters as random variables, and then appropriate methods can be used to solve the system. 
 
 \subsection{Single Parameter}
-The simplest way to introduce uncertainty into a partial differential equation is by introducing a single unknown parameter. Define the spatial domain $\mathcal{D}$ as $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$, and let $\Omega$ denote the sample space. We can introduce an unknown coefficient $\varepsilon(\omega)$, where $\omega \in \Omega$ and $\varepsilon: \Omega \rightarrow \mathbb{R}$ is uniformly distributed over the interval $[-1,1]$ with $\varepsilon \neq 0$. Let $u(x,y,\varepsilon) = \sin(\pi x)\sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y)$ be the exact solution of the equation:
+The simplest way to introduce uncertainty into a PDE is by introducing a single unknown parameter. Define the spatial domain $\mathcal{D}$ as $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$, and let $\Omega$ denote the sample space. We can introduce an unknown coefficient $\varepsilon(\omega)$, where $\omega \in \Omega$ denotes dependence on a random variable and $\varepsilon: \Omega \rightarrow \mathbb{R}$ is uniformly distributed over the interval $[-1,1]$ with $\varepsilon \neq 0$. Let $u(x,y,\varepsilon) = \sin(\pi x)\sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y)$ be the exact solution of the equation:
 \begin{eqnarray}
 -\varepsilon u_{xx} -\varepsilon u_{yy} = f & \text{ on } & \mathcal{D} \nonumber \\
 u = 0 & \text{ on } & \partial \mathcal{D}
@@ -623,8 +735,8 @@ u = 0 & \text{ on } & \partial \mathcal{D}
 which gives:
 \begin{eqnarray}
 u_{xx} = -\pi^2 \sin(\pi x) \sin(\pi y) - 9\pi^2 \varepsilon \sin(3\pi x) \sin(5\pi y) \nonumber \\
-u_{xx} = -\pi^2 \sin(\pi x) \sin(\pi y) - 25\pi^2 \varepsilon \sin(3\pi x) \sin(5\pi y) \nonumber \\
-\implies f = 2\pi^2 \sin(\pi x) \sin(\pi y) + 34\pi^2 \varepsilon \sin(3\pi x) \sin(5\pi y)
+u_{yy} = -\pi^2 \sin(\pi x) \sin(\pi y) - 25\pi^2 \varepsilon \sin(3\pi x) \sin(5\pi y) \nonumber \\
+\implies f = 2\pi^2 \varepsilon \sin(\pi x) \sin(\pi y) + 34\pi^2 \varepsilon^2 \sin(3\pi x) \sin(5\pi y)
 \end{eqnarray}
 
 The equation to be solved is therefore:
@@ -712,17 +824,18 @@ Any of these quantites can then be chosen and compared to the known values as a 
 
 As noted in \cite{Bishop}, for the error to converge to 0 the mesh size must be decreased as the number of samples is increased. This is because the error depends both on the mesh size and the number of samples, so by changing only one of these factors the method will be converging to the error of factor is not being changed, rather than to 0. 
 
-Results using the Monte Carlo method, with a single uncertain parameter, are given in Table 12.
+Results using the Monte Carlo method, with a single uncertain parameter, are given in Table 14.
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|}
 \hline
 $n$ & $M$ & Time(s) & Error \\
 \hline
-125 & & & \\
-250 & & & \\
-500 & & & \\
-1000 & & & \\
+125 & 10 & & 0.098539 \\
+250 & 40 & & 0.14002 \\
+500 & 160 & & 0.042046 \\
+1000 & 640 & & 0.0088454 \\
+2000 & 2560 & & 0.00030675 \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}

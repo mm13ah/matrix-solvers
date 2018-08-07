@@ -19,6 +19,10 @@
 \usepackage{nicefrac}
 \usepackage{caption}
 
+\newcommand{\subsubsubsection}[1]{\paragraph{#1}\mbox{}\\}
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
 \begin{document}
 
 \maketitle
@@ -32,7 +36,7 @@
 \section{Introduction}
 \subsection{Problem Statement}
 
-The traditional approach to solving partial differential equations (PDEs) numerically involves stacking all the unknowns of the problem into a single vector which ignores underlying structures. This prevents methods from being used which can take advantage of the problem structure to solve the problem more efficiently. This can come at a significant cost when uncertainty is introduced into the system. An alternative approach is to formulate the problem as a matrix equation, which can be solved using a range of different methods. This project involves exploring how this alternative formulation can be solved using matrix solvers, and how these solvers compare against each other. 
+The traditional approach to solving partial differential equations (PDEs) numerically involves stacking all the unknowns of the problem into a single vector which ignores underlying structures. This prevents methods from being used which can take advantage of the problem structure to solve the problem more efficiently. This can come at a significant cost when uncertainty is introduced into the problem. An alternative approach is to formulate the problem as a matrix equation, which can be solved using a range of different methods. This project involves exploring methods that solve this alternative formulation and how these solvers compare against each other. 
 
 As an example, define spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and let $u: \mathcal{D} \to \mathbb{R}$ be the solution of the equation:
 	\begin{equation} 
@@ -165,6 +169,10 @@ u_{n1} & u_{n2} & \dots & u_{nj} & \dots & u_{nn}
 \end{eqnarray}
 There are a variety of methods that can be used to solve Sylvester equations. This project will explore and compare different methods for solving equations in this form. 
 
+\subsection{Notation and Preliminaries}
+
+\subsection{Organisation}
+
 \newpage
 
 \section{Scope and Schedule}
@@ -245,7 +253,7 @@ This form allows us to explore different methods for solving this equation and c
 
 Throughout the following section, the following measurements are given to evaluate the performance of each of the methods implemented:
 \begin{itemize}
-\item $n$: The total number of unknowns in each direction for the system. The total number of unknowns is $n^2$.
+\item $n$: The number of unknowns in each direction for the system. The total number of unknowns is $n^2$.
 \item Time(s): The time taken in seconds for the method to compute the solution to the problem.
 \item $|| u - u_h ||_{L^\infty} $: Measures the maximum difference between the actual solution and computed solution for each $u$. Defined as:
  \[ || u - u_h ||_{L^\infty} = \text{max}_{ij} | u(x_i, y_i) - u_{ij} | \]
@@ -254,12 +262,12 @@ Throughout the following section, the following measurements are given to evalua
 \item Experimental order of convergence (eoc): Measures the rate of convergence of a method as the problem size is increased, which should approach 2 as the step size is increased. Defined as:
 \[ \text{eoc}(i) = \frac{\log(\nicefrac{E_i}{E_{i-1}})}{\log(\nicefrac{h_i}{h_{i-1}})} \]
 where $E_i$ is the error and $h_i$ is the mesh size at level $i$. 
-\item Empirical order of growth (eog): Measures the order of growth of the execution time of an algorithm as the problem size is increased. Defined as:
+\item Empirical order of growth (eog): Measures the order of growth of the execution time of an algorithm as the problem size is increased (that is, the approximate time complexity). Defined as:
 \[ \text{eog}(i) = \frac{\log(\nicefrac{t_{i}}{t_{i-1}})}{\log(\nicefrac{n_{i}}{n_{i-1}})} \]
 where $t_i$ is the total execution time and $n_i$ is the problem size at level $i$.
 \end{itemize}
 
-It is worth noting that as the total number of unknowns and hence the problem size is $n^2$, the best time complexity that an optimal solver can achieve is $O(n^2)$, as it must compute a solution for each unknown. 
+It is worth noting that as the total number of unknowns and therefore the problem size is $n^2$, the best time complexity that an optimal solver can achieve is $O(n^2)$, as it must compute a solution for each unknown. 
 
 \subsection{Direct Methods}
 
@@ -304,7 +312,7 @@ The Bartels-Stewart algorithm \cite{Bartels} can be used to solve the Sylvester 
 \end{enumerate}
 where $A^*$ denotes the conjugate transpose of $A$.
 
-In this case $A=B=T$, $T=T^*$, $X=U$ and $C=F$ so the algorithm is as follows:
+For (3.5) we have $A=B=T$, $T=T^*$, $X=U$ and $C=F$, so the algorithm is as follows:
 \begin{enumerate}
 \item Compute the Schur form $T=PRP^*$
 \item Solve $R^*V + VR = P^*FP$ for $V$
@@ -381,7 +389,7 @@ As can be seen from the results above, using the built-in SciPy solver results i
 A similarity transformation \cite{Simoncini} can be used to solve the Sylvester equation $AX + XB = C$. Assuming matrices $A$ and $B$ can be diagonalised, let $P^{-1}AP = \text{diag}(\lambda_1, \dots, \lambda_n)$ and $Q^{-1}BQ = \text{diag}(\mu_1, \dots, \mu_m)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$, $\mu_1, \dots, \mu_m$ are the eigenvalues values of $B$ and the columns of $P$ and $Q$ are the eigenvectors of $A$ and $B$, respectively. Letting $\widetilde{C} = P^{-1}CQ$, the solution is then:
 \[ X = P \widetilde{X} Q^{-1}, \text{ with } \widetilde{x}_{ij} = \frac{\widetilde{c}_{ij}}{\lambda_i + \mu_j} \]
 
-In this case, $A=B=T$, $X=U$ and $C=F$ so $P=Q$ and $P^{-1}TP = \text{diag}(\lambda_1, \dots, \lambda_n)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $T$ and the columns of $P$ are the eigenvectors of $T$. Letting $\widetilde{F}=P^{-1}FP$, the solution is then:
+In the case of (3.5), $A=B=T$, $X=U$ and $C=F$ so $P=Q$ and $P^{-1}TP = \text{diag}(\lambda_1, \dots, \lambda_n)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $T$ and the columns of $P$ are the eigenvectors of $T$. Letting $\widetilde{F}=P^{-1}FP$, the solution is then:
 \[ U = P \widetilde{U} P^{-1}, \text{ with } \widetilde{u}_{ij} = \frac{\widetilde{f}_{ij}}{\lambda_i + \lambda_j} \]
 
 \subsubsection*{Using numpy.linalg.eig}
@@ -443,7 +451,7 @@ As can be seen from the results in Table 6, the most costly part of this method 
 and:
 \[ t_{ij} = \sqrt{\frac{2}{n+1}} \sin \Big( \frac{ij \pi}{n+1}  \Big) \]
 
-Results using this method for calculating the eigenvalues are eigenvectors are given in Table 7, and timings for each step are given in Table 8. Similar errors are given by this method, however the eoc is  closer to 2 as for $n \leq 8000$. When $n=16000$ the eoc increases significantly, however the errors here are so small that this result can be overlooked. The eog is also significantly less demonstrating that using this algorithm and computing the eigenvalues explicity achieves a near square time complexity. Also this is the only method so far that has been able to solve the problem with $n=16000$ without running out of memory. 
+Results using this method for calculating the eigenvalues are eigenvectors are given in Table 7, and timings for each step are given in Table 8. Similar errors are given by this method, however the eoc is  closer to 2 for $n \leq 8000$. When $n=16000$ the eoc increases significantly, however the errors here are so small that this is likely due to the impact of roundoff errors. The eog is also significantly less demonstrating that using this algorithm and computing the eigenvalues explicity achieves a near square time complexity. Also this is the only method so far that has been able to solve the problem with $n=16000$ without running out of memory. 
 
 \begin{table}[H]
 \centering
@@ -720,6 +728,8 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 \caption{Results obtained using the preconditioned MCG algorithm.}
 \end{table}
 
+\cite{Hou} also proposes a parallel implementation of the preconditioned MCG algorithm, which would result in better performance than given above. However the parallel version of this algorithm goes beyond the scope of this project. 
+
 
 \newpage
 
@@ -753,12 +763,12 @@ with $T = -\frac{\varepsilon}{h^2} \text{tridiag}(1,-2,1)$, $U = u(x_i, y_j)$ an
 
 As $\varepsilon$ is unknown, the exact solution to (4.3) cannot be computed and therefore solutions to (4.4) cannot be compared to the true solution. Instead, certain quantities of interest can be computed using the probability density function $\rho(\omega)$ of $\varepsilon$. Firstly, the expectation $\mathbb{E}[u]$ can be computed as:
 \begin{equation}
-\mathbb{E}[u] = \int u(x,y,\varepsilon) \rho(\omega) d \omega
+\mathbb{E}[u] = \int_{\Omega} u(x,y,\varepsilon) \rho(\omega) d \omega
 \end{equation}
 
 The variance $\text{Var}[u]$ can also be computed as:
 \begin{equation}
-\text{Var}[u] = \int \left(u(x,y,\varepsilon) - \mathbb{E}[u] \right)^2 \rho(\omega) d \omega
+\text{Var}[u] = \int_{\Omega} \left(u(x,y,\varepsilon) - \mathbb{E}[u] \right)^2 \rho(\omega) d \omega
 \end{equation}
 and the standard deviation $\text{Std}[u]$ as:
 \begin{equation}
@@ -802,7 +812,7 @@ This allows the most effective method from Section 3 to be used as a `black box'
 \begin{equation}
 \mathbb{E}_M[u] = \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon)
 \end{equation}
-where $M$ is the number of samples used in the Monte Carlo method and $u_h$ is the solution obtained from the finite difference method using a mesh of size $h$. This expectation is denoted as $\mathbb{E}_M[u]$ to indicate that it is the expectation computed from the Monte Carlo method, rather than the known expectation (that is, (4.5)). 
+where $M$ is the number of samples used in the Monte Carlo method and $u_h$ is the solution obtained from the finite difference method using a mesh of size $h$. The expectation here is denoted as $\mathbb{E}_M[u]$ to indicate that it is the expectation computed from the Monte Carlo method, rather than the known expectation (that is, (4.5)). 
 
 Similarly, the variance and standard deviation can also be computed as:
 \begin{equation}
@@ -822,9 +832,9 @@ Any of these quantites can then be chosen and compared to the known values as a 
 \end{split}
 \end{equation}
 
-As noted in \cite{Bishop}, for the error to converge to 0 the mesh size must be decreased as the number of samples is increased. This is because the error depends both on the mesh size and the number of samples, so by changing only one of these factors the method will be converging to the error of factor is not being changed, rather than to 0. 
+As noted in \cite{Bishop}, for the error to converge to 0 the mesh size must be decreased as the number of samples is increased. This is because the error depends both on the mesh size and the number of samples, so by changing only one of these factors the method will be converging to the error of the factor that is not being changed, rather than to 0. 
 
-Results using the Monte Carlo method, with a single uncertain parameter, are given in Table 14.
+Results using the Monte Carlo method, with a single uncertain parameter, are given in Table 14. As can be seen by these results, the error here is much bigger than the PDE without uncertainty. 
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|}
@@ -844,8 +854,70 @@ $n$ & $M$ & Time(s) & Error \\
 
 
 \subsubsection{Stochastic Galerkin}
+The stochastic Galerkin method uses the properties of orthogonal polynomials to produce a functional approximation to the solution of a stochastic PDE (that is, a PDE with some kind of random input). It does this by using a Galerkin projection to ``discretise the random dimensions to allow computation'' \cite{Paul}. 
+
+A set of polynomials $\{\Psi_n(x), n \in \mathbb{N}\}$, where $\Psi_n(x)$ is a polynomial of exact degree $n$, is orthogonal if it satisfies the orthogonality condition:
+\begin{equation}
+\int_{\Omega} \Psi_n(x) \Psi_m(x) w(x) dx = h_n \delta_{nm}, \;\;\;\;\;\; n,m \in \mathbb{N}
+\end{equation} 
+where $\Omega$ represents the support of $\{\Psi_n\}$ (the subset of the domain containing elements not mapped to zero), $w(x)$ is a weight function, $h_n$ are non-zero constants and $\delta_{nm}$ is the Kronecker delta ($\delta_{nm} = 1$ for $n=m$ and $0$ otherwise).
+
+As noted in \cite{Xiu}, certain classes of orthogonal polynomials have the exact same weight function as the probability distribtution of certain random variables. Once the distribution of the variable is known, the solution $u$ can be approximated via a polynomial chaos expansion as:
+\begin{equation}
+u(x,y,\varepsilon) = \sum_{k=0}^P u_k(x,y) \Psi_k(\varepsilon)
+\end{equation}
+and can then be substituted into the PDE. Here $P+1 = \frac{(K+N)!}{K!N!}$, where $N$ is the number of random variables and $K$ is a convergence parameter to be chosen. Any random quantities can be represented via a Karhunen-Loeve expansion as:
+\begin{equation}
+\alpha =  \bar{\alpha} + \sum_{k=1}^{Q}  \sqrt{\lambda_k} \phi_k \varepsilon_k
+\end{equation}
+for a spatially varying random field $\alpha$ with mean $\bar{\alpha}$, where $\lambda_k$ and $\phi_k$ are the eigenvalues and eigenfunctions of the covariance function $C_\alpha$.
+
+
+A Galerkin projection is then performed on the PDE by multiplying it by $\Psi_k$ for $k=0, \dots, P$, which gives a system of coupled deterministic differential equations which can be discretised and solved via, for example, the finite difference method. The mean and variance are then computed as:
+\begin{equation}
+\mathbb{E}[u] = u_0
+\end{equation}
+\begin{equation}
+\text{Var}[u] = \sum_{k=1}^P u_k^2 \mathbb{E}[\Psi_k^2]
+\end{equation}
+and $\text{Std}[u] = \sqrt{\text{Var}[u]}$ as before. 
+
+In the case of the equation (4.4), $\varepsilon$ is uniformly distrubted over $[-1,1]$. The uniform distribution has a probability density function which is identical to the weighting function of the Legendre polynomials, which solve the equation:
+\begin{equation}
+\frac{d}{dx} \left[ (1-x^2) \frac{dP_n(x)}{dx} \right] + n(n+1) P_n(x) = 0 
+\end{equation}
+The SciPy library has a built in function, \texttt{special.legendre}, for calculating Legendre polynomials.
+
+\newpage
 
 \subsection{Multiple Parameters}
+%We can increase the complexity of the PDE by introducing multiple unknown parameters that can be modelled as random variables. By redefining $\varepsilon$ as:
+%\begin{equation}
+%\varepsilon = (\varepsilon_0 + 2) + \sum_{i,j = 1}^N \varepsilon_{ij} \sin(i \pi x) \sin(j \pi y)
+%\end{equation}
+%with $\varepsilon_0 \sim u(-1, 1)$, $\varepsilon_{pq} \sim u(-2^{-\sqrt{p^2 + q^2}}, 2^{-\sqrt{p^2+q^2}})$
+%and solution $u$ as:
+%\begin{equation}
+%\sin(\pi x) \sin(\pi y) + \varepsilon = \sin(\pi x) \sin(\pi y) + (\varepsilon_0 + 2) + \sum_{i,j = 1}^N \varepsilon_{ij} \sin(i \pi x) \sin(j \pi y)
+%\end{equation}
+
+\subsubsection{Monte Carlo}
+
+\subsubsection{Stochastic Galerkin}
+
+\newpage
+
+\section{Application}
+
+\newpage
+
+\section{Evaluation}
+
+\subsection{Aims}
+
+\subsection{Extensions}
+
+\subsection{Conclusion}
 
 \newpage
 

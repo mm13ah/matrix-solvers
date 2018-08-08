@@ -860,9 +860,12 @@ A set of polynomials $\{\Psi_n(x), n \in \mathbb{N}\}$, where $\Psi_n(x)$ is a p
 \begin{equation}
 \int_{\Omega} \Psi_n(x) \Psi_m(x) w(x) dx = h_n \delta_{nm}, \;\;\;\;\;\; n,m \in \mathbb{N}
 \end{equation} 
-where $\Omega$ represents the support of $\{\Psi_n\}$ (the subset of the domain containing elements not mapped to zero), $w(x)$ is a weight function, $h_n$ are non-zero constants and $\delta_{nm}$ is the Kronecker delta ($\delta_{nm} = 1$ for $n=m$ and $0$ otherwise).
+where $\Omega$ represents the support of $\{\Psi_n\}$ (the subset of the domain containing elements not mapped to zero), $w(x)$ is a weight function, $h_n$ are non-zero constants and $\delta_{nm}$ is the Kronecker delta ($\delta_{nm} = 1$ for $n=m$ and $0$ otherwise). This condition is used to define the inner product of two polynomial functions, $f(x)$ and $g(x)$, with respect to a weight function $w(x)$, as:
+\begin{equation}
+\langle f, g \rangle = \int_{\Omega} f(x)g(x)w(x) dx
+\end{equation}
 
-As noted in \cite{Xiu}, certain classes of orthogonal polynomials have the exact same weight function as the probability distribtution of certain random variables. Once the distribution of the variable is known, the solution $u$ can be approximated via a polynomial chaos expansion as:
+As noted in \cite{Xiu}, certain classes of orthogonal polynomials have the exact same weight function as the probability distribtutions of certain random variables. Once the distribution of a random variable is known, the solution $u$ can be approximated via a polynomial chaos expansion as:
 \begin{equation}
 u(x,y,\varepsilon) = \sum_{k=0}^P u_k(x,y) \Psi_k(\varepsilon)
 \end{equation}
@@ -873,7 +876,7 @@ and can then be substituted into the PDE. Here $P+1 = \frac{(K+N)!}{K!N!}$, wher
 for a spatially varying random field $\alpha$ with mean $\bar{\alpha}$, where $\lambda_k$ and $\phi_k$ are the eigenvalues and eigenfunctions of the covariance function $C_\alpha$.
 
 
-A Galerkin projection is then performed on the PDE by multiplying it by $\Psi_k$ for $k=0, \dots, P$, which gives a system of coupled deterministic differential equations which can be discretised and solved via, for example, the finite difference method. The mean and variance are then computed as:
+A Galerkin projection is then performed on the PDE by multiplying it by $\Psi_k$ for $k=0, \dots, P$ and taking the inner product, which gives a system of coupled deterministic differential equations which can be discretised and solved via, for example, the finite difference method. The mean and variance are then computed as:
 \begin{equation}
 \mathbb{E}[u] = u_0
 \end{equation}
@@ -886,7 +889,49 @@ In the case of the equation (4.4), $\varepsilon$ is uniformly distrubted over $[
 \begin{equation}
 \frac{d}{dx} \left[ (1-x^2) \frac{dP_n(x)}{dx} \right] + n(n+1) P_n(x) = 0 
 \end{equation}
-The SciPy library has a built in function, \texttt{special.legendre}, for calculating Legendre polynomials.
+The SciPy library has a built in function, \texttt{special.legendre}, for calculating Legendre polynomials, which will be used along with the numerical integration function \texttt{integrate.quad}, to evaluate the inner product. 
+
+From equation (4.3), we have:
+\begin{equation}
+\varepsilon(- u_{xx} - u_{yy}) = 2\pi^2 \varepsilon \sin(\pi x) \sin(\pi y)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x) \sin(5 \pi y) 
+\end{equation}
+
+Approximating the solution $u$ using a polynomial chaos expansion and subtituting gives:
+\begin{equation}
+\varepsilon \sum_{i=0}^P (-(u_i)_{xx} -(u_i)_{yy}) \Psi_i = 2\pi^2 \varepsilon \sin(\pi x) \sin(\pi y)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x) \sin(5 \pi y)
+\end{equation}
+
+Finally, we multiply both sides by $\Psi_k$ and take the inner product, giving:
+\begin{equation}
+\begin{split}
+\sum_{i=0}^P (-(u_i)_{xx} -(u_i)_{yy}) \langle \Psi_k \varepsilon \Psi_i \rangle & = 2\pi^2 \sin(\pi x) \sin(\pi y) \langle \Psi_k \varepsilon \rangle \\
+& + 34 \pi^2 \sin(3 \pi x) \sin(5 \pi y) \langle \Psi_k \varepsilon^2 \rangle
+\end{split}
+\end{equation}
+for $k = 0, \dots, P$. The uncertainty has been removed from this PDE and we now have a system of coupled deterministic differential equations.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+$n$ & $K$ & Time(s) & Error \\
+\hline
+125 & 1 & & 0.012815 \\
+250 & 1 & & 0.0032708 \\
+500 & 1 & & 0.00082407 \\
+1000 & 1 & & 0.00020668 \\
+2000 & 1 & & $5.1746 \times 10^{-5}$ \\
+\hline
+\end{tabular}
+\captionsetup{justification=centering}
+\caption{Results using the stochastic Galerkin method with a single uncertain parameter.}
+\end{table}
+
+
+
+
+
+
 
 \newpage
 

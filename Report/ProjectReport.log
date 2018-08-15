@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.7.8)  8 AUG 2018 18:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.7.8)  15 AUG 2018 10:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1217,7 +1217,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
  [2] [3
 
 ] [4]
-Overfull \hbox (19.29793pt too wide) in alignment at lines 132--169
+Overfull \hbox (19.29793pt too wide) in alignment at lines 134--171
  [][][] []
  []
 
@@ -1225,61 +1225,92 @@ Overfull \hbox (19.29793pt too wide) in alignment at lines 132--169
 <img/solution2.png, id=42, 426.59375pt x 355.3275pt>
 File: img/solution2.png Graphic file (type png)
 <use img/solution2.png>
-Package pdftex.def Info: img/solution2.png  used on input line 249.
+Package pdftex.def Info: img/solution2.png  used on input line 253.
 (pdftex.def)             Requested size: 213.29634pt x 177.6633pt.
  [8] [9 <./img/solution2.png>] [10] [11]
-Overfull \hbox (15.44444pt too wide) in paragraph at lines 366--367
+Overfull \hbox (15.44444pt too wide) in paragraph at lines 370--371
 []\OT1/cmr/m/n/10 The SciPy li-brary has a built in solver for solv-ing Sylvest
 er equa-tions, \OT1/cmtt/m/n/10 linalg.solve
  []
 
 [12] [13]
-Overfull \hbox (18.86746pt too wide) in paragraph at lines 430--444
+Overfull \hbox (18.86746pt too wide) in paragraph at lines 434--448
  [][] 
  []
 
 [14]
-Overfull \hbox (18.86746pt too wide) in paragraph at lines 478--493
+Overfull \hbox (18.86746pt too wide) in paragraph at lines 482--497
  [][] 
  []
 
-[15] [16] [17] [18] [19] [20] [21]
-Overfull \hbox (3.51845pt too wide) in alignment at lines 753--756
- [][][] []
+[15] [16]
+Overfull \hbox (13.75604pt too wide) in paragraph at lines 566--580
+ [][] 
  []
 
-[22] [23] [24] [25] [26] [27] [28] [29] [30] (./ProjectReport.bbl) [31]
-(./ProjectReport.aux) ) 
+[17] [18] [19] [20] [21]
+Overfull \hbox (1.96185pt too wide) in paragraph at lines 768--770
+\OT1/cmr/m/n/10 with $\OML/cmm/m/it/10 T \OT1/cmr/m/n/10 = \OMS/cmsy/m/n/10 ^^@
+[][]\OT1/cmr/m/n/10 (1\OML/cmm/m/it/10 ; \OMS/cmsy/m/n/10 ^^@\OT1/cmr/m/n/10 2\
+OML/cmm/m/it/10 ; \OT1/cmr/m/n/10 1)$, $\OML/cmm/m/it/10 U[] \OT1/cmr/m/n/10 = 
+\OML/cmm/m/it/10 u\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x[]; y[]\OT1/cmr/m/n/10 )$ 
+and $\OML/cmm/m/it/10 F[] \OT1/cmr/m/n/10 = 2\OML/cmm/m/it/10 ^^Y[]" []\OT1/cmr
+/m/n/10 (\OML/cmm/m/it/10 ^^Yx[]\OT1/cmr/m/n/10 ) [](\OML/cmm/m/it/10 ^^Yy[]\OT
+1/cmr/m/n/10 ) +
+ []
+
+[22] [23] [24] [25]
+Overfull \hbox (2.34674pt too wide) detected at line 898
+\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 "[] \OT1/cmr/m/n/10 + 2)(\OMS/cmsy/m/n/10 ^^@
+\OML/cmm/m/it/10 u[] \OMS/cmsy/m/n/10 ^^@ \OML/cmm/m/it/10 u[]\OT1/cmr/m/n/10 )
+ = 2\OML/cmm/m/it/10 ^^Y[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 "[] \OT1/cmr/m/n/10
+ + 2) [](\OML/cmm/m/it/10 ^^Yx\OT1/cmr/m/n/10 ) [](\OML/cmm/m/it/10 ^^Yy\OT1/cm
+r/m/n/10 ) + 34\OML/cmm/m/it/10 ^^Y[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 "[] \OT1
+/cmr/m/n/10 + 2)[] [](3\OML/cmm/m/it/10 ^^Yx\OT1/cmr/m/n/10 ) [](5\OML/cmm/m/it
+/10 ^^Yy\OT1/cmr/m/n/10 )
+ []
+
+[26] [27]
+Overfull \hbox (22.99149pt too wide) in paragraph at lines 938--940
+\OT1/cmr/m/n/10 with $\OML/cmm/m/it/10 "[] \OMS/cmsy/m/n/10 ^^X \OML/cmm/m/it/1
+0 u\OT1/cmr/m/n/10 (\OMS/cmsy/m/n/10 ^^@\OT1/cmr/m/n/10 1\OML/cmm/m/it/10 ; \OT
+1/cmr/m/n/10 1)$ and $\OML/cmm/m/it/10 "[] \OMS/cmsy/m/n/10 ^^X \OT1/cmr/m/n/10
+ (\OMS/cmsy/m/n/10 ^^@\OT1/cmr/m/n/10 2[]\OML/cmm/m/it/10 ; \OT1/cmr/m/n/10 2[]
+)$. Then let $\OML/cmm/m/it/10 u \OT1/cmr/m/n/10 = [](\OML/cmm/m/it/10 ^^Yx\OT1
+/cmr/m/n/10 ) [](\OML/cmm/m/it/10 ^^Yy\OT1/cmr/m/n/10 ) +
+ []
+
+[28] [29] [30] (./ProjectReport.bbl) [31] (./ProjectReport.aux) ) 
 Here is how much of TeX's memory you used:
  17373 strings out of 492982
  339671 string characters out of 6134897
- 407138 words of memory out of 5000000
+ 408138 words of memory out of 5000000
  20541 multiletter control sequences out of 15000+600000
  12352 words of font info for 48 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,19n,65p,816b,653s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.
-enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></
-usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
-6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></
-usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1
-/public/amsfonts/symbols/msbm10.pfb></usr/share/texmf/fonts/type1/public/cm-sup
-er/sfrm1000.pfb>
-Output written on ProjectReport.pdf (31 pages, 374851 bytes).
+{/usr/share/te
+xmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
+msfonts/cmextra/cmex7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi
+7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><
+/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/sh
+are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti1
+0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><
+/usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on ProjectReport.pdf (31 pages, 378647 bytes).
 PDF statistics:
  196 PDF objects out of 1000 (max. 8388607)
  138 compressed objects within 2 object streams

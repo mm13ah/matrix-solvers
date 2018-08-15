@@ -39,10 +39,11 @@
 The traditional approach to solving partial differential equations (PDEs) numerically involves stacking all the unknowns of the problem into a single vector which ignores underlying structures. This prevents methods from being used which can take advantage of the problem structure to solve the problem more efficiently. This can come at a significant cost when uncertainty is introduced into the problem. An alternative approach is to formulate the problem as a matrix equation, which can be solved using a range of different methods. This project involves exploring methods that solve this alternative formulation and how these solvers compare against each other. 
 
 As an example, define spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and let $u: \mathcal{D} \to \mathbb{R}$ be the solution of the equation:
-	\begin{equation} 
-	-u_{xx} - u_{yy} = f
-	\end{equation}
-with boundary conditions $u(x,y)=0$, as shown in Figure 1.
+	\begin{alignat}{1} 
+	-u_{xx} - u_{yy} = {} & f \quad \text{ on } \mathcal{D} \nonumber \\
+	u = {} & 0 \quad \text{ on } \partial \mathcal{D}
+	\end{alignat}
+as shown in Figure 1.
 
 \begin{figure}[H]
 \begin{tikzpicture}
@@ -128,7 +129,8 @@ A Sylvester equation is a matrix equation of the form $AX + XB = C$, where $A$ i
 	TU + UT = F
 	\end{equation}
 where $T$, $U$ and $F$ are of size $n \times n$.
-Here $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$ and $U_{ij} = u(x_i, y_j)$, where $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. The system has $n$ unknowns in each direction meaning there is a total of $n^2$ unknowns. The matrix equation is visualised below:
+
+Define $\text{tridiag}(i,j,k)$ as a matrix with $j$ on the main diagonal and $i$ and $k$ on the left and right diagonals respectively. Then for (1.6) we have $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$ and $U_{ij} = u(x_i, y_j)$, where $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. The system has $n$ unknowns in each direction meaning there is a total of $n^2$ unknowns. The matrix equation is visualised below:
 \begin{eqnarray}
 \frac{-1}{h^2} 
 \begin{pmatrix}
@@ -216,22 +218,24 @@ If the project deadlines are met the remaining time will be dedicated to project
 
 \section{Matrix Solvers}
 For spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and $u: \mathcal{D} \rightarrow \mathbb{R}$, let $u(x,y) = \sin{(\pi x)} \sin{(\pi y)}$ be the exact solution of the equation:
-\begin{eqnarray}
--u_{xx} -u_{yy} = f & \text{ on } & \mathcal{D} \nonumber \\
-u = 0 & \text{ on } & \partial \mathcal{D}
-\end{eqnarray}
+\begin{alignat}{2}
+-u_{xx} -u_{yy} = {} & f \quad & \text{ on } \mathcal{D} \nonumber \\
+u = {} & 0 \quad & \text{ on } \partial \mathcal{D}
+\end{alignat}
 
 This gives:
-\begin{eqnarray} 
-u_{xx} = u_{yy} = - \pi^2 \sin{(\pi x)} \sin{(\pi y)} \nonumber \\
+\begin{equation}
+\begin{split}
+u_{xx} = u_{yy} = - \pi^2 \sin{(\pi x)} \sin{(\pi y)} \\
 \implies f = 2 \pi^2 \sin{(\pi x)} \sin {(\pi y)}
-\end{eqnarray}
+\end{split}
+\end{equation} 
 
 The equation to be be solved is therefore:
-\begin{eqnarray}
--u_{xx} -u_{yy} = 2 \pi^2 \sin{(\pi x)} \sin {(\pi y)} & \text{ on } & \mathcal{D} \nonumber \\
-u = 0 & \text{ on } & \partial \mathcal{D}
-\end{eqnarray}
+\begin{alignat}{1}
+-u_{xx} -u_{yy} = {} & 2 \pi^2 \sin{(\pi x)} \sin {(\pi y)} \quad \text{ on } \mathcal{D} \nonumber \\
+u = {} & 0 \quad \text{ on } \partial \mathcal{D}
+\end{alignat}
 
 Using the centred finite difference approximations ((1.2) and (1.3)) with uniform grid spacing $h$ to discretise the domain of this system, we have:
 	\begin{eqnarray}
@@ -257,17 +261,17 @@ Throughout the following section, the following measurements are given to evalua
 \item Time(s): The time taken in seconds for the method to compute the solution to the problem.
 \item $|| u - u_h ||_{L^\infty} $: Measures the maximum difference between the actual solution and computed solution for each $u$. Defined as:
  \[ || u - u_h ||_{L^\infty} = \text{max}_{ij} | u(x_i, y_i) - u_{ij} | \]
-\item $|| u - u_h ||_{L^2} $: A measure of error that takes into account the difference between all actual and computed solutions, as well as the step size. Defined as:
+\item $|| u - u_h ||_{L^2} $: An average measure of error, defined as:
 \[ || u - u_h ||_{L^2} = \sqrt{h^2 \sum | u(x_i,y_j) - u_{ij} |^2} \]
 \item Experimental order of convergence (eoc): Measures the rate of convergence of a method as the problem size is increased, which should approach 2 as the step size is increased. Defined as:
 \[ \text{eoc}(i) = \frac{\log(\nicefrac{E_i}{E_{i-1}})}{\log(\nicefrac{h_i}{h_{i-1}})} \]
-where $E_i$ is the error and $h_i$ is the mesh size at level $i$. 
-\item Empirical order of growth (eog): Measures the order of growth of the execution time of an algorithm as the problem size is increased (that is, the approximate time complexity). Defined as:
+where $E_i$ is the error (chosen here as $|| u - u_h ||_{L^\infty}$) and $h_i$ is the mesh size at level $i$. 
+\item Experimental order of growth (eog): Measures the order of growth of the execution time of an algorithm as the problem size is increased (that is, the approximate time complexity). Defined as:
 \[ \text{eog}(i) = \frac{\log(\nicefrac{t_{i}}{t_{i-1}})}{\log(\nicefrac{n_{i}}{n_{i-1}})} \]
 where $t_i$ is the total execution time and $n_i$ is the problem size at level $i$.
 \end{itemize}
 
-It is worth noting that as the total number of unknowns and therefore the problem size is $n^2$, the best time complexity that an optimal solver can achieve is $O(n^2)$, as it must compute a solution for each unknown. 
+It is worth noting that as the total number of unknowns, and therefore the problem size, is $n^2$, the best time complexity that an optimal solver can achieve is $O(n^2)$, as it must compute a solution for each unknown. 
 
 \subsection{Direct Methods}
 
@@ -559,17 +563,17 @@ Similarly to Section 3.1.1, the Kronecker product can be used to write the matri
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-$n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
+$n$ & Time(s) & no. iters & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
 \hline
-125 & 0.014182 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
-250 & 0.042605 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 2.0001 & 1.5870 \\
-500 & 0.14136 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999 & 1.7303 \\
-1000 & 0.54308 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 1.9418 \\
-2000 & 2.3162 & $2.0541 \times 10^{-7}$ & $1.0271 \times 10^{-7}$ & 2.0000 & 2.0925 \\
-4000 & 9.8487 & $5.1379 \times 10^{-8}$ & $2.5689 \times 10^{-8}$ & 2.0000 & 2.0882 \\
-8000 & 103.34 & $1.2848 \times 10^{-8}$ & $6.4239 \times 10^{-9}$ & 2.0000 & 3.3913 \\
+125 & 0.014182 & 1 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
+250 & 0.042605 & 1 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 2.0001 & 1.5870 \\
+500 & 0.14136 & 1 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999 & 1.7303 \\
+1000 & 0.54308 & 1 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 1.9418 \\
+2000 & 2.3162 & 1 & $2.0541 \times 10^{-7}$ & $1.0271 \times 10^{-7}$ & 2.0000 & 2.0925 \\
+4000 & 9.8487 & 1 & $5.1379 \times 10^{-8}$ & $2.5689 \times 10^{-8}$ & 2.0000 & 2.0882 \\
+8000 & 103.34 & & $1.2848 \times 10^{-8}$ & $6.4239 \times 10^{-9}$ & 2.0000 & 3.3913 \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -737,29 +741,32 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 Uncertainty can arise in PDEs if, for example, coefficients, boundary conditions or initial conditions are unknown. A solution to dealing with uncertainty is to model unknown parameters as random variables, and then appropriate methods can be used to solve the system. 
 
 \subsection{Single Parameter}
-The simplest way to introduce uncertainty into a PDE is by introducing a single unknown parameter. Define the spatial domain $\mathcal{D}$ as $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$, and let $\Omega$ denote the sample space. We can introduce an unknown coefficient $\varepsilon(\omega)$, where $\omega \in \Omega$ denotes dependence on a random variable and $\varepsilon: \Omega \rightarrow \mathbb{R}$ is uniformly distributed over the interval $[-1,1]$ with $\varepsilon \neq 0$. Let $u(x,y,\varepsilon) = \sin(\pi x)\sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y)$ be the exact solution of the equation:
-\begin{eqnarray}
--\varepsilon u_{xx} -\varepsilon u_{yy} = f & \text{ on } & \mathcal{D} \nonumber \\
-u = 0 & \text{ on } & \partial \mathcal{D}
-\end{eqnarray}
+The simplest way to introduce uncertainty into a PDE is by introducing a single unknown parameter. Define the spatial domain $\mathcal{D}$ as $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$, and let $\Omega$ denote the sample space. We can introduce an unknown coefficient $\varepsilon(\omega)$, where $\omega \in \Omega$ denotes dependence on a random variable and $\varepsilon: \Omega \rightarrow \mathbb{R}$ is uniformly distributed over the interval $[1,3]$. Let $u(x,y,\varepsilon) = \sin(\pi x)\sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y)$ be the exact solution of the equation:
+\begin{alignat}{1}
+-\varepsilon u_{xx} -\varepsilon u_{yy} = {}& f \quad \text{ on } \mathcal{D} \times \Omega \nonumber \\
+u = {}& 0 \quad \text{ on } \partial \mathcal{D} \times \Omega
+\end{alignat}
+
 which gives:
-\begin{eqnarray}
-u_{xx} = -\pi^2 \sin(\pi x) \sin(\pi y) - 9\pi^2 \varepsilon \sin(3\pi x) \sin(5\pi y) \nonumber \\
-u_{yy} = -\pi^2 \sin(\pi x) \sin(\pi y) - 25\pi^2 \varepsilon \sin(3\pi x) \sin(5\pi y) \nonumber \\
+\begin{equation}
+\begin{split}
+u_{xx} = -\pi^2 \sin(\pi x) \sin(\pi y) - 9\pi^2 \varepsilon \sin(3\pi x) \sin(5\pi y) \\
+u_{yy} = -\pi^2 \sin(\pi x) \sin(\pi y) - 25\pi^2 \varepsilon \sin(3\pi x) \sin(5\pi y) \\
 \implies f = 2\pi^2 \varepsilon \sin(\pi x) \sin(\pi y) + 34\pi^2 \varepsilon^2 \sin(3\pi x) \sin(5\pi y)
-\end{eqnarray}
+\end{split}
+\end{equation}
 
 The equation to be solved is therefore:
-\begin{eqnarray}
-- \varepsilon u_{xx} - \varepsilon u_{yy} = 2\pi^2 \varepsilon \sin(\pi x) \sin(\pi y)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x) \sin(5 \pi y) & \text{ on } & \mathcal{D} \times \Omega \nonumber \\
-u = 0 & \text{ on } & \partial \mathcal{D} \times \Omega \nonumber \\
-\end{eqnarray}
+\begin{alignat}{1}
+- \varepsilon u_{xx} - \varepsilon u_{yy} = {} & 2\pi^2 \varepsilon \sin(\pi x) \sin(\pi y)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x) \sin(5 \pi y) \quad \text{ on } \mathcal{D} \times \Omega \nonumber \\
+u = {} & 0 \quad \text{ on } \partial \mathcal{D} \times \Omega
+\end{alignat}
 
 By discretising the domain using the centred finite difference approximations, (4.3) can be formed as a matrix equation:
 \begin{equation}
 TU + UT = F
 \end{equation}
-with $T = -\frac{\varepsilon}{h^2} \text{tridiag}(1,-2,1)$, $U = u(x_i, y_j)$ and $F = 2\pi^2 \varepsilon \sin(\pi x_i) \sin(\pi y_j)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x_i) \sin(5 \pi y_j)$. This problem is significantly harder to solve accurately and efficiently than the problem in Section 3 due to the fact that $\varepsilon$ is an unknown, random coefficient.
+with $T = -\frac{\varepsilon}{h^2} \text{tridiag}(1,-2,1)$, $U_{ij} = u(x_i, y_j)$ and $F_{ij} = 2\pi^2 \varepsilon \sin(\pi x_i) \sin(\pi y_j)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x_i) \sin(5 \pi y_j)$. This problem is significantly harder to solve accurately and efficiently than the problem in Section 3 due to the fact that $\varepsilon$ is an unknown, random coefficient.
 
 As $\varepsilon$ is unknown, the exact solution to (4.3) cannot be computed and therefore solutions to (4.4) cannot be compared to the true solution. Instead, certain quantities of interest can be computed using the probability density function $\rho(\omega)$ of $\varepsilon$. Firstly, the expectation $\mathbb{E}[u]$ can be computed as:
 \begin{equation}
@@ -770,12 +777,9 @@ The variance $\text{Var}[u]$ can also be computed as:
 \begin{equation}
 \text{Var}[u] = \int_{\Omega} \left(u(x,y,\varepsilon) - \mathbb{E}[u] \right)^2 \rho(\omega) d \omega
 \end{equation}
-and the standard deviation $\text{Std}[u]$ as:
-\begin{equation}
-\text{Std}[u] = \sqrt{\text{Var}[u]}
-\end{equation}
+and the standard deviation as $\text{Std}[u] = \sqrt{\text{Var}[u]}$.
 
-As $\varepsilon$ is uniformly distributed over the interval $[-1,1]$, it has a probability distribution function:
+As $\varepsilon$ is uniformly distributed over the interval $[1,3]$, it has a probability distribution function:
 \begin{equation}
 \rho(\omega) = \frac{1}{2}
 \end{equation}
@@ -783,56 +787,53 @@ As $\varepsilon$ is uniformly distributed over the interval $[-1,1]$, it has a p
 The expectation is therefore:
 \begin{equation}
 \begin{split}
-\mathbb{E}[u] = & \frac{1}{2} \int_{-1}^1 \sin(\pi x)\sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y) d \omega \\
-= & \frac{1}{2} \left[\varepsilon \sin(\pi x) \sin(\pi y) + \frac{\varepsilon^2}{2} \sin(3 \pi x) \sin(5 \pi y)\right]_{-1}^{1} \\
-= & \sin(\pi x) \sin(\pi y)
+\mathbb{E}[u] = & \frac{1}{2} \int_{1}^3 \sin(\pi x)\sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y) d \omega \\
+= & \frac{1}{2} \left[\varepsilon \sin(\pi x) \sin(\pi y) + \frac{\varepsilon^2}{2} \sin(3 \pi x) \sin(5 \pi y)\right]_{1}^{3} \\
+= & \sin(\pi x) \sin(\pi y) + 2 \sin(3\pi x)\sin(5\pi y)
 \end{split}
 \end{equation}
 
 and the variance is:
 \begin{equation}
 \begin{split}
-\text{Var}[u] = & \frac{1}{2} \int_{-1}^1 (\sin(\pi x) \sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y) - \sin(\pi x) \sin(\pi y))^2 d \omega \\
-= & \frac{1}{2} \int_{-1}^1 \varepsilon^2 \sin^2 (3 \pi x) \sin^2 (5 \pi y) d \omega \\
-= & \frac{1}{2} \left[ \frac{\varepsilon^3}{3} \sin^2 (3 \pi x) \sin^2 (5 \pi y) \right]_{-1}^1 \\
+\text{Var}[u] = & \frac{1}{2} \int_{1}^3 \Big( \big( \sin(\pi x) \sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y) \big) \\
+& - \big(\sin(\pi x) \sin(\pi y) + 2\sin(3\pi x)\sin(5\pi y) \big) \Big)^2 d \omega \\
+= & \frac{1}{2} \int_{1}^3 (\varepsilon-2)^2 \sin^2 (3 \pi x) \sin^2 (5 \pi y) d \omega \\
+= & \frac{1}{2} \left[ \left( \frac{\varepsilon^3}{3}-2\varepsilon^2 + 4\varepsilon \right) \sin^2 (3 \pi x) \sin^2 (5 \pi y) \right]_{1}^3 \\
 = & \frac{1}{3} \sin^2 (3 \pi x) \sin^2 (5 \pi y)
 \end{split}
 \end{equation}
 
-which gives the standard deviation as:
-\begin{equation}
-\text{Std}[u] = \frac{1}{\sqrt{3}} \sin(3 \pi x) \sin(5 \pi y)
-\end{equation}
+which gives the standard deviation as $\text{Std}[u] = \frac{1}{\sqrt{3}} \sin(3 \pi x) \sin(5 \pi y)$.
 
-Once solutions to (4.4) are computed they can be compared to the known expectation, variance and standard deviation.
+Methods can now be used which compute approximate solutions to these quantities of interest, which can then be compared to the known quantities above to give an estimation of the error.
 
 \subsubsection{Monte Carlo}
 A simple way of solving (4.4) is to use the Monte Carlo method. The Monte Carlo method works by taking $M$ random samples of $\varepsilon$ over its range, and then solves (4.4) for each of these samples. 
-This allows the most effective method from Section 3 to be used as a `black box' strategy. Once solved, the expectation can be calculated as:
+This allows the most effective method from Section 3 to be used as a `black box' strategy. Once solved, the mean solution can be calculated as:
 \begin{equation}
-\mathbb{E}_M[u] = \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon)
+\mathbb{E}_\text{M}[u] = \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon)
 \end{equation}
-where $M$ is the number of samples used in the Monte Carlo method and $u_h$ is the solution obtained from the finite difference method using a mesh of size $h$. The expectation here is denoted as $\mathbb{E}_M[u]$ to indicate that it is the expectation computed from the Monte Carlo method, rather than the known expectation (that is, (4.5)). 
+where $M$ is the number of samples used in the Monte Carlo method and $u_h$ is the solution obtained from the finite difference method using a mesh of size $h$. This is denoted as $\mathbb{E}_\text{M}[u]$ to indicate that it is the mean solution computed from the Monte Carlo method, rather than the expectation (4.5). 
 
-Similarly, the variance and standard deviation can also be computed as:
+Similarly, the variance can also be computed as:
 \begin{equation}
-\text{Var}_M[u] = \frac{1}{M-1}\sum_{i=1}^M (u_h - \mathbb{E}_M[u])^2
+\text{Var}_\text{M}[u] = \frac{1}{M-1}\sum_{i=1}^M (u_h - \mathbb{E}_\text{M}[u])^2
 \end{equation}
-and:
-\begin{equation}
-\text{Std}_M[u] = \sqrt{\text{Var}_M[u]}
-\end{equation}
+and the standard deviation $\text{Std}_\text{M}[u] = \sqrt{\text{Var}_\text{M}[u]}$.
 
 
 Any of these quantites can then be chosen and compared to the known values as a measure of error for the problem. By choosing the mean we can measure the error as:
 \begin{equation}
 \begin{split}
-\text{Error} = & \bigg{|} \bigg{|} \mathbb{E}[u] - \mathbb{E}_M[u] \bigg{|} \bigg{|} \\
+\text{Error} = & \bigg{|} \bigg{|} \mathbb{E}[u] - \mathbb{E}_\text{M}[u] \bigg{|} \bigg{|} \\
 = & \bigg{|} \bigg{|} \mathbb{E}[u] - \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon) \bigg{|}\bigg{|}
 \end{split}
 \end{equation}
 
 As noted in \cite{Bishop}, for the error to converge to 0 the mesh size must be decreased as the number of samples is increased. This is because the error depends both on the mesh size and the number of samples, so by changing only one of these factors the method will be converging to the error of the factor that is not being changed, rather than to 0. 
+
+It is also worth noting that as the solution and therefore the error is dependent on a random variable, the error is then itself a random variable and therefore not guaranteed to decrease at each level, as the samples are increased. However, the law of large numbers tells us that by taking more and more samples the mean solution should approximate the expected value and hence the error should tend towards 0. 
 
 Results using the Monte Carlo method, with a single uncertain parameter, are given in Table 14. As can be seen by these results, the error here is much bigger than the PDE without uncertainty. 
 \begin{table}[H]
@@ -854,7 +855,7 @@ $n$ & $M$ & Time(s) & Error \\
 
 
 \subsubsection{Stochastic Galerkin}
-The stochastic Galerkin method uses the properties of orthogonal polynomials to produce a functional approximation to the solution of a stochastic PDE (that is, a PDE with some kind of random input). It does this by using a Galerkin projection to ``discretise the random dimensions to allow computation'' \cite{Paul}. 
+The stochastic Galerkin method uses the properties of orthogonal polynomials to produce a functional approximation to the solution of a stochastic PDE (a PDE with some kind of random input). It does this by using a Galerkin projection to ``discretise the random dimensions to allow computation'' \cite{Paul}. 
 
 A set of polynomials $\{\Psi_n(x), n \in \mathbb{N}\}$, where $\Psi_n(x)$ is a polynomial of exact degree $n$, is orthogonal if it satisfies the orthogonality condition:
 \begin{equation}
@@ -865,7 +866,7 @@ where $\Omega$ represents the support of $\{\Psi_n\}$ (the subset of the domain 
 \langle f, g \rangle = \int_{\Omega} f(x)g(x)w(x) dx
 \end{equation}
 
-As noted in \cite{Xiu}, certain classes of orthogonal polynomials have the exact same weight function as the probability distribtutions of certain random variables. Once the distribution of a random variable is known, the solution $u$ can be approximated via a polynomial chaos expansion as:
+As noted in \cite{Xiu}, certain classes of orthogonal polynomials have the exact same weight function as the probability distribtutions of certain random variables. This property allows the solution $u$ of a stochastic PDE to be approximated via a polynomial chaos expansion using the distribution of the random variable, as:
 \begin{equation}
 u(x,y,\varepsilon) = \sum_{k=0}^P u_k(x,y) \Psi_k(\varepsilon)
 \end{equation}
@@ -876,7 +877,7 @@ and can then be substituted into the PDE. Here $P+1 = \frac{(K+N)!}{K!N!}$, wher
 for a spatially varying random field $\alpha$ with mean $\bar{\alpha}$, where $\lambda_k$ and $\phi_k$ are the eigenvalues and eigenfunctions of the covariance function $C_\alpha$.
 
 
-A Galerkin projection is then performed on the PDE by multiplying it by $\Psi_k$ for $k=0, \dots, P$ and taking the inner product, which gives a system of coupled deterministic differential equations which can be discretised and solved via, for example, the finite difference method. The mean and variance are then computed as:
+A Galerkin projection is then performed on the PDE by multiplying it by $\Psi_k$ for $k=0, \dots, P$ and taking the inner product, which gives a system of coupled deterministic differential equations, which can then be discretised and solved via, for example, the finite difference method. The resulting solution matrix will be of size $n^2 \times (P+1)$, where $n$ is the number of unknowns in each direction of the mesh and $P$ is defined as above. The mean and variance are then computed as:
 \begin{equation}
 \mathbb{E}[u] = u_0
 \end{equation}
@@ -885,30 +886,29 @@ A Galerkin projection is then performed on the PDE by multiplying it by $\Psi_k$
 \end{equation}
 and $\text{Std}[u] = \sqrt{\text{Var}[u]}$ as before. 
 
-In the case of the equation (4.4), $\varepsilon$ is uniformly distrubted over $[-1,1]$. The uniform distribution has a probability density function which is identical to the weighting function of the Legendre polynomials, which solve the equation:
+For equation (4.4), $\varepsilon$ is uniformly distrubted over the interval $[1,3]$. We introduce the substitution $\varepsilon = \varepsilon_0 + 2$ into this equation, with $\varepsilon_0 \sim u(-1,1)$, so that the random variable in the equation has zero mean. We then use the Legendre polynomials, which have the same weighting function as the probability density function of the uniform distribution, to solve the equation. They are defined as the polynomials which solve the equation:
 \begin{equation}
-\frac{d}{dx} \left[ (1-x^2) \frac{dP_n(x)}{dx} \right] + n(n+1) P_n(x) = 0 
+\frac{d}{d\varepsilon} \left[ (1-\varepsilon^2) \frac{d\Psi_n(\varepsilon)}{d\varepsilon} \right] + n(n+1) \Psi_n(\varepsilon) = 0 
 \end{equation}
 The SciPy library has a built in function, \texttt{special.legendre}, for calculating Legendre polynomials, which will be used along with the numerical integration function \texttt{integrate.quad}, to evaluate the inner product. 
 
-From equation (4.3), we have:
+From equation (4.3), we now have:
 \begin{equation}
-\varepsilon(- u_{xx} - u_{yy}) = 2\pi^2 \varepsilon \sin(\pi x) \sin(\pi y)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x) \sin(5 \pi y) 
+(\varepsilon_0+2)(- u_{xx} - u_{yy}) = 2\pi^2 (\varepsilon_0 +2) \sin(\pi x) \sin(\pi y)+ 34 \pi^2 (\varepsilon_0 + 2)^2 \sin(3 \pi x) \sin(5 \pi y) 
 \end{equation}
 
 Approximating the solution $u$ using a polynomial chaos expansion and subtituting gives:
-\begin{equation}
-\varepsilon \sum_{i=0}^P (-(u_i)_{xx} -(u_i)_{yy}) \Psi_i = 2\pi^2 \varepsilon \sin(\pi x) \sin(\pi y)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x) \sin(5 \pi y)
-\end{equation}
+\begin{multline}
+(\varepsilon_0 + 2) \sum_{i=0}^P (-(u_i)_{xx} -(u_i)_{yy}) \Psi_i = 2\pi^2 (\varepsilon_0 + 2) \sin(\pi x) \sin(\pi y) \\
++ 34 \pi^2 (\varepsilon_0 + 2)^2 \sin(3 \pi x) \sin(5 \pi y)
+\end{multline}
 
 Finally, we multiply both sides by $\Psi_k$ and take the inner product, giving:
-\begin{equation}
-\begin{split}
-\sum_{i=0}^P (-(u_i)_{xx} -(u_i)_{yy}) \langle \Psi_k \varepsilon \Psi_i \rangle & = 2\pi^2 \sin(\pi x) \sin(\pi y) \langle \Psi_k \varepsilon \rangle \\
-& + 34 \pi^2 \sin(3 \pi x) \sin(5 \pi y) \langle \Psi_k \varepsilon^2 \rangle
-\end{split}
-\end{equation}
-for $k = 0, \dots, P$. The uncertainty has been removed from this PDE and we now have a system of coupled deterministic differential equations.
+\begin{multline}
+\sum_{i=0}^P (-(u_i)_{xx} -(u_i)_{yy}) \langle \Psi_k (\varepsilon_0 + 2) \Psi_i \rangle = 2\pi^2 \sin(\pi x) \sin(\pi y) \langle \Psi_k (\varepsilon_0 + 2) \rangle \\
++ 34 \pi^2 \sin(3 \pi x) \sin(5 \pi y) \langle \Psi_k (\varepsilon_0 + 2)^2 \rangle
+\end{multline}
+for $k = 0, \dots, P$. The uncertainty has been removed from this PDE and we now have a system of coupled deterministic differential equations, which can be solved for $u$.
 
 \begin{table}[H]
 \centering
@@ -916,11 +916,11 @@ for $k = 0, \dots, P$. The uncertainty has been removed from this PDE and we now
 \hline
 $n$ & $K$ & Time(s) & Error \\
 \hline
-125 & 1 & & 0.012815 \\
-250 & 1 & & 0.0032708 \\
-500 & 1 & & 0.00082407 \\
-1000 & 1 & & 0.00020668 \\
-2000 & 1 & & $5.1746 \times 10^{-5}$ \\
+125 & 1 & & $5.1807 \times 10^{-5}$ \\
+250 & 1 & & $1.3054 \times 10^{-5}$ \\
+500 & 1 & & $3.2767 \times 10^{-6}$ \\
+1000 & 1 & & $8.2081 \times 10^{-7}$ \\
+2000 & 1 & & $2.0544 \times 10^{-7}$ \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -929,13 +929,16 @@ $n$ & $K$ & Time(s) & Error \\
 
 
 
-
-
-
-
 \newpage
 
 \subsection{Multiple Parameters}
+Multiple unknown parameters can be introduced into the PDE, which makes it significantly harder to solve. These are again modelled as random variables. Let $\varepsilon$ now be defined as:
+\begin{equation}
+\varepsilon = (\varepsilon_0 + 2) + \sum_{p,q = 1}^N \varepsilon_{pq} \sin(p \pi x) \sin(q \pi y)
+\end{equation}
+with $\varepsilon_0 \sim u(-1,1)$ and $\varepsilon_{pq} \sim (-2^{-\sqrt{p^2+q^2}},2^{-\sqrt{p^2+q^2}})$. Then let $u = \sin(\pi x)\sin(\pi y) + \varepsilon$ be the solution of the PDE:
+
+
 %We can increase the complexity of the PDE by introducing multiple unknown parameters that can be modelled as random variables. By redefining $\varepsilon$ as:
 %\begin{equation}
 %\varepsilon = (\varepsilon_0 + 2) + \sum_{i,j = 1}^N \varepsilon_{ij} \sin(i \pi x) \sin(j \pi y)

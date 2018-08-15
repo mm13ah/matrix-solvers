@@ -238,9 +238,12 @@ u = {} & 0 \quad \text{ on } \partial \mathcal{D}
 \end{alignat}
 
 Using the centred finite difference approximations ((1.2) and (1.3)) with uniform grid spacing $h$ to discretise the domain of this system, we have:
-	\begin{eqnarray}
-	& -\frac{1}{h^2} \big( u_{i-1j} - 2u_{ij} + u_{i+1j} \big) - \frac{1}{h^2} \big( u_{ij-1} - 2u_{ij} + u_{ij+1} \big) \nonumber \\ & = 2\pi^2 \sin(\pi x_i) \sin(\pi y_j)
-	\end{eqnarray}
+	\begin{equation}
+	\begin{split}
+	-\frac{1}{h^2} \big( u_{i-1j} - & 2u_{ij} + u_{i+1j} \big) - \frac{1}{h^2} \big( u_{ij-1} - 2u_{ij} + u_{ij+1} \big) 
+	\\ & = 2\pi^2 \sin(\pi x_i) \sin(\pi y_j)
+	\end{split}
+	\end{equation}
 to be solved at each grid point for $i, j = 1, \dots n$, where $n$ is the total number of unknowns in each direction. The matrix form of this equation is therefore:
 \begin{equation}
 	TU + UT = F
@@ -450,12 +453,16 @@ $n$ & 1 & 2 & 3 & 4 & 5 & Total \\
 
 \subsubsection*{Calculating eigenvalues and eigenvectors explicitly}
 
-As can be seen from the results in Table 6, the most costly part of this method is calculating the eigenvalues and eigenvectors. As $T$ is a matrix in Toeplitz form, the eigenvalues and eigenvectors can be calculated directly as:
+As can be seen from the results in Table 6, the most costly part of this method is calculating the eigenvalues and eigenvectors. As $T$ is a matrix in Toeplitz form, we can instead compute the eigenvalues and eigenvectors directly as:
 \[ \lambda_i = \frac{2}{h^2} \Big( \cos \Big( \frac{i \pi}{n+1} \Big) - 1 \Big) \]
 and:
 \[ t_{ij} = \sqrt{\frac{2}{n+1}} \sin \Big( \frac{ij \pi}{n+1}  \Big) \]
 
-Results using this method for calculating the eigenvalues are eigenvectors are given in Table 7, and timings for each step are given in Table 8. Similar errors are given by this method, however the eoc is  closer to 2 for $n \leq 8000$. When $n=16000$ the eoc increases significantly, however the errors here are so small that this is likely due to the impact of roundoff errors. The eog is also significantly less demonstrating that using this algorithm and computing the eigenvalues explicity achieves a near square time complexity. Also this is the only method so far that has been able to solve the problem with $n=16000$ without running out of memory. 
+Also the matrix $P$ is Hermitian, meaning that $P^{-1} = P^T$. We can use both of these properties to improve the timings of this algorithm.
+
+Results of doing so are given in Table 7, and timings for each step are given in Table 8. 
+
+%Similar errors are given by this method, however the eoc is  closer to 2 for $n \leq 8000$. When $n=16000$ the eoc increases significantly, however the errors here are so small that this is likely due to the impact of roundoff errors. The eog is also significantly less demonstrating that using this algorithm and computing the eigenvalues explicity achieves a near square time complexity. Also this is the only method so far that has been able to solve the problem with $n=16000$ without running out of memory. 
 
 \begin{table}[H]
 \centering

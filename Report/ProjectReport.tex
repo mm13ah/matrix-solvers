@@ -996,6 +996,23 @@ AX + XB = C
 \end{equation}
 where $A = L^{-1}2L$, $B = G_1 G_0^{-1}$ and $C = L^{-1} F G_0^{-1}$. This can now be solved using any of the methods from Section 3, assuming that they can be adapted for sparse matrices. Results using the similarity transformation method, using \texttt{sparse.linalg.eigs} from the SciPy library to calculate the eigenpairs, are given in Table 15.
 
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+$n$ & $K$ & Time(s) & Error \\
+\hline
+125 & 1 &  & 0.0021941 \\
+250 & 1 &  & 0.00055258 \\
+500 & 1 &  & 0.00013872 \\
+1000 & 1 &  & $3.4752 \times 10^{-5}$ \\
+2000 & & &  \\
+\hline
+\end{tabular}
+\captionsetup{justification=centering}
+\caption{Results using the stochastic Galerkin method with a single uncertain parameter by solving the linear system using \texttt{sparse.linalg.spsolve}.}
+\end{table}
+
 
 
 

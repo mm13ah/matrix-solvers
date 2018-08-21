@@ -272,9 +272,11 @@ where $E_i$ is the error (chosen here as $|| u - u_h ||_{L^\infty}$) and $h_i$ i
 \item Experimental order of growth (eog): Measures the order of growth of the execution time of an algorithm as the problem size is increased (that is, the approximate time complexity). Defined as:
 \[ \text{eog}(i) = \frac{\log(\nicefrac{t_{i}}{t_{i-1}})}{\log(\nicefrac{n_{i}}{n_{i-1}})} \]
 where $t_i$ is the total execution time and $n_i$ is the problem size at level $i$.
+\item No. iters (iterative methods only): The number of iterations taken for the method to converge to the given convergence tolerance.
 \end{itemize}
-
 It is worth noting that as the total number of unknowns, and therefore the problem size, is $n^2$, the best time complexity that an optimal solver can achieve is $O(n^2)$, as it must compute a solution for each unknown. 
+
+For each of the implemented methods, a maximum running time of 6000 seconds will be given. If a method does not compute a solution in this time, this will be specified in the results. If a method does not compute a solution because it tries to use more memory than is available, this will also be specified in the results.
 
 \subsection{Direct Methods}
 
@@ -285,7 +287,7 @@ A naive approach to solving this system is to use the Kronecker product to rewri
 \end{equation}
 with $\mathcal{A} = I \otimes A + B^* \otimes I$, where $I$ is the identity matrix, $B^*$ denotes the conjugate transpose of $B$, $x = \text{vec}(X)$ and $c = \text{vec}(C)$.\footnote{The vec operator reshapes a matrix into a vector by stacking the columns one after another.}
 
-For the system in (3.6), we have $A=B=T$, $X=U$, $C=F$ and $T=T^*$, so the standard linear system is:
+The equivalent linear system for the matrix equation $TU + UT = F$ is:
 \begin{equation}
 \mathcal{T}u = \mathcal{F}
 \end{equation}
@@ -304,6 +306,8 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 500 & 4.1663 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999 & 2.7868 \\
 1000 & 36.113 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 3.1157 \\
 2000 & 404.48 & $2.0539 \times 10^{-7}$ & $1.0267 \times 10^{-7}$ & 2.0001 & 3.4855 \\
+\cline{2-6}
+4000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -311,7 +315,10 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 \end{table}
 
 \subsubsection{Bartels-Stewart Algorithm}
-The Bartels-Stewart algorithm \cite{Bartels} can be used to solve the Sylvester equation $AX + XB = C$. In the general case the algorithm is as follows:
+The Bartels-Stewart algorithm \cite{Bartels} can be used to solve the Sylvester equation $AX + XB = C$. 
+This algorithm works by computing the Schur decompositions of the coefficient matrices $A$ and $B$, which are used to transform the equation into an equivalent form which is triangular, meaning it can be solved one element at a time. The solution of this triangular system is then used to obtain the solution to the original equation.
+
+In the general case the algorithm is as follows:
 \begin{enumerate}
 \item Compute the Schur forms $A^* = PRP^*$ and $B=QSQ^*$
 \item Solve $R^*V + VS = P^*CQ$ for $V$
@@ -319,7 +326,7 @@ The Bartels-Stewart algorithm \cite{Bartels} can be used to solve the Sylvester 
 \end{enumerate}
 where $A^*$ denotes the conjugate transpose of $A$.
 
-For (3.5) we have $A=B=T$, $T=T^*$, $X=U$ and $C=F$, so the algorithm is as follows:
+For the equation $TU+UT=F$, the algorithm is as follows:
 \begin{enumerate}
 \item Compute the Schur form $T=PRP^*$
 \item Solve $R^*V + VR = P^*FP$ for $V$
@@ -339,6 +346,8 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 500 & 77.888 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999 & 3.0096 \\ 
 1000 & 640.22 & $8.2088 \times 10^{-7}$ & $4.1044 \times 10^{-7}$ & 2.0000 & 3.0391 \\
 2000 & 5093.1 & $2.0467 \times 10^{-7}$ & $1.0237 \times 10^{-7}$ & 2.0052 & 2.9919 \\
+\cline{2-6}
+4000 & \multicolumn{5}{c|}{Timing Error} \\
 \hline
 \end{tabular}
 \caption{Results using the Bartels-Stewart algorithm.}
@@ -384,6 +393,9 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 1000 & 4.0920 & $8.2084 \times 10^{-7}$ & $4.1042 \times 10^{-7}$ & 2.0000 & 1.0780 \\
 2000 & 32.029 & $2.0503 \times 10^{-7}$ & $1.0259 \times 10^{-7}$ & 2.0027 & 2.9685  \\
 4000 & 279.95 & $4.9949 \times 10^{-8}$ & $2.4876 \times 10^{-8}$ & 2.0377 & 3.1277  \\
+8000 & 2812.2 & $8.6380 \times 10^{-9}$ & $4.1216 \times 10^{-9}$ & & \\
+\cline{2-6}
+16000 & \multicolumn{5}{c|}{Timing error} \\
 \hline
 \end{tabular}
 \caption{Results using SciPy's \texttt{linalg.solve\_sylvester}.}
@@ -393,11 +405,13 @@ As can be seen from the results above, using the built-in SciPy solver results i
 
 
 \subsubsection{Similarity Transformation}
-A similarity transformation \cite{Simoncini} can be used to solve the Sylvester equation $AX + XB = C$. Assuming matrices $A$ and $B$ can be diagonalised, let $P^{-1}AP = \text{diag}(\lambda_1, \dots, \lambda_n)$ and $Q^{-1}BQ = \text{diag}(\mu_1, \dots, \mu_m)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$, $\mu_1, \dots, \mu_m$ are the eigenvalues values of $B$ and the columns of $P$ and $Q$ are the eigenvectors of $A$ and $B$, respectively. Letting $\widetilde{C} = P^{-1}CQ$, the solution is then:
-\[ X = P \widetilde{X} Q^{-1}, \text{ with } \widetilde{x}_{ij} = \frac{\widetilde{c}_{ij}}{\lambda_i + \mu_j} \]
+A similarity transformation \cite{Simoncini} can be used to solve the Sylvester equation $AX + XB = C$. This method uses an eigendecomposition to rewrite the equation into a form that the solution can be easily obtained from. The method is as follows.
 
-In the case of (3.5), $A=B=T$, $X=U$ and $C=F$ so $P=Q$ and $P^{-1}TP = \text{diag}(\lambda_1, \dots, \lambda_n)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $T$ and the columns of $P$ are the eigenvectors of $T$. Letting $\widetilde{F}=P^{-1}FP$, the solution is then:
-\[ U = P \widetilde{U} P^{-1}, \text{ with } \widetilde{u}_{ij} = \frac{\widetilde{f}_{ij}}{\lambda_i + \lambda_j} \]
+Assuming matrices $A$ and $B$ can be diagonalised, let $P^{-1}AP = \text{diag}(\lambda_1, \dots, \lambda_n)$ and $Q^{-1}BQ = \text{diag}(\mu_1, \dots, \mu_m)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$, $\mu_1, \dots, \mu_m$ are the eigenvalues values of $B$ and the columns of $P$ and $Q$ are the eigenvectors of $A$ and $B$, respectively. Letting $\widetilde{C} = P^{-1}CQ$, the solution is then:
+\[ X = P \widetilde{X} Q^{-1}, \text{ with } \widetilde{X}_{ij} = \frac{\widetilde{C}_{ij}}{\lambda_i + \mu_j} \]
+
+For $TU+UT=F$, we have $P=Q$ and $P^{-1}TP = \text{diag}(\lambda_1, \dots, \lambda_n)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $T$ and the columns of $P$ are the eigenvectors of $T$. Letting $\widetilde{F}=P^{-1}FP$, the solution is then:
+\[ U = P \widetilde{U} P^{-1}, \text{ with } \widetilde{U}_{ij} = \frac{\widetilde{F}_{ij}}{\lambda_i + \lambda_j} \]
 
 \subsubsection*{Using numpy.linalg.eig}
 Using the method above, the eigenvalues and eigenvectors can be computed using NumPy's \texttt{linalg.eig} function. The results doing this are given in Table 5. The errors are again similar to the previous methods. However, here the eoc moves away from 2 as $n$ is increased. This is likely due to the fact that there is no general formula for calculating eigenvalues and eigenvectors for an arbitrary matrix, meaning the eigenvalues and eigenvectors are most likely approximated by NumPy's \texttt{linalg.eig}. It is likely that the approximations become less accurate as $n$ is increased. The eog here is however slightly better than the previous methods. 
@@ -415,6 +429,8 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 2000 & 11.571 & $2.0467 \times 10^{-7}$ & $1.0237 \times 10^{-7}$ & 2.0053 & 2.3812  \\
 4000 & 70.984 & $4.9966 \times 10^{-8}$ & $2.4876 \times 10^{-8}$ & 2.0350 & 2.6170  \\
 8000 & 466.83 & $8.6360 \times 10^{-9}$ & $4.1223 \times 10^{-9}$ & 2.5330 & 2.7173  \\
+\cline{2-6}
+16000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -454,13 +470,15 @@ $n$ & 1 & 2 & 3 & 4 & 5 & Total \\
 \subsubsection*{Calculating eigenvalues and eigenvectors explicitly}
 
 As can be seen from the results in Table 6, the most costly part of this method is calculating the eigenvalues and eigenvectors. As $T$ is a matrix in Toeplitz form, we can instead compute the eigenvalues and eigenvectors directly as:
-\[ \lambda_i = \frac{2}{h^2} \Big( \cos \Big( \frac{i \pi}{n+1} \Big) - 1 \Big) \]
+\begin{equation} 
+\lambda_i = \frac{2}{h^2} \Big( \cos \Big( \frac{i \pi}{n+1} \Big) - 1 \Big) 
+\end{equation}
 and:
-\[ t_{ij} = \sqrt{\frac{2}{n+1}} \sin \Big( \frac{ij \pi}{n+1}  \Big) \]
+\begin{equation}
+t_{ij} = \sqrt{\frac{2}{n+1}} \sin \Big( \frac{ij \pi}{n+1}  \Big) 
+\end{equation}
 
-Also the matrix $P$ is Hermitian, meaning that $P^{-1} = P^T$. We can use both of these properties to improve the timings of this algorithm.
-
-Results of doing so are given in Table 7, and timings for each step are given in Table 8. 
+Also the matrix $P$ is Hermitian, which means that $P^{-1} = P^T$. We can use both of these properties to improve the timings of this algorithm. Results of doing so are given in Table 7, and timings for each step are given in Table 8. 
 
 %Similar errors are given by this method, however the eoc is  closer to 2 for $n \leq 8000$. When $n=16000$ the eoc increases significantly, however the errors here are so small that this is likely due to the impact of roundoff errors. The eog is also significantly less demonstrating that using this algorithm and computing the eigenvalues explicity achieves a near square time complexity. Also this is the only method so far that has been able to solve the problem with $n=16000$ without running out of memory. 
 
@@ -470,14 +488,16 @@ Results of doing so are given in Table 7, and timings for each step are given in
 \hline
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog\\
 \hline
-125 & 0.080673 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & -  \\
-250 & 0.30396 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 2.0001 & 1.9137  \\
-500 & 1.2021 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999 & 1.9836 \\
-1000 & 5.5904 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 2.2174  \\
-2000 & 20.247 & $2.0541 \times 10^{-7}$ & $1.0270 \times 10^{-7}$ & 2.0000 & 1.8567 \\
-4000 & 82.243 & $5.1314 \times 10^{-8}$ & $2.5656 \times 10^{-8}$ & 2.0018 & 2.0222  \\
-8000 & 360.35 & $1.2814 \times 10^{-8}$ & $6.4065 \times 10^{-9}$ & 2.0020 & 2.1314  \\
-16000 & 1771.9 & $7.7761 \times 10^{-10}$ & $3.8764 \times 10^{-10}$ & 4.0429 & 2.2978 \\
+125 & 0.028324 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & -  \\
+250 & 0.080759 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ &  &   \\
+500 & 0.22574 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ &  &  \\
+1000 & 0.87985 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ &  &   \\
+2000 & 4.0533 & $2.0541 \times 10^{-7}$ & $1.0270 \times 10^{-7}$ &  &  \\
+4000 & 15.696 & $5.1313 \times 10^{-8}$ & $2.5656 \times 10^{-8}$ &  &   \\
+8000 & 73.321 & $1.2813 \times 10^{-8}$ & $6.4065 \times 10^{-9}$ &  &   \\
+16000 & 428.46 & $7.7527 \times 10^{-10}$ & $3.8764 \times 10^{-10}$ &  &  \\
+\cline{2-6}
+32000 & \multicolumn{5}{c|}{Memory Error??} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -507,7 +527,7 @@ $n$ & 1 & 2 & 3 & 4 & 5 & Total \\
 As can be seen from the results in Table 8, calculating the eigenvalues and eigenvectors explicitly  outperforms calculating them using the NumPy library when $n$ is large.
 
 \subsubsection{Shifted System}
-A projection method \cite{Simoncini} can be used on a Sylvester equation $AX + XB =C$ by decomposing $B$ to obtain $n$ linear systems, each of which can be solved simultaneously (and in parallel) to obtain the solution $X$. The steps of this method are as follows:
+A projection method \cite{Simoncini} can be used to solve $AX + XB = C$. This method works by computing the eigendecomposition of $B$ to reform the problem as solving $n$ independent linear systems. Each of these linear systems can be solved simultaneously to obtain the solution $X$. The steps of this method are as follows:
 \begin{enumerate}
 \item Compute $B = WSW^{-1}$, where $S = \text{diag}(s_1, \dots, s_n)$ are the eigenvalues of $B$ and the columns of $W$ are the eigenvectors of $B$
 \item Compute $\hat{C} = CW$
@@ -537,6 +557,8 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 1000 & 19.498 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 3.1576 \\
 2000 & 194.13 & $2.0541 \times 10^{-7}$ & $1.0271 \times 10^{-7}$ & 2.0000 & 3.3156 \\
 4000 & 2452.5 & $5.1347 \times 10^{-8}$ & $2.5674 \times 10^{-8}$ & 2.0009 & 3.6592  \\
+\cline{2-6} 
+8000 & \multicolumn{5}{c|}{Timing error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -580,7 +602,9 @@ $n$ & Time(s) & no. iters & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}
 1000 & 0.54308 & 1 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 1.9418 \\
 2000 & 2.3162 & 1 & $2.0541 \times 10^{-7}$ & $1.0271 \times 10^{-7}$ & 2.0000 & 2.0925 \\
 4000 & 9.8487 & 1 & $5.1379 \times 10^{-8}$ & $2.5689 \times 10^{-8}$ & 2.0000 & 2.0882 \\
-8000 & 103.34 & & $1.2848 \times 10^{-8}$ & $6.4239 \times 10^{-9}$ & 2.0000 & 3.3913 \\
+8000 & 103.34 & 2 & $1.2848 \times 10^{-8}$ & $6.4239 \times 10^{-9}$ & 2.0000 & 3.3913 \\
+\cline{2-7}
+16000 & \multicolumn{6}{c|}{Memory Error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -603,11 +627,11 @@ This solution only converges if:
 	\begin{equation}
 	0 < \kappa < \frac{1}{\lambda_{\text{max}}(T^2)} 
 	\end{equation}
-where $\lambda_{\text{max}}(T^2)$ denotes the maximum eigenvalue of $T^2$. Using the method given previously for calculating eigenvalues we can compute:
+where $\lambda_{\text{max}}(T^2)$ denotes the maximum eigenvalue of $T^2$. We can use the formula (3.8) to calculate the maximum eigenvalue of $T^2$ as:
 \begin{equation}
 \lambda_{\text{max}}(T^2) = \frac{4}{h^4} \text{max} \Big( \big( \cos{\Big(\frac{i \pi}{n+1} \Big) } -1 \big)^2 \Big)
 \end{equation}
-$\lambda_{\text{max}}(T^2)$ therefore scales with $\frac{1}{h^4}$ meaning its reciprocal scales with $h^4$, implying $\kappa$ will need to be significantly small as $n$ is increased for the solution to converge. Even for small values of $n$, this is impractical and therefore this method is not appropriate for solving this equation.
+$\lambda_{\text{max}}(T^2)$ therefore scales with $\frac{1}{h^4}$ meaning its reciprocal scales with $h^4$. This implies that $\kappa$ will need to be significantly small as $n$ is increased for the solution to converge. Even for small values of $n$, this is impractical and therefore this method is not appropriate for solving this equation. This can be seen from the fact that, using this method with $n=125$ and a step size of $\kappa = \nicefrac{1}{2 \lambda_{\text{max}}(T^2)}$, the method took longer than the maximum time of 6000 seconds allowed to compute a solution.
 
 \subsubsection{Modified Conjugate Gradient}
 In \cite{Hou} a modified conjugate gradient (MCG) algorithm is proposed, which is adapted for solving Sylvester Equations. The general algorithm for solving $AX+XB=C$, where $A, B, C$ and $X$ are all $n \times n$ matrices, is as follows:
@@ -819,26 +843,19 @@ Methods can now be used which compute approximate solutions to these quantities 
 A simple way of solving (4.4) is to use the Monte Carlo method. The Monte Carlo method works by taking $M$ random samples of $\varepsilon$ over its range, and then solves (4.4) for each of these samples. 
 This allows the most effective method from Section 3 to be used as a `black box' strategy. Once solved, the mean solution can be calculated as:
 \begin{equation}
-\mathbb{E}_\text{M}[u] = \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon)
+\mu = \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon)
 \end{equation}
-where $M$ is the number of samples used in the Monte Carlo method and $u_h$ is the solution obtained from the finite difference method using a mesh of size $h$. This is denoted as $\mathbb{E}_\text{M}[u]$ to indicate that it is the mean solution computed from the Monte Carlo method, rather than the expectation (4.5). 
-
-Similarly, the variance can also be computed as:
+where $M$ is the number of samples used in the Monte Carlo method and $u_h$ is the solution obtained from the finite difference method using a mesh of size $h$. Similarly, the variance can also be computed as:
 \begin{equation}
-\text{Var}_\text{M}[u] = \frac{1}{M-1}\sum_{i=1}^M (u_h - \mathbb{E}_\text{M}[u])^2
+\sigma^2 = \frac{1}{M-1}\sum_{i=1}^M (u_h - \mu)^2
 \end{equation}
-and the standard deviation $\text{Std}_\text{M}[u] = \sqrt{\text{Var}_\text{M}[u]}$.
-
-
-Any of these quantites can then be chosen and compared to the known values as a measure of error for the problem. By choosing the mean we can measure the error as:
+and the standard deviation is $\sigma$. Any of these quantites can be calculated and compared to the known values as a measure of error for the problem. By choosing the mean we can measure the error as:
 \begin{equation}
-\begin{split}
-\text{Error} = & \bigg{|} \bigg{|} \mathbb{E}[u] - \mathbb{E}_\text{M}[u] \bigg{|} \bigg{|} \\
-= & \bigg{|} \bigg{|} \mathbb{E}[u] - \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon) \bigg{|}\bigg{|}
-\end{split}
+\text{Error} = \bigg{|} \bigg{|} \mathbb{E}[u] - \mu \bigg{|} \bigg{|} \\
+%= & \bigg{|} \bigg{|} \mathbb{E}[u] - \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon) \bigg{|}\bigg{|}
 \end{equation}
 
-As noted in \cite{Bishop}, for the error to converge to 0 the mesh size must be decreased as the number of samples is increased. This is because the error depends both on the mesh size and the number of samples, so by changing only one of these factors the method will be converging to the error of the factor that is not being changed, rather than to 0. 
+which can be evaluated using the ${L^\infty}$ and ${L^2}$ error measures as used in the previous section. As noted in \cite{Bishop}, for the error to converge to 0 the mesh size must be decreased as the number of samples is increased. This is because the error depends both on the mesh size and the number of samples, so by changing only one of these factors the method will be converging to the error of the factor that is not being changed, rather than to 0. 
 
 It is also worth noting that as the solution and therefore the error is dependent on a random variable, the error is then itself a random variable and therefore not guaranteed to decrease at each level, as the samples are increased. However, the law of large numbers tells us that by taking more and more samples the mean solution should approximate the expected value and hence the error should tend towards 0. 
 
@@ -849,11 +866,11 @@ Results using the Monte Carlo method, with a single uncertain parameter, are giv
 \hline
 $n$ & $M$ & Time(s) & Error \\
 \hline
-125 & 10 & & 0.098539 \\
-250 & 40 & & 0.14002 \\
-500 & 160 & & 0.042046 \\
-1000 & 640 & & 0.0088454 \\
-2000 & 2560 & & 0.00030675 \\
+125 & 10 & 0.15511 & 0.071286 \\
+250 & 40 & 2.2698 & 0.19918 \\
+500 & 160 & 39.878 & 0.074265 \\
+1000 & 640 & 641.37 & 0.0050958 \\
+2000 & 2560 & 11957 & 0.0045691 \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -873,7 +890,7 @@ where $\Omega$ represents the support of $\{\Psi_n\}$ (the subset of the domain 
 \langle f, g \rangle = \int_{\Omega} f(x)g(x)w(x) dx
 \end{equation}
 
-As noted in \cite{Xiu}, certain classes of orthogonal polynomials have the exact same weight function as the probability distribtutions of certain random variables. This property allows the solution $u$ of a stochastic PDE to be approximated via a polynomial chaos expansion using the distribution of the random variable, as:
+As noted in \cite{Xiu}, certain classes of orthogonal polynomials have the exact same weight function as the probability distribtutions of certain random variables. This property allows the solution $u$ of a stochastic PDE to be approximated via a truncated polynomial chaos expansion using the distribution of the random variable, as:
 \begin{equation}
 u(x,y,\varepsilon) = \sum_{k=0}^P u_k(x,y) \Psi_k(\varepsilon)
 \end{equation}
@@ -886,12 +903,11 @@ for a spatially varying random field $\alpha$ with mean $\bar{\alpha}$, where $\
 
 A Galerkin projection is then performed on the PDE by multiplying it by $\Psi_k$ for $k=0, \dots, P$ and taking the inner product, which gives a system of coupled deterministic differential equations, which can then be discretised and solved via, for example, the finite difference method. The resulting solution matrix will be of size $n^2 \times (P+1)$, where $n$ is the number of unknowns in each direction of the mesh and $P$ is defined as above. The mean and variance are then computed as:
 \begin{equation}
-\mathbb{E}[u] = u_0
+\mu = u_0
 \end{equation}
 \begin{equation}
-\text{Var}[u] = \sum_{k=1}^P u_k^2 \mathbb{E}[\Psi_k^2]
+\sigma^2 = \sum_{k=1}^P u_k^2 \mathbb{E}[\Psi_k^2]
 \end{equation}
-and $\text{Std}[u] = \sqrt{\text{Var}[u]}$ as before. 
 
 For equation (4.4), $\varepsilon$ is uniformly distrubted over the interval $[1,3]$. We introduce the substitution $\varepsilon = \varepsilon_0 + 2$ into this equation, with $\varepsilon_0 \sim u(-1,1)$, so that the random variable in the equation has zero mean. We then use the Legendre polynomials, which have the same weighting function as the probability density function of the uniform distribution, to solve the equation. They are defined as the polynomials which solve the equation:
 \begin{equation}
@@ -917,22 +933,72 @@ Finally, we multiply both sides by $\Psi_k$ and take the inner product, giving:
 \end{multline}
 for $k = 0, \dots, P$. The uncertainty has been removed from this PDE and we now have a system of coupled deterministic differential equations, which can be solved for $u$.
 
+We can now use the finite difference method to discretise the system in space and represent the unknowns $u_i$ as a single matrix\footnote{Note that here $L = I \otimes T + T \otimes I$, where $T = -\frac{1}{h^2} \text{tridiag}(1,-2,1)$ and $I$ is the identity matrix, because we are representing all unknowns in a single matrix, rather than using two matrices as before.}:
+\begin{equation}
+Lu_i = - (u_i)_{xx} - (u_i)_{yy}
+\end{equation}
+where $L$ has dimension $n^2 \times n^2$ (the total number of unknowns) and $u_i$ is a vector of length $n^2$. We can also represent the inner product on the left-hand side as a $(P+1) \times (P+1)$ matrix:
+\begin{equation}
+P_{ij} = \langle \Psi_i (\varepsilon_0 + 2) \Psi_j \rangle
+\end{equation}
+Finally, we represent the right-hand side of the system as a $(P+1) \times n^2$ matrix:
+\begin{equation}
+F_{k} = 2\pi^2 \sin(\pi x_i)\sin(\pi y_j) \langle \Psi_k (\varepsilon_0 + 2) \rangle + 34\pi^2 \sin(3\pi x_i) \sin(5\pi y_j) \langle \Psi_k (\varepsilon_0 + 2)^2 \rangle
+\end{equation}
+where $k = 0, \dots, P$ represent the random discretisation (the rows) and $i,j = 1, \dots, n$ represent the spatial discretisation (the columns). By reshaping $F$ into a vector we can represent the problem as a linear system:
+\begin{equation}
+Au = f
+\end{equation} 
+where $A = P \otimes L$, $f = \text{vec}(F)$ and $u$ is a vector of length $(P+1)n^2$. This system can now be solved in a variety of different ways.
+
+\subsubsection*{Linear System}
+The simplest way to solve (4.26) is to solve it as a linear system using a sparse solver. Results using \texttt{sparse.linalg.spsolve} from the SciPy library are given in Table 15.
+
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|}
 \hline
 $n$ & $K$ & Time(s) & Error \\
 \hline
-125 & 1 & & $5.1807 \times 10^{-5}$ \\
-250 & 1 & & $1.3054 \times 10^{-5}$ \\
-500 & 1 & & $3.2767 \times 10^{-6}$ \\
-1000 & 1 & & $8.2081 \times 10^{-7}$ \\
-2000 & 1 & & $2.0544 \times 10^{-7}$ \\
+125 & 1 & 0.20171 & 0.0021941 \\
+250 & 1 & 1.3178 & 0.00055258 \\
+500 & 1 & 10.284 & 0.00013872 \\
+1000 & 1 & 84.773 & $3.4752 \times 10^{-5}$ \\
+\cline{2-4}
+$\geq 2000$ & \multicolumn{3}{c|}{Memory Error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
-\caption{Results using the stochastic Galerkin method with a single uncertain parameter.}
+\caption{Results using the stochastic Galerkin method with a single uncertain parameter by solving the linear system using \texttt{sparse.linalg.spsolve}.}
 \end{table}
+
+\subsubsection*{Matrix Equation}
+An alternative approach to solving (4.26) is to rewrite it as a matrix equation. (4.26) can be written as the matrix equation:
+\begin{equation}
+LXP = F
+\end{equation} 
+where $u = \text{vec}(X)$ and $L$, $P$ and $F$ are defined as before. This can then be solved using a variation of the Bartels-Stewart algorithm. The basic idea is the same as the standard Bartels-Stewart algorithm. Firstly, the Schur decomposition of $L$ and $P$ is computed, so that the equation can be transformed into an equivalent upper-triangular system that can be solved element by element. The solution to the original equation is then easily obtained using the solution of the triangular system. The steps of the algorithm are as follows:
+\begin{enumerate}
+\item Compute the Schur forms $L = U \hat{L} U^*$ and $P = V \hat{P} V^*$, and let $\hat{F} = U^* F V$.
+\item Solve $\hat{L} Y \hat{P} = \hat{F}$ for $Y$, where $\hat{L}$ and $\hat{P}$ are upper triangular.
+\item Compute solution $X = UYV^*$.
+\end{enumerate}
+The problem with this method is that the Schur forms in the first step are computed using the QR algorithm, which only works on dense matrices. Therefore a huge amount of memory is required to compute the Schur form of $L$ (of size $n^2 \times n^2$), which is unpractical even for a relatively small problem size. Therefore solving the stochastic PDE in this form is not appropriate.
+
+\subsubsection*{Sylvester Equation}
+We can rewrite (4.26) as an alternative matrix equation in the form:
+\begin{equation}
+2LXG_0 + LXG_1 = F
+\end{equation}
+where $u = \text{vec}(X)$, $(G_0)_{ij} = \langle \Psi_i \Psi_j \rangle$ and $(G_1)_{ij} = \langle \Psi_i \varepsilon_0 \Psi_j \rangle$. By left and right multiplying by $L^{-1}$ and $G_0^{-1}$ respectively, we obtain the equation in Sylvester form:
+\begin{equation}
+AX + XB = C
+\end{equation}
+where $A = L^{-1}2L$, $B = G_1 G_0^{-1}$ and $C = L^{-1} F G_0^{-1}$. This can now be solved using any of the methods from Section 3, assuming that they can be adapted for sparse matrices. Results using the similarity transformation method, using \texttt{sparse.linalg.eigs} from the SciPy library to calculate the eigenpairs, are given in Table 15.
+
+
+
+
 
 
 
@@ -943,7 +1009,22 @@ Multiple unknown parameters can be introduced into the PDE, which makes it signi
 \begin{equation}
 \varepsilon = (\varepsilon_0 + 2) + \sum_{p,q = 1}^N \varepsilon_{pq} \sin(p \pi x) \sin(q \pi y)
 \end{equation}
-with $\varepsilon_0 \sim u(-1,1)$ and $\varepsilon_{pq} \sim (-2^{-\sqrt{p^2+q^2}},2^{-\sqrt{p^2+q^2}})$. Then let $u = \sin(\pi x)\sin(\pi y) + \varepsilon$ be the solution of the PDE:
+with $\varepsilon_0 \sim u(-1,1)$ and $\varepsilon_{pq} \sim \left(-2^{-\sqrt{p^2+q^2}},2^{-\sqrt{p^2+q^2}} \right)$. Then let $u = \sin(\pi x)\sin(\pi y) + \varepsilon$ be the solution of the PDE:
+\begin{alignat}{1}
+-\varepsilon u_{xx} -\varepsilon u_{yy} = {}& f \quad \text{ on } \mathcal{D} \times \Omega \nonumber \\
+u = {}& 0 \quad \text{ on } \partial \mathcal{D} \times \Omega
+\end{alignat}
+which gives:
+\begin{equation}
+\begin{split}
+u_{xx} &= -\pi^2 \sin(\pi x)\sin(\pi y) - \sum_{p,q=1}^N p^2 \pi^2 \varepsilon_{pq} \sin(p\pi x)\sin(q\pi y) \\
+u_{yy} &= -\pi^2 \sin(\pi x)\sin(\pi y) - \sum_{p,q=1}^N q^2 \pi^2 \varepsilon_{pq} \sin(p\pi x)\sin(q\pi y) \\
+\implies f &= \varepsilon \Big(2\pi^2 \sin(\pi x) \sin(\pi y) + \pi^2 \sum_{p,q=1}^N (p^2 + q^2) \varepsilon_{pq} \sin(p \pi x)\sin(q \pi y) \Big) \\
+&= \Big((\varepsilon_0 + 2) + \sum_{p,q=1}^N \varepsilon_{pq} \sin(p\pi x)\sin(q\pi y) \Big)
+\\ &\times \Big(2\pi^2 \sin(\pi x) \sin(\pi y) + \pi^2 \sum_{p,q=1}^N (p^2 + q^2) \varepsilon_{pq} \sin(p \pi x)\sin(q \pi y) \Big)
+\end{split}
+\end{equation}
+
 
 
 %We can increase the complexity of the PDE by introducing multiple unknown parameters that can be modelled as random variables. By redefining $\varepsilon$ as:

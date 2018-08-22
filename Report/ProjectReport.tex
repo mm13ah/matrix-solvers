@@ -1,7 +1,4 @@
-\documentclass{article}
-\title{Matrix Equation Solvers}
-\author{Alex Harvey - mm13ah - ID: 200786528}
-\date{}
+\documentclass[11pt]{article}
 
 \usepackage{amsmath}
 \numberwithin{equation}{section}
@@ -18,14 +15,64 @@
 \usepackage{pgfgantt}
 \usepackage{nicefrac}
 \usepackage{caption}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage[toc,page]{appendix}
+\usepackage{lipsum}
+\usepackage[export]{adjustbox}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{epsfig,graphics}
+\usepackage{titlesec}
+
+\newcommand{\projectTitle}{Matrix Solvers for Stochastic Galerkin Schemes}
+\newcommand{\fullname}{Alexander Harvey}
+\newcommand{\degreeTitle}{MSc Advanced Computer Science}
+\newcommand{\session}{2017/18}
+
+\newcommand{\frontcover}{
+% The title page:
+\begin{titlepage}
+\newgeometry{left=25mm,right=25mm,top=45mm,bottom=0.1cm}
+
+\begin{minipage}[t]{7cm}
+\noindent\textbf{\Large{School of Computing}}\\
+{\fontfamily{ptm}\selectfont 
+\uppercase{faculty of engineering}
+}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{7cm}
+\vspace*{-25pt}
+\includegraphics[scale=0.2,right]{logo_black.png}
+\vspace*{-1pt}
+\end{minipage}
+
+\noindent\makebox[\linewidth]{\rule{\paperwidth}{0.4pt}}
+
+\centering
+\vspace*{37mm}
+\textbf{\Large\projectTitle}\\
+\vspace*{10mm}
+\textbf{\large\fullname}\\
+\vspace*{10mm}
+\textbf{Submitted in accordance with the requirements for the degree of}\\
+\textbf{\degreeTitle}\\
+\vspace*{10mm}
+\session\\
+\restoregeometry
+\end{titlepage}
+}
 
 \newcommand{\subsubsubsection}[1]{\paragraph{#1}\mbox{}\\}
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
 
+\onehalfspacing
+
 \begin{document}
 
-\maketitle
+\frontcover
 
 \newpage
 
@@ -34,11 +81,9 @@
 \clearpage
 
 \section{Introduction}
-\subsection{Problem Statement}
+\subsection{Possion Equation}
 
-The traditional approach to solving partial differential equations (PDEs) numerically involves stacking all the unknowns of the problem into a single vector which ignores underlying structures. This prevents methods from being used which can take advantage of the problem structure to solve the problem more efficiently. This can come at a significant cost when uncertainty is introduced into the problem. An alternative approach is to formulate the problem as a matrix equation, which can be solved using a range of different methods. This project involves exploring methods that solve this alternative formulation and how these solvers compare against each other. 
-
-As an example, define spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and let $u: \mathcal{D} \to \mathbb{R}$ be the solution of the equation:
+As an example, define spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and let $u: \mathcal{D} \to \mathbb{R}$ be the solution of Poisson's equation:
 	\begin{alignat}{1} 
 	-u_{xx} - u_{yy} = {} & f \quad \text{ on } \mathcal{D} \nonumber \\
 	u = {} & 0 \quad \text{ on } \partial \mathcal{D}
@@ -115,9 +160,7 @@ The discretised form of this PDE can then be solved by computing the equation:
 	\begin{equation}
 	f_{ij} = -\frac{1}{h^2} \big( u_{i-1j} - 2u_{ij} + u_{i+1j} \big) - \frac{1}{h^2} \big( u_{ij-1} - 2u_{ij} + u_{ij+1} \big)
 	\end{equation}
-at each internal grid point, meaning the system has $n^2$ unknowns with $n=N-2$. 
-
-The traditional approach to solving this discretised form would be to write (1.4) as:
+at each internal grid point, meaning the system has $n^2$ unknowns with $n=N-2$. The traditional approach to solving this discretised form would be to write (1.4) as:
 	\begin{equation}
 	f_{ij} = -\frac{1}{h^2} \big( u_{i-1j} + u_{ij-1} - 4u_{ij} + u_{i+1j} + u_{ij+1}  \big)
 	\end{equation}
@@ -130,7 +173,7 @@ A Sylvester equation is a matrix equation of the form $AX + XB = C$, where $A$ i
 	\end{equation}
 where $T$, $U$ and $F$ are of size $n \times n$.
 
-Define $\text{tridiag}(i,j,k)$ as a matrix with $j$ on the main diagonal and $i$ and $k$ on the left and right diagonals respectively. Then for (1.6) we have $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$ and $U_{ij} = u(x_i, y_j)$, where $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. The system has $n$ unknowns in each direction meaning there is a total of $n^2$ unknowns. The matrix equation is visualised below:
+Let $\text{tridiag}(j,i,k)$ be defined as a tridiagonal matrix with $i$ on the main diagonal and $j$ and $k$ on the left and right diagonals, respectively. Then for (1.6) we have $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$ and $U_{ij} = u(x_i, y_j)$, where $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. The system has $n$ unknowns in each direction meaning there is a total of $n^2$ unknowns. The matrix equation is visualised below:
 \begin{eqnarray}
 \frac{-1}{h^2} 
 \begin{pmatrix}
@@ -171,9 +214,8 @@ u_{n1} & u_{n2} & \dots & u_{nj} & \dots & u_{nn}
 \end{eqnarray}
 There are a variety of methods that can be used to solve Sylvester equations. This project will explore and compare different methods for solving equations in this form. 
 
-\subsection{Notation and Preliminaries}
-
 \subsection{Organisation}
+The organisation of this report is as follows. Section 2 sets out the objectives and planning of the project. Section 3 explores different methods for solving Sylvester equations. Section 4 explores ways of solving stochastic PDEs. Section 5 studies an application problem that combines the knowledge gained in the previous sections. Finally, Section 6 is an evaluation of the project's success.
 
 \newpage
 
@@ -217,12 +259,11 @@ If the project deadlines are met the remaining time will be dedicated to project
 \newpage
 
 \section{Matrix Solvers}
-For spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and $u: \mathcal{D} \rightarrow \mathbb{R}$, let $u(x,y) = \sin{(\pi x)} \sin{(\pi y)}$ be the exact solution of the equation:
+This section explores different methods for solving a particular matrix equation in Sylvester form. For spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and $u: \mathcal{D} \rightarrow \mathbb{R}$, let $u(x,y) = \sin{(\pi x)} \sin{(\pi y)}$ be the exact solution of the equation:
 \begin{alignat}{2}
 -u_{xx} -u_{yy} = {} & f \quad & \text{ on } \mathcal{D} \nonumber \\
 u = {} & 0 \quad & \text{ on } \partial \mathcal{D}
 \end{alignat}
-
 This gives:
 \begin{equation}
 \begin{split}
@@ -230,14 +271,12 @@ u_{xx} = u_{yy} = - \pi^2 \sin{(\pi x)} \sin{(\pi y)} \\
 \implies f = 2 \pi^2 \sin{(\pi x)} \sin {(\pi y)}
 \end{split}
 \end{equation} 
-
 The equation to be be solved is therefore:
 \begin{alignat}{1}
 -u_{xx} -u_{yy} = {} & 2 \pi^2 \sin{(\pi x)} \sin {(\pi y)} \quad \text{ on } \mathcal{D} \nonumber \\
 u = {} & 0 \quad \text{ on } \partial \mathcal{D}
 \end{alignat}
-
-Using the centred finite difference approximations ((1.2) and (1.3)) with uniform grid spacing $h$ to discretise the domain of this system, we have:
+Using the centred finite difference approximations with uniform grid spacing $h$ to discretise the domain of this system, we have:
 	\begin{equation}
 	\begin{split}
 	-\frac{1}{h^2} \big( u_{i-1j} - & 2u_{ij} + u_{i+1j} \big) - \frac{1}{h^2} \big( u_{ij-1} - 2u_{ij} + u_{ij+1} \big) 
@@ -247,24 +286,23 @@ Using the centred finite difference approximations ((1.2) and (1.3)) with unifor
 to be solved at each grid point for $i, j = 1, \dots n$, where $n$ is the total number of unknowns in each direction. The matrix form of this equation is therefore:
 \begin{equation}
 	TU + UT = F
-	\end{equation}
-where $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$, $U_{ij} = u(x_i, y_j)$ and $F_{ij} = 2 \pi^2 \sin(\pi x_i) \sin(\pi y_j)$ are all matrices of size $n \times n$ and $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$.
-
-This form allows us to explore different methods for solving this equation and compare them to the exact solution $u = \sin(\pi x) \sin(\pi y)$. A plot of the exact solution, with $n=1000$, is given in Figure 3. 
-
+\end{equation}
+where $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$, $U_{ij} = u(x_i, y_j)$ and $F_{ij} = 2 \pi^2 \sin(\pi x_i) \sin(\pi y_j)$ are all matrices of size $n \times n$ and $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. This form allows us to explore different methods for solving this equation and compare them to the exact solution $u = \sin(\pi x) \sin(\pi y)$. A plot of the exact solution, with $n=1000$, is given in Figure 3. 
 \begin{figure}[H]
 \includegraphics[scale=.5]{img/solution2.png}
 \centering
 \caption{Plot of the solution with $n=1000$.}
 \end{figure} 
 
-Throughout the following section, the following measurements are given to evaluate the performance of each of the methods implemented:
+Throughout the following section, each of the implemented methods will be given a maximum execution time of 6000 seconds to compute a solution. If a method does not compute a solution in this time for a certain problem size, then this will be specified in the results. If a method does not compute a solution because it needs more memory than is available, then this will also be specified. All tests in this section (and throughout the report) will be run on a DEC-10 computer with 32GB of RAM and 8 cores. 
+
+The following measurements will be given to evaluate the performance of each of the methods implemented:
 \begin{itemize}
-\item $n$: The number of unknowns in each direction for the system. The total number of unknowns is $n^2$.
-\item Time(s): The time taken in seconds for the method to compute the solution to the problem.
-\item $|| u - u_h ||_{L^\infty} $: Measures the maximum difference between the actual solution and computed solution for each $u$. Defined as:
+\item $n$: The number of unknowns in each direction for the system - the total number of unknowns is $n^2$. The mesh size will be continually refined by a factor of $\frac{1}{2}$, meaning the total number of unknowns in each direction will be doubled at each level, until either the time limit is reached or too much memory is used. The starting value will be $n=125$, which will allow for a range of problem sizes to be tested without running more tests than necessary.
+\item Time(s): The time taken in seconds for the method to compute the solution to the problem. As previously stated the maximum time allowed will be 6000 seconds.
+\item $|| u - u_h ||_{L^\infty} $: An error measurement which measures the maximum difference between the actual solution and computed solution for each $u$. Defined as:
  \[ || u - u_h ||_{L^\infty} = \text{max}_{ij} | u(x_i, y_i) - u_{ij} | \]
-\item $|| u - u_h ||_{L^2} $: An average measure of error, defined as:
+\item $|| u - u_h ||_{L^2} $: An error measurement which measures the average difference between the actual solution and computed solution for all $u$, defined as:
 \[ || u - u_h ||_{L^2} = \sqrt{h^2 \sum | u(x_i,y_j) - u_{ij} |^2} \]
 \item Experimental order of convergence (eoc): Measures the rate of convergence of a method as the problem size is increased, which should approach 2 as the step size is increased. Defined as:
 \[ \text{eoc}(i) = \frac{\log(\nicefrac{E_i}{E_{i-1}})}{\log(\nicefrac{h_i}{h_{i-1}})} \]
@@ -274,14 +312,12 @@ where $E_i$ is the error (chosen here as $|| u - u_h ||_{L^\infty}$) and $h_i$ i
 where $t_i$ is the total execution time and $n_i$ is the problem size at level $i$.
 \item No. iters (iterative methods only): The number of iterations taken for the method to converge to the given convergence tolerance.
 \end{itemize}
-It is worth noting that as the total number of unknowns, and therefore the problem size, is $n^2$, the best time complexity that an optimal solver can achieve is $O(n^2)$, as it must compute a solution for each unknown. 
-
-For each of the implemented methods, a maximum running time of 6000 seconds will be given. If a method does not compute a solution in this time, this will be specified in the results. If a method does not compute a solution because it tries to use more memory than is available, this will also be specified in the results.
+It is worth noting that as the total number of unknowns, and therefore the problem size, is $n^2$, the best time complexity that an optimal solver can achieve is $O(n^2)$, as it must compute a solution for each unknown. Also, as each of the methods is solving the same equation, the differences in error for each of the methods should be small.
 
 \subsection{Direct Methods}
 
 \subsubsection{Kronecker Product}
-A naive approach to solving this system is to use the Kronecker product to rewrite (3.5) as a standard vector linear system. The Sylvester equation $AX + XB = C$ can be written as the standard vector linear system:
+A naive approach to solving this equation is to use the Kronecker product to rewrite (3.5) as a standard vector linear system. The Sylvester equation $AX + XB = C$ can be written as the standard vector linear system:
 \begin{equation}
 \mathcal{A}x = c
 \end{equation}
@@ -293,7 +329,7 @@ The equivalent linear system for the matrix equation $TU + UT = F$ is:
 \end{equation}
 where $\mathcal{F} = \text{vec}(F)$, $\mathcal{T} = I \otimes T + T \otimes I$ and $u = \text{vec}(U)$. 
 
-This is the exact linear system that would be obtained from equation (1.5), i.e. stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. Results solving this linear system using the direct sparse solver \texttt{sparse.linalg.spsolve} from the SciPy library are shown in Table 1. As can be seen from the results, both errors decrease as the problem size $n$ is increased. The eoc is very close to 2 for all $n$, demonstrating the convergence of the algorithm. As $n$ is increased the eog grows beyond $3$, which shows this algorithm has worse than cubic time complexity for large $n$. 
+This is the exact linear system that would be obtained from equation (1.5), that is, stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. Results solving this linear system using the direct sparse solver \texttt{sparse.linalg.spsolve} from the SciPy library are shown in Table 1. As can be seen from the results, both errors decrease as the problem size $n$ is increased. The eoc is close to 2 for all $n$, demonstrating the convergence of the algorithm. As $n$ is increased the eog grows beyond $3$, which shows this algorithm has worse than cubic time complexity for large $n$. For $n=4000$, this method results in a memory error. This is because \texttt{spsolve} tries to compute a (incomplete) LU decomposition of $\mathcal{T}$ which destroys the sparsity of the matrix and therefore requires much more memory to store it.
 
 \begin{table}[H]
 \centering
@@ -316,70 +352,41 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 
 \subsubsection{Bartels-Stewart Algorithm}
 The Bartels-Stewart algorithm \cite{Bartels} can be used to solve the Sylvester equation $AX + XB = C$. 
-This algorithm works by computing the Schur decompositions of the coefficient matrices $A$ and $B$, which are used to transform the equation into an equivalent form which is triangular, meaning it can be solved one element at a time. The solution of this triangular system is then used to obtain the solution to the original equation.
+This algorithm works by computing the Schur decompositions of the coefficient matrices $A$ and $B$, which are used to transform the equation into an equivalent form which has coefficient matrices which are upper and lower triangular, meaning it can be solved one element at a time. The solution of this triangular system is then used to obtain the solution to the original equation.
 
 In the general case the algorithm is as follows:
 \begin{enumerate}
-\item Compute the Schur forms $A^* = PRP^*$ and $B=QSQ^*$
-\item Solve $R^*V + VS = P^*CQ$ for $V$
-\item Compute $X=PVQ^*$
+\item Compute the Schur forms $A^* = PRP^*$ and $B=QSQ^*$.
+\item Solve $R^*Y + YS = \hat{C}$ for $Y$, where $\hat{C} = P^*CQ$.
+\item Compute $X=PYQ^*$.
 \end{enumerate}
-where $A^*$ denotes the conjugate transpose of $A$.
+Here the matrices $R$ and $P$ are upper/lower triangular matrices with the eigenvalues of $A$ and $B$ on the diagonal, respectively. The matrices $P$ and $Q$ are the orthonormal sets of the eigenvectors of $A$ and $B$, respectively.
 
-For the equation $TU+UT=F$, the algorithm is as follows:
+By breaking this algorithm down into its component parts, we can examine each part to see which is the most costly. The first step of the algorithm can be computed using \texttt{linalg.schur} from the SciPy library, which uses the QR algorithm and has time complexity $O(n^3)$. For the second step, each entry of $Y$ can be computed as:
+\begin{equation}
+Y_{ij} = \hat{C}_{ij} - \sum_{p=1}^{i-1} R_{ip}Y_{pj} - \sum_{q=1}^{j-1} Y_{iq}S_{qj}
+\end{equation}
+for $i,j=1, \dots, n$. This also has time complexity $O(n^3)$, as it will have a \texttt{for} loop running from $i=1$ to $n$, a nested \texttt{for} loop running from $j=1$ to $n$ and then two nested \texttt{for} loops which run from $p=1$ and $q=1$ to $i-1$ and $j-1$, respectively. The last step of the algorithm is a simple matrix multiplication, which has time complexity of at most $O(n^3)$. Therefore we can expect this algorithm to run in $O(n^3)$. 
+
+The algorithm simplifies for $TU+UT=F$. In this case the algorithm is as follows:
 \begin{enumerate}
-\item Compute the Schur form $T=PRP^*$
-\item Solve $R^*V + VR = P^*FP$ for $V$
-\item Compute $U=PVP^*$
+\item Compute the Schur form $T=PRP^*$.
+\item Solve $R^*V + VR = \hat{F}$ for $V$, where $\hat{F} =  P^*FP$.
+\item Compute $U=PVP^*$.
 \end{enumerate}
-
-Results using this algorithm are shown in Table 2. These results show that both errors decrease as $n$ is increased. Also the eoc is close enough to 2 to conclude that this algorithm converges. The eog demonstrates that this algorithm has an approximate cubic time complexity. 
-
-\begin{table}[H]
-\centering
-\begin{tabular}{|c|c|c|c|c|c|}
-\hline
-$n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
-\hline
-125 & 1.2486 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
-250 & 9.6712 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 2.0001 & 2.9124 \\
-500 & 77.888 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999 & 3.0096 \\ 
-1000 & 640.22 & $8.2088 \times 10^{-7}$ & $4.1044 \times 10^{-7}$ & 2.0000 & 3.0391 \\
-2000 & 5093.1 & $2.0467 \times 10^{-7}$ & $1.0237 \times 10^{-7}$ & 2.0052 & 2.9919 \\
-\cline{2-6}
-4000 & \multicolumn{5}{c|}{Timing Error} \\
-\hline
-\end{tabular}
-\caption{Results using the Bartels-Stewart algorithm.}
-\end{table}
-
-By breaking this algorithm down into its component parts, we can time each step to see which is the most costly. The results of doing so are given in Table 3, where the steps are:
-
+The first step now only requires a Schur decomposition of one matrix to be computed. The matrix $T$ is symmetric which means that its eigenvectors are orthogonal, which implies that $R$ is now a diagonal matrix which has the eigenvalues of $T$ on the diagonal. We can see this is true by examining the steps of the Schur decomposition. For a general matrix $A$, a Schur decomposition $A=PRP^*$ has 4 steps:
 \begin{enumerate}
-\item Compute the Schur form $T=PRP^*$ (using \texttt{linalg.schur} from the SciPy library)
-\item Solve the $R^*V + VR = P^*FP$ for $V$, which is a triangular system
-\item Compute the solution $U=PVP^*$
+\item Find the eigenvalues of $A$.
+\item Find the corresponding eigenvectors of $A$.
+\item Compute an orthonormal set of eigenvectors using the eigenvectors of $A$, for example by using Gram-Schmidt orthogonalisation.
+\item The eigenvectors found in Step 3 make up the columns of $P$. $R$ can now be found as $R=P^*AP$. 
 \end{enumerate}
+As the eigenvectors of $T$ are already orthogonal, they only need to be normalised in the 3rd step of the decomposition. This means that $R$ will be a diagonal matrix with the eigenvalues of $T$ on the diagonal.
 
-As can be seen from the results in Table 3, the most costly part of the algorithm is by far the second step, which is due to the fact that solving the triangular system uses back substitution which requires multiple nested \texttt{for} loops.
+This property reduces the complexity of the second step to $O(n^2)$, as only the diagonal elements need to be calculated and so the two summations are not necessary. We can therefore expect the algorithm to run faster than in the general case.
 
-\begin{table}[H]
-\centering
-\begin{tabular}{|c|c|c|c|c|}
-\hline
-$n$ & 1 & 2 & 3 & Total \\
-\hline
-125 & 0.012667 & 1.2357 & 0.00023031 & 1.2486 \\
-250 & 0.048434 & 9.6218 & 0.0010102 & 9.6712 \\
-500 & 0.26262 & 77.619 & 0.0064600 & 77.888 \\ 
-1000 & 0.083478 & 639.34 & 0.043818 & 640.22 \\
-2000 & 5.1290 & 5087.5 & 0.41275 & 5093.1 \\
-\hline
-\end{tabular}
-\caption{Timings for each step using the Bartels-Stewart algorithm.}
-\end{table}
-
-The SciPy library has a built in solver for solving Sylvester equations, \texttt{linalg.solve \_sylvester}, which uses the Bartels-Stewart algorithm. Results using this solver are given in Table 4. The errors here are similar to the errors given in Table 2. Again the eoc is close enough to 2 to conclude that this algorithm converges. However, the eog seems to vary depending on the problem size $n$. 
+\subsubsection*{SciPy Solver}
+The SciPy library has a built in solver for solving Sylvester equations, \texttt{linalg.solve \_sylvester}, which uses the Bartels-Stewart algorithm. We can use this to test the general algorithm. Results using this solver are given in Table 2. 
 
 \begin{table}[H]
 \centering
@@ -395,26 +402,91 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 4000 & 279.95 & $4.9949 \times 10^{-8}$ & $2.4876 \times 10^{-8}$ & 2.0377 & 3.1277  \\
 8000 & 2812.2 & $8.6380 \times 10^{-9}$ & $4.1216 \times 10^{-9}$ & & \\
 \cline{2-6}
-16000 & \multicolumn{5}{c|}{Timing error} \\
+16000 & \multicolumn{5}{c|}{Time Limit Reached} \\
 \hline
 \end{tabular}
 \caption{Results using SciPy's \texttt{linalg.solve\_sylvester}.}
 \end{table}
 
-As can be seen from the results above, using the built-in SciPy solver results in a significant speed-up in time as $n$ is increased. This is likely because it makes use of of LAPACK, which is an optimised software library for solving linear algebra problems.
+\subsubsection*{Simplified Implementation}
 
+Results using the simplified version of this algorithm are shown in Table 3, and results of each step of the algorithm are given in Table 4.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+$n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
+\hline
+125 & 0.036654 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
+250 & 0.084191 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & & \\
+500 & 0.35179 & $3.2766 \times 10^{-6}$ & $1.6383 \times 10^{-6}$ & & \\
+1000 & 1.2846 & $8.2081 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & & \\
+2000 & 7.3734 & $2.0531 \times 10^{-7}$ & $1.0265 \times 10^{-7}$ & & \\
+4000 & 40.664 & $4.8578 \times 10^{-8}$ & $2.4421 \times 10^{-8}$ & & \\
+8000 & 291.47 & $1.5975 \times 10^{-8}$ & $7.9337 \times 10^{-9}$ & & \\
+16000 & 1974.6 & $1.6116 \times 10^{-7}$ & $9.0649 \times 10^{-8}$ & & \\
+\cline{2-6}
+32000 & \multicolumn{5}{c|}{Memory Error} \\
+\hline
+\end{tabular}
+\caption{Results using the simplified Bartels-Stewart algorithm.}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$n$ & 1 & 2 & 3 & Total \\
+\hline
+125 &  &  &  &  \\
+250 &  &  &  &  \\
+500 &  &  &  &  \\ 
+1000 &  &  &  &  \\
+2000 &  &  &  &  \\
+4000 & & & & \\
+8000 & & & & \\
+16000 & & & & \\
+\hline
+\end{tabular}
+\caption{Timings for each step using the simplified Bartels-Stewart algorithm.}
+\end{table}
 
 \subsubsection{Similarity Transformation}
-A similarity transformation \cite{Simoncini} can be used to solve the Sylvester equation $AX + XB = C$. This method uses an eigendecomposition to rewrite the equation into a form that the solution can be easily obtained from. The method is as follows.
+A similarity transformation \cite{Simoncini} can be used to solve the Sylvester equation $AX + XB = C$. Assuming that the coefficient matrices $A$ and $B$ can be diagonalised, this method uses an eigendecomposition to reform the equation so that the solution can be easily obtained. The method is as follows:
+\begin{enumerate}
+\item Compute the eigendecompositions $P^{-1}AP = \text{diag}(\lambda_1, \dots, \lambda_n)$ and $Q^{-1}BQ = \text{diag}(\mu_1, \dots, \mu_m)$:
+	\begin{enumerate}
+	\item Compute the eigenpairs of $A$ and $B$
+	\item Compute the inverses of $P$ and $Q$
+	\end{enumerate}
+\item Compute the solution $X = P \widetilde{X} Q^{-1}$, where $\widetilde{X}_{ij} = \frac{\widetilde{C}_{ij}}{\lambda_i + \mu_j}$ and $\widetilde{C} = P^{-1}CQ$.
+\end{enumerate}
+Here $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$, $\mu_1, \dots, \mu_m$ are the eigenvalues of $B$ and the columns of $P$ and $Q$ are the eigenvectors of $A$ and $B$, respectively. We can analyse the steps of this algorithm as done previously to obtain the time complexity. Step 1a consists of computing the eigenpairs of $A$ and $B$, which in general is $O(n^3)$. Step 1b computes the inverse of $P$ and $Q$ which is greater than $O(n^2)$. The last step involves matrix multiplication which is at most $O(n^3)$. Therefore we can expect this algorithm in the general case to have approximately $O(n^3)$.
 
-Assuming matrices $A$ and $B$ can be diagonalised, let $P^{-1}AP = \text{diag}(\lambda_1, \dots, \lambda_n)$ and $Q^{-1}BQ = \text{diag}(\mu_1, \dots, \mu_m)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$, $\mu_1, \dots, \mu_m$ are the eigenvalues values of $B$ and the columns of $P$ and $Q$ are the eigenvectors of $A$ and $B$, respectively. Letting $\widetilde{C} = P^{-1}CQ$, the solution is then:
-\[ X = P \widetilde{X} Q^{-1}, \text{ with } \widetilde{X}_{ij} = \frac{\widetilde{C}_{ij}}{\lambda_i + \mu_j} \]
+For $TU+UT=F$ this method also simplifies. The steps are: 
+\begin{enumerate}
+\item Compute the eigendecomposition $P^{-1}TP = \text{diag}(\lambda_1, \dots, \lambda_n)$
+	\begin{enumerate}
+	\item Compute the eigenpairs of $T$
+	\item Compute the inverse of $P$
+	\end{enumerate}
+\item Compute the solution $U = P \widetilde{U} P^{-1}$, where $\widetilde{U}_{ij} = \frac{\widetilde{F}_{ij}}{\lambda_i + \lambda_j}$ and $\widetilde{F}=P^{-1}FP$
+\end{enumerate}
+As before $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $T$ and the columns of $P$ are the eigenvectors of $T$. The complexity of the first step can be drastically reduced. As $T$ is a matrix in Toeplitz form, we can compute the eigenvalues and eigenvectors directly as:
+\begin{equation} 
+\lambda_i = \frac{2}{h^2} \Big( \cos \Big( \frac{i \pi}{n+1} \Big) - 1 \Big) 
+\end{equation}
+and:
+\begin{equation}
+t_{ij} = \sqrt{\frac{2}{n+1}} \sin \Big( \frac{ij \pi}{n+1}  \Big) 
+\end{equation}
+which reduces the time complexity to $O(n)$ as $T$ has $n$ eigenpairs. Also, in this case the matrix $P$ is unitary, which means that $P^{-1} = P^T$ and so calculating the inverse of $P$ reduces to $O(n^2)$. This should result in a significant speed up compared to the general version of this algorithm.
 
-For $TU+UT=F$, we have $P=Q$ and $P^{-1}TP = \text{diag}(\lambda_1, \dots, \lambda_n)$, where $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $T$ and the columns of $P$ are the eigenvectors of $T$. Letting $\widetilde{F}=P^{-1}FP$, the solution is then:
-\[ U = P \widetilde{U} P^{-1}, \text{ with } \widetilde{U}_{ij} = \frac{\widetilde{F}_{ij}}{\lambda_i + \lambda_j} \]
+An interesting fact to note is that in this specific case the Schur decomposition and eigendecomposition of $T$ are actually equivalent. 
 
-\subsubsection*{Using numpy.linalg.eig}
-Using the method above, the eigenvalues and eigenvectors can be computed using NumPy's \texttt{linalg.eig} function. The results doing this are given in Table 5. The errors are again similar to the previous methods. However, here the eoc moves away from 2 as $n$ is increased. This is likely due to the fact that there is no general formula for calculating eigenvalues and eigenvectors for an arbitrary matrix, meaning the eigenvalues and eigenvectors are most likely approximated by NumPy's \texttt{linalg.eig}. It is likely that the approximations become less accurate as $n$ is increased. The eog here is however slightly better than the previous methods. 
+\subsubsection*{Numpy's \texttt{linalg.eig} function}
+In the general case of this method, the eigenpairs can be computed using NumPy's \texttt{linalg.eig} function. The results doing this are given in Table 5. The errors are again similar to the previous methods. However, here the eoc moves away from 2 as $n$ is increased. This is likely due to the fact that there is no general formula for calculating eigenvalues and eigenvectors for an arbitrary matrix, meaning the eigenvalues and eigenvectors are most likely approximated by NumPy's \texttt{linalg.eig}. It is likely that the approximations become less accurate as $n$ is increased. The eog here is however slightly better than the previous methods. 
 
 \begin{table}[H]
 \centering
@@ -429,24 +501,14 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 2000 & 11.571 & $2.0467 \times 10^{-7}$ & $1.0237 \times 10^{-7}$ & 2.0053 & 2.3812  \\
 4000 & 70.984 & $4.9966 \times 10^{-8}$ & $2.4876 \times 10^{-8}$ & 2.0350 & 2.6170  \\
 8000 & 466.83 & $8.6360 \times 10^{-9}$ & $4.1223 \times 10^{-9}$ & 2.5330 & 2.7173  \\
+16000 &  & $1.5711 \times 10^{-7}$ & $9.0192 \times 10^{-8}$ & & \\
 \cline{2-6}
-16000 & \multicolumn{5}{c|}{Memory Error} \\
+32000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
 \caption{Results using a similarity transformation, calculating the eigenvalues and eigenvectors using \texttt{numpy.linalg.eig}.}
 \end{table}
-
-Similarly to the Bartels-Stewart algorithm, this method can be split into component parts and each part can be timed, to see which part is the most costly. The steps of the method are:
-\begin{enumerate}
-\item Calculate eigenvalues and eigenvectors of $T$
-\item Diagonalise $T$ (i.e. calculate $P$ and $P^{-1}$)
-\item Calculate $\widetilde{F}=P^{-1}FP$
-\item Calculate $\widetilde{U}$, where $\widetilde{u}_{ij} = \frac{\widetilde{f}_{ij}}{\lambda_i + \lambda_j}$
-\item Calculate solution $U=P \widetilde{U}P^{-1}$
-\end{enumerate}
-
-The results of doing so are shown in Table 6.
 
 \begin{table}[H]
 \centering
@@ -467,18 +529,9 @@ $n$ & 1 & 2 & 3 & 4 & 5 & Total \\
 \caption{Timing results for each step of the similarity transformation method, calculating the eigenvalues and eigenvectors using \texttt{numpy.linalg.eig}.}
 \end{table}
 
-\subsubsection*{Calculating eigenvalues and eigenvectors explicitly}
+\subsubsection*{Calculating eigenpairs explicitly}
 
-As can be seen from the results in Table 6, the most costly part of this method is calculating the eigenvalues and eigenvectors. As $T$ is a matrix in Toeplitz form, we can instead compute the eigenvalues and eigenvectors directly as:
-\begin{equation} 
-\lambda_i = \frac{2}{h^2} \Big( \cos \Big( \frac{i \pi}{n+1} \Big) - 1 \Big) 
-\end{equation}
-and:
-\begin{equation}
-t_{ij} = \sqrt{\frac{2}{n+1}} \sin \Big( \frac{ij \pi}{n+1}  \Big) 
-\end{equation}
-
-Also the matrix $P$ is Hermitian, which means that $P^{-1} = P^T$. We can use both of these properties to improve the timings of this algorithm. Results of doing so are given in Table 7, and timings for each step are given in Table 8. 
+As can be seen from the results in Table 6, the most costly part of this method is calculating the eigenvalues and eigenvectors. Results of doing so are given in Table 7, and timings for each step are given in Table 8. 
 
 %Similar errors are given by this method, however the eoc is  closer to 2 for $n \leq 8000$. When $n=16000$ the eoc increases significantly, however the errors here are so small that this is likely due to the impact of roundoff errors. The eog is also significantly less demonstrating that using this algorithm and computing the eigenvalues explicity achieves a near square time complexity. Also this is the only method so far that has been able to solve the problem with $n=16000$ without running out of memory. 
 
@@ -497,7 +550,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 8000 & 73.321 & $1.2813 \times 10^{-8}$ & $6.4065 \times 10^{-9}$ &  &   \\
 16000 & 428.46 & $7.7527 \times 10^{-10}$ & $3.8764 \times 10^{-10}$ &  &  \\
 \cline{2-6}
-32000 & \multicolumn{5}{c|}{Memory Error??} \\
+32000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -530,8 +583,7 @@ As can be seen from the results in Table 8, calculating the eigenvalues and eige
 A projection method \cite{Simoncini} can be used to solve $AX + XB = C$. This method works by computing the eigendecomposition of $B$ to reform the problem as solving $n$ independent linear systems. Each of these linear systems can be solved simultaneously to obtain the solution $X$. The steps of this method are as follows:
 \begin{enumerate}
 \item Compute $B = WSW^{-1}$, where $S = \text{diag}(s_1, \dots, s_n)$ are the eigenvalues of $B$ and the columns of $W$ are the eigenvectors of $B$
-\item Compute $\hat{C} = CW$
-\item For $i=1$ to $n$, solve the system $(A+s_i I)(\hat{X})_i = (\hat{C})_i$
+\item For $i=1$ to $n$, solve the system $(A+s_i I)(\hat{X})_i = (\hat{C})_i$, where $\hat{C} = CW$
 \item Compute solution $X = \hat{X}W$
 \end{enumerate}
 where $(\hat{X})_i$ denotes the $i^{\text{th}}$ column of $\hat{X}$.
@@ -539,8 +591,7 @@ where $(\hat{X})_i$ denotes the $i^{\text{th}}$ column of $\hat{X}$.
 In the case of $TU + UT = F$, the steps are as follows:
 \begin{enumerate}
 \item Compute $T = WSW^{-1}$, where $S = \text{diag}(s_1, \dots, s_n)$ are the eigenvalues of $T$ and the columns of $W$ are the eigenvectors of $T$
-\item Compute $\hat{F} = FW$
-\item For $i=1$ to $n$, solve the system $(T+s_i I)(\hat{U})_i = (\hat{F})_i$
+\item For $i=1$ to $n$, solve the system $(T+s_i I)(\hat{U})_i = (\hat{F})_i$, where $\hat{F} = FW$
 \item Compute solution $U = \hat{U}W$
 \end{enumerate}
 
@@ -931,9 +982,9 @@ Finally, we multiply both sides by $\Psi_k$ and take the inner product, giving:
 \sum_{i=0}^P (-(u_i)_{xx} -(u_i)_{yy}) \langle \Psi_k (\varepsilon_0 + 2) \Psi_i \rangle = 2\pi^2 \sin(\pi x) \sin(\pi y) \langle \Psi_k (\varepsilon_0 + 2) \rangle \\
 + 34 \pi^2 \sin(3 \pi x) \sin(5 \pi y) \langle \Psi_k (\varepsilon_0 + 2)^2 \rangle
 \end{multline}
-for $k = 0, \dots, P$. The uncertainty has been removed from this PDE and we now have a system of coupled deterministic differential equations, which can be solved for $u$.
+for $k = 0, \dots, P$. The uncertainty has been removed from this PDE and we now have a system of coupled deterministic differential equations, which can be solved for $u$. The next step is to rewrite (4.22) in a form that can be easily solved.
 
-We can now use the finite difference method to discretise the system in space and represent the unknowns $u_i$ as a single matrix\footnote{Note that here $L = I \otimes T + T \otimes I$, where $T = -\frac{1}{h^2} \text{tridiag}(1,-2,1)$ and $I$ is the identity matrix, because we are representing all unknowns in a single matrix, rather than using two matrices as before.}:
+Firstly, we can use the finite difference method to discretise the system in space and represent the unknowns $u_i$ as a single vector\footnote{Note that here $L = I \otimes T + T \otimes I$, where $T = -\frac{1}{h^2} \text{tridiag}(1,-2,1)$ and $I$ is the identity matrix, because we are representing all unknowns in a single matrix, rather than using two matrices as before.}:
 \begin{equation}
 Lu_i = - (u_i)_{xx} - (u_i)_{yy}
 \end{equation}
@@ -941,18 +992,18 @@ where $L$ has dimension $n^2 \times n^2$ (the total number of unknowns) and $u_i
 \begin{equation}
 P_{ij} = \langle \Psi_i (\varepsilon_0 + 2) \Psi_j \rangle
 \end{equation}
-Finally, we represent the right-hand side of the system as a $(P+1) \times n^2$ matrix:
+Finally, we represent the right-hand side of the system as a $n^2 \times (P+1)$ matrix:
 \begin{equation}
 F_{k} = 2\pi^2 \sin(\pi x_i)\sin(\pi y_j) \langle \Psi_k (\varepsilon_0 + 2) \rangle + 34\pi^2 \sin(3\pi x_i) \sin(5\pi y_j) \langle \Psi_k (\varepsilon_0 + 2)^2 \rangle
 \end{equation}
-where $k = 0, \dots, P$ represent the random discretisation (the rows) and $i,j = 1, \dots, n$ represent the spatial discretisation (the columns). By reshaping $F$ into a vector we can represent the problem as a linear system:
+where $k = 0, \dots, P$ represents the columns (the random discretisation) and $i,j = 1, \dots, n$ represent the rows (the vectorised spatial dicretisation). We can now use these matrices to write (4.22) in a form that can be easily solved.
+
+\subsubsection*{Linear System}
+The simplest way to solve (4.22) is to form the problem as a linear system. By reshaping $F$ into a vector we can represent the problem in the form:
 \begin{equation}
 Au = f
 \end{equation} 
-where $A = P \otimes L$, $f = \text{vec}(F)$ and $u$ is a vector of length $(P+1)n^2$. This system can now be solved in a variety of different ways.
-
-\subsubsection*{Linear System}
-The simplest way to solve (4.26) is to solve it as a linear system using a sparse solver. Results using \texttt{sparse.linalg.spsolve} from the SciPy library are given in Table 15.
+where $A = P \otimes L$ has dimension $n^2(P+1) \times n^2(P+1)$ and $f = \text{vec}(F)$ and $u$ are vectors of length $n^2(P+1)$. We can now use a standard sparse solver to solve the system. Results using the conjugate gradient method \texttt{sparse.linalg.cg} from the SciPy library, using a convergence tolerance of $10^{-9}$, are given in Table 15.
 
 \begin{table}[H]
 \centering
@@ -960,33 +1011,64 @@ The simplest way to solve (4.26) is to solve it as a linear system using a spars
 \hline
 $n$ & $K$ & Time(s) & Error \\
 \hline
-125 & 1 & 0.20171 & 0.0021941 \\
-250 & 1 & 1.3178 & 0.00055258 \\
-500 & 1 & 10.284 & 0.00013872 \\
-1000 & 1 & 84.773 & $3.4752 \times 10^{-5}$ \\
+125 & 1 & 0.014717 & 0.0021941 \\
+250 & 1 & 0.077675 & 0.00055263 \\
+500 & 1 & 0.52634 & 0.00013874 \\
+1000 & 1 & 3.7997 & $3.4817 \times 10^{-5}$ \\
+2000 & 1 & 33.354 & $8.7386 \times 10^{-6}$ \\
+4000 & 1 & 308.21 & $2.2358 \times 10^{-6}$ \\
+8000 & 1 & 3090.0 & $6.4883 \times 10^{-7}$ \\
 \cline{2-4}
-$\geq 2000$ & \multicolumn{3}{c|}{Memory Error} \\
+16000 & \multicolumn{3}{c|}{Memory Error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
-\caption{Results using the stochastic Galerkin method with a single uncertain parameter by solving the linear system using \texttt{sparse.linalg.spsolve}.}
+\caption{Results using the stochastic Galerkin method with a single uncertain parameter by solving the linear system using \texttt{sparse.linalg.cg}.}
 \end{table}
 
 \subsubsection*{Matrix Equation}
-An alternative approach to solving (4.26) is to rewrite it as a matrix equation. (4.26) can be written as the matrix equation:
+An alternative approach to solving (4.22) is to rewrite it as a matrix equation, in the form:
 \begin{equation}
 LXP = F
 \end{equation} 
-where $u = \text{vec}(X)$ and $L$, $P$ and $F$ are defined as before. This can then be solved using a variation of the Bartels-Stewart algorithm. The basic idea is the same as the standard Bartels-Stewart algorithm. Firstly, the Schur decomposition of $L$ and $P$ is computed, so that the equation can be transformed into an equivalent upper-triangular system that can be solved element by element. The solution to the original equation is then easily obtained using the solution of the triangular system. The steps of the algorithm are as follows:
+where $u = \text{vec}(X)$ and $L$, $P$ and $F$ are defined as before. 
+
+One way to solve this is by using a variation of the Bartels-Stewart algorithm. The basic idea is the same as the standard Bartels-Stewart algorithm from Section 3.1.2. Firstly, the Schur decomposition of $L$ and $P$ is computed, so that the equation can be transformed into an equivalent upper-triangular system that can be solved element by element. The solution to the original equation is then easily obtained using the solution of the triangular system. The steps of this algorithm are as follows:
 \begin{enumerate}
 \item Compute the Schur forms $L = U \hat{L} U^*$ and $P = V \hat{P} V^*$, and let $\hat{F} = U^* F V$.
 \item Solve $\hat{L} Y \hat{P} = \hat{F}$ for $Y$, where $\hat{L}$ and $\hat{P}$ are upper triangular.
 \item Compute solution $X = UYV^*$.
 \end{enumerate}
-The problem with this method is that the Schur forms in the first step are computed using the QR algorithm, which only works on dense matrices. Therefore a huge amount of memory is required to compute the Schur form of $L$ (of size $n^2 \times n^2$), which is unpractical even for a relatively small problem size. Therefore solving the stochastic PDE in this form is not appropriate.
+The problem with this method is that the Schur forms in the first step are computed using the QR algorithm, which only works on dense matrices. Therefore a huge amount of memory is required to compute the Schur form of $L$ (of size $n^2 \times n^2$), which is impractical even for a relatively small problem size. This method was tested on the problem with $n=125$ and $K=1$, and resulted in a memory error when computing the Schur forms, which confirms that this method is not appropriate for this problem.
+
+Alternatively, we can right multiply by $P^{-1}$ to obtain:
+\begin{equation}
+LX = FP^{-1}
+\end{equation}
+The resulting right-hand side is a matrix, which means we can use \texttt{sparse.linalg.spsolve} from the SciPy library can be used to compute a solution. Results of doing so are given in Table 16.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+$n$ & $K$ & Time(s) & Error \\
+\hline
+125 & 1 & 0.059279 & 0.0021941 \\
+250 & 1 & 0.25614 & 0.00055258 \\
+500 & 1 & 1.4756 & 0.00013872 \\
+1000 & 1 & 10.827 & $3.4752 \times 10^{-5}$ \\
+2000 & 1 & 76.430 & $8.6968 \times 10^{-6}$ \\
+\cline{2-4}
+4000 & \multicolumn{3}{c|}{Memory Error} \\
+\hline
+\end{tabular}
+\captionsetup{justification=centering}
+\caption{}
+\end{table}
+
 
 \subsubsection*{Sylvester Equation}
-We can rewrite (4.26) as an alternative matrix equation in the form:
+The can instead be written as an alternative matrix equation in the form:
 \begin{equation}
 2LXG_0 + LXG_1 = F
 \end{equation}
@@ -994,7 +1076,7 @@ where $u = \text{vec}(X)$, $(G_0)_{ij} = \langle \Psi_i \Psi_j \rangle$ and $(G_
 \begin{equation}
 AX + XB = C
 \end{equation}
-where $A = L^{-1}2L$, $B = G_1 G_0^{-1}$ and $C = L^{-1} F G_0^{-1}$. This can now be solved using any of the methods from Section 3, assuming that they can be adapted for sparse matrices. Results using the similarity transformation method, using \texttt{sparse.linalg.eigs} from the SciPy library to calculate the eigenpairs, are given in Table 15.
+where $A = L^{-1}2L$, $B = G_1 G_0^{-1}$ and $C = L^{-1} F G_0^{-1}$. This can now be solved using any of the methods from Section 3, assuming that they can be adapted for sparse matrices. Results using the similarity transformation method, using \texttt{sparse.linalg.eigs} from the SciPy library to calculate the eigenpairs, are given in Table 17.
 
 \begin{table}[H]
 \centering
@@ -1002,15 +1084,19 @@ where $A = L^{-1}2L$, $B = G_1 G_0^{-1}$ and $C = L^{-1} F G_0^{-1}$. This can n
 \hline
 $n$ & $K$ & Time(s) & Error \\
 \hline
-125 & 1 &  & 0.0021941 \\
-250 & 1 &  & 0.00055258 \\
-500 & 1 &  & 0.00013872 \\
-1000 & 1 &  & $3.4752 \times 10^{-5}$ \\
-2000 & & &  \\
+125 & 1 & 0.011544 & 0.0021941 \\
+250 & 1 & 0.032874 & 0.00055258 \\
+500 & 1 & 0.11274 & 0.00013872 \\
+1000 & 1 &  0.70258 & $3.4752 \times 10^{-5}$ \\
+2000 & 1 & 5.8607 & $8.6968 \times 10^{-6}$ \\
+4000 & 1 & 52.552 & $2.1753 \times 10^{-6}$ \\
+8000 & 1 & 761.23 & $5.4395 \times 10^{-7}$ \\
+\cline{2-4}
+16000 & \multicolumn{3}{c|}{Memory Error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
-\caption{Results using the stochastic Galerkin method with a single uncertain parameter by solving the linear system using \texttt{sparse.linalg.spsolve}.}
+\caption{}
 \end{table}
 
 

@@ -81,8 +81,9 @@
 \clearpage
 
 \section{Introduction}
-\subsection{Possion Equation}
+This project involves exploring methods for solving matrix equations that arise from partial differential equations (PDEs) and how a problem's structure can be exploited when dealing with equations in this form. This is not often the case using conventional methods to solve PDEs, which usually involve stacking the unknowns of a problem into a single vector. The project then goes on to investigate how the methods explored can be applied to stochastic PDEs (PDEs with uncertain input). We begin by constructing the matrix form of Poission's equation.
 
+\subsection{Possion Equation}
 As an example, define spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and let $u: \mathcal{D} \to \mathbb{R}$ be the solution of Poisson's equation:
 	\begin{alignat}{1} 
 	-u_{xx} - u_{yy} = {} & f \quad \text{ on } \mathcal{D} \nonumber \\
@@ -164,7 +165,7 @@ at each internal grid point, meaning the system has $n^2$ unknowns with $n=N-2$.
 	\begin{equation}
 	f_{ij} = -\frac{1}{h^2} \big( u_{i-1j} + u_{ij-1} - 4u_{ij} + u_{i+1j} + u_{ij+1}  \big)
 	\end{equation}
-and then stack all unknowns $u_{ij}$ into a single vector $U$, resulting in the linear system $AU=F$. As stated previously, this ignores the underlying structure of the problem.
+and then stack all unknowns $u_{ij}$ into a single vector $U$, resulting in the linear system $AU=F$. 
 
 \subsection{Sylvester Equation}
 A Sylvester equation is a matrix equation of the form $AX + XB = C$, where $A$ is a $n \times n$ matrix, $B$ is a $m \times m$ matrix, and $X$ and $C$ are $n \times m$ matrices. We can write (1.4) as a Sylvester equation in the form:
@@ -212,7 +213,7 @@ u_{n1} & u_{n2} & \dots & u_{nj} & \dots & u_{nn}
 \end{pmatrix}
 = F
 \end{eqnarray}
-There are a variety of methods that can be used to solve Sylvester equations. This project will explore and compare different methods for solving equations in this form. 
+A variety of methods can now be used to solve this equation. These methods will be explored in Section 3. 
 
 \subsection{Organisation}
 The organisation of this report is as follows. Section 2 sets out the objectives and planning of the project. Section 3 explores different methods for solving Sylvester equations. Section 4 explores ways of solving stochastic PDEs. Section 5 studies an application problem that combines the knowledge gained in the previous sections. Finally, Section 6 is an evaluation of the project's success.
@@ -312,7 +313,7 @@ where $E_i$ is the error (chosen here as $|| u - u_h ||_{L^\infty}$) and $h_i$ i
 where $t_i$ is the total execution time and $n_i$ is the problem size at level $i$.
 \item No. iters (iterative methods only): The number of iterations taken for the method to converge to the given convergence tolerance.
 \end{itemize}
-It is worth noting that as the total number of unknowns, and therefore the problem size, is $n^2$, the best time complexity that an optimal solver can achieve is $O(n^2)$, as it must compute a solution for each unknown. Also, as each of the methods is solving the same equation, the differences in error for each of the methods should be small.
+All non-integer measurements will be given to five significant figures. It is worth noting that as the total number of unknowns, and therefore the problem size, is $n^2$, the best time complexity that an optimal solver can achieve is $O(n^2)$, as it must compute a solution for each unknown. Also, as each of the methods is solving the same equation, the differences in error for each of the methods should be small.
 
 \subsection{Direct Methods}
 
@@ -360,13 +361,13 @@ In the general case the algorithm is as follows:
 \item Solve $R^*Y + YS = \hat{C}$ for $Y$, where $\hat{C} = P^*CQ$.
 \item Compute $X=PYQ^*$.
 \end{enumerate}
-Here the matrices $R$ and $P$ are upper/lower triangular matrices with the eigenvalues of $A$ and $B$ on the diagonal, respectively. The matrices $P$ and $Q$ are the orthonormal sets of the eigenvectors of $A$ and $B$, respectively.
+Here the matrices $R$ and $S$ are upper/lower triangular matrices with the eigenvalues of $A$ and $B$ on the diagonal, respectively. The matrices $P$ and $Q$ unitary matrices whose columns are orthonormal sets of eigenvectors obtained from the eigenvectors of $A$ and $B$, respectively.
 
 By breaking this algorithm down into its component parts, we can examine each part to see which is the most costly. The first step of the algorithm can be computed using \texttt{linalg.schur} from the SciPy library, which uses the QR algorithm and has time complexity $O(n^3)$. For the second step, each entry of $Y$ can be computed as:
 \begin{equation}
 Y_{ij} = \hat{C}_{ij} - \sum_{p=1}^{i-1} R_{ip}Y_{pj} - \sum_{q=1}^{j-1} Y_{iq}S_{qj}
 \end{equation}
-for $i,j=1, \dots, n$. This also has time complexity $O(n^3)$, as it will have a \texttt{for} loop running from $i=1$ to $n$, a nested \texttt{for} loop running from $j=1$ to $n$ and then two nested \texttt{for} loops which run from $p=1$ and $q=1$ to $i-1$ and $j-1$, respectively. The last step of the algorithm is a simple matrix multiplication, which has time complexity of at most $O(n^3)$. Therefore we can expect this algorithm to run in $O(n^3)$. 
+for $i,j=1, \dots, n$. This also has time complexity $O(n^3)$, as it will have a \texttt{for} loop running from $i=1$ to $n$, a nested \texttt{for} loop running from $j=1$ to $n$ and then two nested \texttt{for} loops which run from $p=1$ and $q=1$ to $i-1$ and $j-1$, respectively. The last step of the algorithm is a simple matrix multiplication, which has time complexity of at most $O(n^3)$. Therefore we can expect this algorithm to run in roughly $O(n^3)$. 
 
 The algorithm simplifies for $TU+UT=F$. In this case the algorithm is as follows:
 \begin{enumerate}
@@ -383,10 +384,10 @@ The first step now only requires a Schur decomposition of one matrix to be compu
 \end{enumerate}
 As the eigenvectors of $T$ are already orthogonal, they only need to be normalised in the 3rd step of the decomposition. This means that $R$ will be a diagonal matrix with the eigenvalues of $T$ on the diagonal.
 
-This property reduces the complexity of the second step to $O(n^2)$, as only the diagonal elements need to be calculated and so the two summations are not necessary. We can therefore expect the algorithm to run faster than in the general case.
+This property reduces the complexity of the second step to $O(n^2)$, as only the diagonal elements need to be calculated and so the two summations are not necessary. We can therefore expect the algorithm to run faster than in the general case and to be dominated by the first step. We should therefore expect this algorithm to have, in the worst case, time complexity $O(n^3)$.
 
 \subsubsection*{SciPy Solver}
-The SciPy library has a built in solver for solving Sylvester equations, \texttt{linalg.solve \_sylvester}, which uses the Bartels-Stewart algorithm. We can use this to test the general algorithm. Results using this solver are given in Table 2. 
+The SciPy library has a built in solver for solving Sylvester equations, \texttt{linalg.solve \_sylvester}, which uses the Bartels-Stewart algorithm. We can use this to test the general algorithm. Results using this solver are given in Table 2. We can see from these results that the errors for this method are almost exactly the same as the errors in Table 1. Also this method is much faster and is able to solve a much larger problem size than using the Kronecker product. The eoc is close enough to 2 for all values of $n$ to conclude that this algorithm converges. The eog seems to change depending on the problem size, however for large $n$ has close to cubic time complexity. Although it is difficult to analyse the steps of this solver directly, \texttt{solve\_sylvester} makes use of LAPACK, an optimised software library for solving linear algebra problems, to compute the Schur decomposition in the first step. LAPACK uses a couple of different methods for computing the eigenpairs of symmetric tridiagonal matrices [\textbf{add reference}] and so it is likely that the method changes depending on the problem size, which causes the changes in the eog.
 
 \begin{table}[H]
 \centering
@@ -400,7 +401,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 1000 & 4.0920 & $8.2084 \times 10^{-7}$ & $4.1042 \times 10^{-7}$ & 2.0000 & 1.0780 \\
 2000 & 32.029 & $2.0503 \times 10^{-7}$ & $1.0259 \times 10^{-7}$ & 2.0027 & 2.9685  \\
 4000 & 279.95 & $4.9949 \times 10^{-8}$ & $2.4876 \times 10^{-8}$ & 2.0377 & 3.1277  \\
-8000 & 2812.2 & $8.6380 \times 10^{-9}$ & $4.1216 \times 10^{-9}$ & & \\
+8000 & 2812.2 & $8.6380 \times 10^{-9}$ & $4.1216 \times 10^{-9}$ & 2.5321 & 3.3285 \\
 \cline{2-6}
 16000 & \multicolumn{5}{c|}{Time Limit Reached} \\
 \hline
@@ -410,8 +411,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 
 \subsubsection*{Simplified Implementation}
 
-Results using the simplified version of this algorithm are shown in Table 3, and results of each step of the algorithm are given in Table 4.
-
+Results using the simplified version of this algorithm are shown in Table 3. These results demonstrate that this simplified implementation is much faster than the SciPy solver. The eoc demonstrates that this algorithm converges well up until $n=4000$, but after this point stops converging and when $n=16000$ the error becomes bigger than when $n=8000$. This is because \texttt{linalg.Schur} is used to compute the Schur decomposition in the first step, which uses the QR algorithm to approximate the eigenpairs of $T$ (as there is no general formula for calculating the eigenpairs of an arbitrary matrix). This approximation becomes less accurate as $n$ increases and for large $n$ has a significant impact on the solution. The eog here demonstrates that this algorithm has better than cubic time complexity.
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
@@ -419,13 +419,13 @@ Results using the simplified version of this algorithm are shown in Table 3, and
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
 \hline
 125 & 0.036654 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
-250 & 0.084191 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & & \\
-500 & 0.35179 & $3.2766 \times 10^{-6}$ & $1.6383 \times 10^{-6}$ & & \\
-1000 & 1.2846 & $8.2081 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & & \\
-2000 & 7.3734 & $2.0531 \times 10^{-7}$ & $1.0265 \times 10^{-7}$ & & \\
-4000 & 40.664 & $4.8578 \times 10^{-8}$ & $2.4421 \times 10^{-8}$ & & \\
-8000 & 291.47 & $1.5975 \times 10^{-8}$ & $7.9337 \times 10^{-9}$ & & \\
-16000 & 1974.6 & $1.6116 \times 10^{-7}$ & $9.0649 \times 10^{-8}$ & & \\
+250 & 0.084191 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 2.0001 & 1.1997 \\
+500 & 0.35179 & $3.2766 \times 10^{-6}$ & $1.6383 \times 10^{-6}$ & 2.0000 & 2.0630 \\
+1000 & 1.2846 & $8.2081 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 1.8685 \\
+2000 & 7.3734 & $2.0531 \times 10^{-7}$ & $1.0265 \times 10^{-7}$ & 2.0007 & 2.5210 \\
+4000 & 40.664 & $4.8578 \times 10^{-8}$ & $2.4421 \times 10^{-8}$ & 2.0802 & 2.4634 \\
+8000 & 291.47 & $1.5975 \times 10^{-8}$ & $7.9337 \times 10^{-9}$ & 1.6048 & 2.8415 \\
+16000 & 1797.2 & $1.6116 \times 10^{-7}$ & $9.0649 \times 10^{-8}$ & -3.3352 & 2.6243 \\
 \cline{2-6}
 32000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
@@ -433,20 +433,22 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 \caption{Results using the simplified Bartels-Stewart algorithm.}
 \end{table}
 
+Timing results of each step of the algorithm are given in Table 4, where the headings of the table correspond to each step of the algorithm. These results show that this algorithm is largely dominated by computing the Schur decompositions in the first step, as expected.
+
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|}
 \hline
-$n$ & 1 & 2 & 3 & Total \\
+$n$ & 1 & 2 & 3 & Total & eog \\
 \hline
-125 &  &  &  &  \\
-250 &  &  &  &  \\
-500 &  &  &  &  \\ 
-1000 &  &  &  &  \\
-2000 &  &  &  &  \\
-4000 & & & & \\
-8000 & & & & \\
-16000 & & & & \\
+125 & 0.023111 & 0.013408 & 0.00013494 & 0.036654 & - \\
+250 & 0.035753 & 0.047841 & 0.00059700 & 0.084191 & 1.1997 \\
+500 & 0.15627 & 0.19206 & 0.0034585 & 0.35179 & 2.0630 \\ 
+1000 & 0.49460 & 0.76522 & 0.024728 & 1.2846 & 1.8685 \\
+2000 & 3.1751 & 4.0314 & 0.16686 & 7.3734 & 2.5210 \\
+4000 & 25.373 & 14.011 & 1.2787 & 40.664 & 2.4634 \\
+8000 & 218.92 & 61.979 & 10.566 & 291.47 & 2.8415 \\
+16000 & 1433.7 & 277.08 & 86.375 & 1797.2 & 2.6243 \\
 \hline
 \end{tabular}
 \caption{Timings for each step using the simplified Bartels-Stewart algorithm.}
@@ -462,7 +464,7 @@ A similarity transformation \cite{Simoncini} can be used to solve the Sylvester 
 	\end{enumerate}
 \item Compute the solution $X = P \widetilde{X} Q^{-1}$, where $\widetilde{X}_{ij} = \frac{\widetilde{C}_{ij}}{\lambda_i + \mu_j}$ and $\widetilde{C} = P^{-1}CQ$.
 \end{enumerate}
-Here $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$, $\mu_1, \dots, \mu_m$ are the eigenvalues of $B$ and the columns of $P$ and $Q$ are the eigenvectors of $A$ and $B$, respectively. We can analyse the steps of this algorithm as done previously to obtain the time complexity. Step 1a consists of computing the eigenpairs of $A$ and $B$, which in general is $O(n^3)$. Step 1b computes the inverse of $P$ and $Q$ which is greater than $O(n^2)$. The last step involves matrix multiplication which is at most $O(n^3)$. Therefore we can expect this algorithm in the general case to have approximately $O(n^3)$.
+Here $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$, $\mu_1, \dots, \mu_m$ are the eigenvalues of $B$ and the columns of $P$ and $Q$ are the eigenvectors of $A$ and $B$, respectively. We can analyse the steps of this algorithm as done previously to obtain the time complexity. Step 1a consists of computing the eigenpairs of $A$ and $B$, which in general is $O(n^3)$. Step 1b computes the inverse of $P$ and $Q$ which is greater than $O(n^2)$. The last step involves matrix multiplication which is at most $O(n^3)$. Therefore we can expect this algorithm in the general case to have, in the worst case, complexity $O(n^3)$, with the steps 1a and 2 dominating. 
 
 For $TU+UT=F$ this method also simplifies. The steps are: 
 \begin{enumerate}
@@ -473,7 +475,7 @@ For $TU+UT=F$ this method also simplifies. The steps are:
 	\end{enumerate}
 \item Compute the solution $U = P \widetilde{U} P^{-1}$, where $\widetilde{U}_{ij} = \frac{\widetilde{F}_{ij}}{\lambda_i + \lambda_j}$ and $\widetilde{F}=P^{-1}FP$
 \end{enumerate}
-As before $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $T$ and the columns of $P$ are the eigenvectors of $T$. The complexity of the first step can be drastically reduced. As $T$ is a matrix in Toeplitz form, we can compute the eigenvalues and eigenvectors directly as:
+As before $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $T$ and the columns of $P$ are the eigenvectors of $T$. The complexity of the first step can be drastically reduced. Here only one eigendecomposition needs to be performed. As $T$ is a matrix in Toeplitz form, we can compute the eigenvalues and eigenvectors directly as:
 \begin{equation} 
 \lambda_i = \frac{2}{h^2} \Big( \cos \Big( \frac{i \pi}{n+1} \Big) - 1 \Big) 
 \end{equation}
@@ -483,10 +485,10 @@ t_{ij} = \sqrt{\frac{2}{n+1}} \sin \Big( \frac{ij \pi}{n+1}  \Big)
 \end{equation}
 which reduces the time complexity to $O(n)$ as $T$ has $n$ eigenpairs. Also, in this case the matrix $P$ is unitary, which means that $P^{-1} = P^T$ and so calculating the inverse of $P$ reduces to $O(n^2)$. This should result in a significant speed up compared to the general version of this algorithm.
 
-An interesting fact to note is that in this specific case the Schur decomposition and eigendecomposition of $T$ are actually equivalent. 
+An interesting fact to note here is that in this specific case the Schur decomposition and eigendecomposition of $T$ actually produce the same matrices. 
 
 \subsubsection*{Numpy's \texttt{linalg.eig} function}
-In the general case of this method, the eigenpairs can be computed using NumPy's \texttt{linalg.eig} function. The results doing this are given in Table 5. The errors are again similar to the previous methods. However, here the eoc moves away from 2 as $n$ is increased. This is likely due to the fact that there is no general formula for calculating eigenvalues and eigenvectors for an arbitrary matrix, meaning the eigenvalues and eigenvectors are most likely approximated by NumPy's \texttt{linalg.eig}. It is likely that the approximations become less accurate as $n$ is increased. The eog here is however slightly better than the previous methods. 
+In the general case of this method, the eigenpairs can be computed using NumPy's \texttt{linalg.eig} function. The results doing this are given in Table 5. Here we can see the errors for $n<8000$ are similar to that of the previous methods. The eoc is close enough to 2 to conclude this algorithm converges up to $n=4000$. Similarly to the implementation of the Bartels-Stewart algorithm, the algorithm stops converging for $n\geq 8000$ and the error grows when $n=16000$. As before, this is because \texttt{linalg.eig} is approximating the eigenpairs and which has a significant impact on the solution for large $n$. This should not happen when computing the eigenpairs directly. The eog here shows that the algorithm has better than cubic time complexity.
 
 \begin{table}[H]
 \centering
@@ -494,35 +496,38 @@ In the general case of this method, the eigenpairs can be computed using NumPy's
 \hline
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
 \hline
-125 & 0.034534 & $5.1802 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & -  & - \\
-250 & 0.13690 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 2.0000 & 1.9870  \\
-500 & 0.59718 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999 & 2.1250  \\
-1000 & 2.2211 & $8.2086 \times 10^{-7}$ & $4.1043 \times 10^{-7}$ & 1.9999 & 1.8950  \\
-2000 & 11.571 & $2.0467 \times 10^{-7}$ & $1.0237 \times 10^{-7}$ & 2.0053 & 2.3812  \\
-4000 & 70.984 & $4.9966 \times 10^{-8}$ & $2.4876 \times 10^{-8}$ & 2.0350 & 2.6170  \\
-8000 & 466.83 & $8.6360 \times 10^{-9}$ & $4.1223 \times 10^{-9}$ & 2.5330 & 2.7173  \\
-16000 &  & $1.5711 \times 10^{-7}$ & $9.0192 \times 10^{-8}$ & & \\
+125 & 0.029165 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & -  & - \\
+250 & 0.12221 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 2.0001 &   2.0671 \\
+500 & 0.43136 & $3.2766 \times 10^{-6}$ & $1.6383 \times 10^{-6}$ & 2.0000 & 1.8208   \\
+1000 & 2.2521 & $8.2081 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 2.3843   \\
+2000 & 9.7767 & $2.0530 \times 10^{-7}$ & $1.0265 \times 10^{-7}$ & 2.0007 & 2.1181   \\
+4000 & 55.058 & $4.8654 \times 10^{-8}$ & $2.4421 \times 10^{-8}$ & 2.0770 &   2.4935 \\
+8000 & 358.09  & $1.5899 \times 10^{-8}$ & $7.9333 \times 10^{-9}$ & 1.6139 & 2.7013   \\
+16000 &  & $1.5711 \times 10^{-7}$ & $9.0192 \times 10^{-8}$ & -3.3054 & \\
 \cline{2-6}
 32000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
-\caption{Results using a similarity transformation, calculating the eigenvalues and eigenvectors using \texttt{numpy.linalg.eig}.}
+\caption{Results using a similarity transformation, calculating the eigenpairs using \texttt{numpy.linalg.eig}.}
 \end{table}
+
+Results of each step of the algorithm are given in Table 6. It is clear from these results that calculating the eigenpairs is the most dominant step, followed by computing the solution in the last step of the algorithm.
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|}
 \hline
-$n$ & 1 & 2 & 3 & 4 & 5 & Total \\
+$n$ & 1a & 1b & 2 & Total & eog \\
 \hline
-125 & 0.013860 & 0.00042105 & 0.00075817 & 0.018881 & 0.00061440 & 0.034534 \\
-250 & 0.052402 & 0.00068998 & 0.0026329 & 0.078654 & 0.0025253 & 0.13690 \\
-500 & 0.25900 & 0.0020170 & 0.013870 & 0.30815 & 0.014147 & 0.59718 \\
-1000 & 0.91819 & 0.0011129 & 0.084650 & 1.1328 & 0.084323 & 2.2211 \\
-2000 & 5.8236 & 0.0035102 & 0.61534 & 4.5150 & 0.61360 & 11.571 \\
-4000 & 43.651 & 0.0074658 & 4.6290 & 18.071 & 4.6257 & 70.984 \\
-8000 & 325.30 & 0.027416 & 35.464 & 70.695 & 35.345 & 466.83 \\
+125 & 0.014773 & 0.0017848 & 0.012608 & 0.029165 & - \\
+250 & 0.048301 & 0.0036919 & 0.070221 & 0.12221 & 2.0671 \\
+500 & 0.16522 & 0.0085607 &  0.25759 & 0.43136 & 1.8208 \\
+1000 & 0.56480 & 0.85656 & 0.83078 & 2.2521 & 2.3843 \\
+2000 & 5.0672 & 1.0012 & 3.7083 & 9.7767 & 2.1181 \\
+4000 & 37.665 & 1.3572 & 16.035 & 55.058 & 2.4935 \\
+8000 & 265.57 & 7.6024 & 84.917 & 358.09 & 2.7013 \\
+16000 & & & & & \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -531,50 +536,46 @@ $n$ & 1 & 2 & 3 & 4 & 5 & Total \\
 
 \subsubsection*{Calculating eigenpairs explicitly}
 
-As can be seen from the results in Table 6, the most costly part of this method is calculating the eigenvalues and eigenvectors. Results of doing so are given in Table 7, and timings for each step are given in Table 8. 
-
-%Similar errors are given by this method, however the eoc is  closer to 2 for $n \leq 8000$. When $n=16000$ the eoc increases significantly, however the errors here are so small that this is likely due to the impact of roundoff errors. The eog is also significantly less demonstrating that using this algorithm and computing the eigenvalues explicity achieves a near square time complexity. Also this is the only method so far that has been able to solve the problem with $n=16000$ without running out of memory. 
-
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog\\
 \hline
-125 & 0.028324 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & -  \\
-250 & 0.080759 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ &  &   \\
-500 & 0.22574 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ &  &  \\
-1000 & 0.87985 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ &  &   \\
-2000 & 4.0533 & $2.0541 \times 10^{-7}$ & $1.0270 \times 10^{-7}$ &  &  \\
-4000 & 15.696 & $5.1313 \times 10^{-8}$ & $2.5656 \times 10^{-8}$ &  &   \\
-8000 & 73.321 & $1.2813 \times 10^{-8}$ & $6.4065 \times 10^{-9}$ &  &   \\
-16000 & 428.46 & $7.7527 \times 10^{-10}$ & $3.8764 \times 10^{-10}$ &  &  \\
+125 & 0.022027 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & -  \\
+250 & 0.076186 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 2.0001 & 1.7903  \\
+500 & 0.25554 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999 & 1.7460 \\
+1000 & 1.0070 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 1.9784  \\
+2000 & 4.5035 & $2.0541 \times 10^{-7}$ & $1.0270 \times 10^{-7}$ & 2.0000 & 2.1610 \\
+4000 & 16.906 & $5.1313 \times 10^{-8}$ & $2.5656 \times 10^{-8}$ & 2.0018 & 1.9084  \\
+8000 & 82.150 & $1.2813 \times 10^{-8}$ & $6.4065 \times 10^{-9}$ & 2.0021 & 2.2807  \\
+16000 & 411.78 & $7.7527 \times 10^{-10}$ & $3.8764 \times 10^{-10}$ & 4.0475 & 2.3255 \\
 \cline{2-6}
 32000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
-\caption{Results using a similarity transformation, calculating the eigenvalues and eigenvectors explicity.}
+\caption{Results using a similarity transformation, calculating the eigenpairs explicity.}
 \end{table}
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|}
 \hline
-$n$ & 1 & 2 & 3 & 4 & 5 & Total \\
+$n$ & 1a & 1b & 2 & Total \\
 \hline
-125 & 0.057252 & 0.00025916 & 0.0045545 & 0.018010 & 0.00059748 & 0.080673 \\
-250 & 0.21954 & 0.00047016 & 0.0081279 & 0.073295 & 0.0025220 & 0.30396 \\ 
-500 & 0.88125 & 0.0012608 & 0.018555 & 0.28724 & 0.013819 & 1.2021  \\
-1000 & 3.7073 & 0.00096869 & 0.67056 & 1.1304 & 0.081200 & 5.5904 \\
-2000 & 13.812 & 0.0092294 & 1.3690 & 4.4495 & 0.60793 & 20.247 \\
-4000 & 54.907 & 0.0068946 & 4.9050 & 17.381 & 4.5936 & 82.243 \\
-8000 & 217.26 & 0.026015 & 35.357 & 71.581 & 36.129 & 360.35 \\
-16000 & 892.51 & 168.51 & 217.68 & 288.92 & 204.25 & 1771.9 \\
+125 & 0.0012403 & 0.00025010 & 0.020537 & 0.022027 \\
+250 & 0.0056314 & 0.00060773 & 0.069947 & 0.076186 \\
+500 & 0.014874 & 0.00034022 & 0.24032 & 0.25554 \\
+1000 & 0.054291 & 0.00083232 & 0.95189 & 1.0070 \\
+2000 & 0.16762 & 0.0026162 & 4.3333 & 4.5035 \\
+4000 & 0.64618 & 0.0062704 & 16.253 & 16.906 \\
+8000 & 2.7878 & 0.029123 & 79.333 & 82.150 \\
+16000 & 13.124 & 0.092426 & 398.57 & 411.78 \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
-\caption{Timing results for each step of the similarity transformation method, calculating the eigenvalues and eigenvectors explicitly.}
+\caption{Timing results for each step of the similarity transformation method, calculating the eigenpairs explicitly.}
 \end{table}
 
 As can be seen from the results in Table 8, calculating the eigenvalues and eigenvectors explicitly  outperforms calculating them using the NumPy library when $n$ is large.
@@ -582,54 +583,63 @@ As can be seen from the results in Table 8, calculating the eigenvalues and eige
 \subsubsection{Shifted System}
 A projection method \cite{Simoncini} can be used to solve $AX + XB = C$. This method works by computing the eigendecomposition of $B$ to reform the problem as solving $n$ independent linear systems. Each of these linear systems can be solved simultaneously to obtain the solution $X$. The steps of this method are as follows:
 \begin{enumerate}
-\item Compute $B = WSW^{-1}$, where $S = \text{diag}(s_1, \dots, s_n)$ are the eigenvalues of $B$ and the columns of $W$ are the eigenvectors of $B$
+\item Compute the eigendecomposition $B = WSW^{-1}$:
+	\begin{enumerate}
+	\item Calculate the eigenpairs of $B$
+	\item Calculate the inverse of $W$
+	\end{enumerate}
 \item For $i=1$ to $n$, solve the system $(A+s_i I)(\hat{X})_i = (\hat{C})_i$, where $\hat{C} = CW$
-\item Compute solution $X = \hat{X}W$
+\item Compute solution $X = \hat{X}W^{-1}$
 \end{enumerate}
-where $(\hat{X})_i$ denotes the $i^{\text{th}}$ column of $\hat{X}$.
+where $S = \text{diag}(s_1, \dots, s_n)$ are the eigenvalues of $B$, the columns of $W$ are the eigenvectors of $B$ and $(\hat{X})_i$ denotes the $i^{\text{th}}$ column of $\hat{X}$.
+
+Calculating the eigenpairs in the first step runs in general in $O(n^3)$, and then computing the inverse is greater than $O(n^2)$. The second step solves $n$ linear systems. Solving a linear system directly is of complexity at best $O(n^2)$, and so solving $n$ of these is of time complexity $O(n^3)$. The last step is a simple matrix multiplication which is at worst $O(n^3)$. Therefore this algorithm in general should have at least cubic time complexity.
 
 In the case of $TU + UT = F$, the steps are as follows:
 \begin{enumerate}
-\item Compute $T = WSW^{-1}$, where $S = \text{diag}(s_1, \dots, s_n)$ are the eigenvalues of $T$ and the columns of $W$ are the eigenvectors of $T$
+\item Compute $T = WSW^{-1}$
+	\begin{enumerate}
+	\item Calculate the eigenpairs of $T$
+	\item Calculate the inverse of $W$
+	\end{enumerate}
 \item For $i=1$ to $n$, solve the system $(T+s_i I)(\hat{U})_i = (\hat{F})_i$, where $\hat{F} = FW$
-\item Compute solution $U = \hat{U}W$
+\item Compute solution $U = \hat{U}W^{-1}$
+where $S = \text{diag}(s_1, \dots, s_n)$ are the eigenvalues of $T$ and the columns of $W$ are the eigenvectors of $T$
 \end{enumerate}
+As with the similarity transformation method, we can calculate the eigenpairs explicitly using (3.9) and (3.10), reducing this to $O(n)$. Also $W$ is unitary which means we can calculate its transpose rather than its inverse, reducing this to $O(n^2)$. We should therefore expect this algorithm to be largely dominated by the second step of solving $n$ linear systems.
 
-Results using this method are given in Table 9. The errors are approximately the same as the errors given previously. The eoc is approximately 2 and the eog is $> 3$ for large $n$ demonstrating that this algorithm converges with a worse than cubic time complexity. 
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
 $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
 \hline
-125 & 0.092085 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
-250 & 0.43609 & $1.3054 \times 10^{-5}$ & $6.5274 \times 10^{-6}$ & 2.0001 & 2.2436 \\
-500 & 2.1851 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999 & 2.3250 \\
-1000 & 19.498 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 3.1576 \\
-2000 & 194.13 & $2.0541 \times 10^{-7}$ & $1.0271 \times 10^{-7}$ & 2.0000 & 3.3156 \\
-4000 & 2452.5 & $5.1347 \times 10^{-8}$ & $2.5674 \times 10^{-8}$ & 2.0009 & 3.6592  \\
+125 & 0.050499 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
+250 & 0.14952 & $1.3054 \times 10^{-5}$ & $6.5274 \times 10^{-6}$ &  &  \\
+500 & 0.96337 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ &  &  \\
+1000 & 8.3502 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ &  &  \\
+2000 & 100.60 & $2.0541 \times 10^{-7}$ & $1.0270 \times 10^{-7}$ &  &  \\
+4000 & 1375.5 & $5.1347 \times 10^{-8}$ & $2.5674 \times 10^{-8}$ &  &   \\
 \cline{2-6} 
-8000 & \multicolumn{5}{c|}{Timing error} \\
+8000 & \multicolumn{5}{c|}{Time Limit Reached} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
 \caption{Results using a projection method to solve $n$ linear systems.}
 \end{table}
 
-The steps of this method can also be broken down into component parts and each part timed. The results of doing so are given in Table 10. Unsuprisingly, the most costly part of the algorithm is solving the $n$ linear systems. 
-
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
-$n$ & 1 & 2 & 3 & 4 & Total \\
+$n$ & 1a & 1b & 2 & 3 & Total \\
 \hline
-125 & 0.057421 & 0.0043032 & 0.3028 & $7.1764 \times 10^{-7}$ & 0.092085 \\
-250 & 0.23967 & 0.0041912 & 0.19177 & 0.00046206 & 0.43609  \\
-500 & 0.85408 & 0.0079994 & 1.3200 & 0.0030336 & 2.1851 \\
-1000 & 3.3709 & 0.026276 & 16.079 & 0.021675 & 19.498 \\
-2000 & 13.278 & 0.50065 & 180.81 & 0.16621 & 194.13 \\
-4000 & 53.300 & 1.8301 & 2396.1 & 1.2866 & 2452.5  \\
+125 & 0.0049276 & 0.00084090 & 0.044659 & $7.1526 \times 10^{-5}$ & 0.050499 \\
+250 & 0.0079846 & 0.00059628 & 0.14070 & 0.00024056 & 0.14952 \\
+500 & 0.013740 & 0.00093865 & 0.94713 & 0.0015626 & 0.96337 \\
+1000 & 0.046594 & 0.00083065 & 8.2913 & 0.011436 & 8.3502 \\
+2000 & 0.16451 & 0.0026150 & 100.28 & 0.15234 & 100.60 \\
+4000 & 0.64751 & 0.0063558 & 1374.2 & 0.64156 & 1375.5 \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -639,7 +649,7 @@ $n$ & 1 & 2 & 3 & 4 & Total \\
 \subsection{Iterative Methods}
 
 \subsubsection{Kronecker Product}
-Similarly to Section 3.1.1, the Kronecker product can be used to write the matrix equation as a standard vector linear system. A a standard iterative solver can then be used to solve the system, which can provide a base case for comparison. Results using \texttt{scipy.sparse.linalg.cg}, which is a sparse solver that uses the conjugate gradient iterative method, are given in Table 11, using a convergence tolerance of $10^{-9}$. The results show errors similar to all the direct methods. The eoc demonstrates that the algorithm converges very well. Although this algorithm is much faster than all the previous direct methods, the eog demonstrates that when $n$ is significantly large, the algorithm exhibits a worse than cubic time complexity, which is shown here when $n=8000$.  
+Similarly to Section 3.1.1, the Kronecker product can be used to write the matrix equation as a standard vector linear system. A a standard iterative solver can then be used to solve the system, which can provide a base case for comparison. Results using \texttt{scipy.sparse.linalg.cg}, which is a sparse solver that uses the conjugate gradient iterative method, are given in Table 11, using a convergence tolerance of $10^{-9}$. The results show errors similar to all the direct methods. The eoc demonstrates that the algorithm converges very well. Although this algorithm is much faster than all the previous direct methods, the eog demonstrates that when $n$ is significantly large, the algorithm exhibits a worse than cubic time complexity, which is shown here when $n=8000$. For $n=16000$, using this solver resulted in a memory error. This because the matrix $\mathcal{T} = I \otimes T + T \otimes I$ has dimension $n^2 \times n^2$ with either four or five entries in each row and so even in sparse format this requires a huge amount of memory to store.
 
 \begin{table}[H]
 \centering
@@ -682,7 +692,7 @@ where $\lambda_{\text{max}}(T^2)$ denotes the maximum eigenvalue of $T^2$. We ca
 \begin{equation}
 \lambda_{\text{max}}(T^2) = \frac{4}{h^4} \text{max} \Big( \big( \cos{\Big(\frac{i \pi}{n+1} \Big) } -1 \big)^2 \Big)
 \end{equation}
-$\lambda_{\text{max}}(T^2)$ therefore scales with $\frac{1}{h^4}$ meaning its reciprocal scales with $h^4$. This implies that $\kappa$ will need to be significantly small as $n$ is increased for the solution to converge. Even for small values of $n$, this is impractical and therefore this method is not appropriate for solving this equation. This can be seen from the fact that, using this method with $n=125$ and a step size of $\kappa = \nicefrac{1}{2 \lambda_{\text{max}}(T^2)}$, the method took longer than the maximum time of 6000 seconds allowed to compute a solution.
+$\lambda_{\text{max}}(T^2)$ therefore scales with $\frac{1}{h^4}$ meaning its reciprocal scales with $h^4$. This implies that $\kappa$ will need to be significantly small as $n$ is increased for the solution to converge. Even for small values of $n$, this is impractical and therefore this method is not appropriate for solving this equation. This is confirmed by the fact that, using this method with $n=125$, a step size of $\kappa = \nicefrac{1}{2 \lambda_{\text{max}}(T^2)}$ and initial guess $U=0$, the method took longer than the maximum time of 6000 seconds allowed to compute a solution.
 
 \subsubsection{Modified Conjugate Gradient}
 In \cite{Hou} a modified conjugate gradient (MCG) algorithm is proposed, which is adapted for solving Sylvester Equations. The general algorithm for solving $AX+XB=C$, where $A, B, C$ and $X$ are all $n \times n$ matrices, is as follows:

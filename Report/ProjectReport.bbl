@@ -9,23 +9,25 @@ R.~H. Bartels and G.~W. Stewart.
 J.~Bishop and O.~E.~Strack.
 \newblock A statistical method for verifying mesh convergence in {M}onte
   {C}arlo simulations with application to fragmentation.
-\newblock 88:279 -- 306, 10 2011.
+\newblock {\em International Journal for Numerical Methods in Engineering},
+  88:279 -- 306, 10 2011.
 
 \bibitem{Paul}
 P.~Constantine.
 \newblock A {P}rimer on {S}tochastic {G}alerkin {M}ethods.
-\newblock 03 2007.
+\newblock {\em https://web.stanford.edu/\texttildelow
+  paulcon/projects/SGS\_primer.html}, 03 2007.
 
 \bibitem{Hou}
 J.~Hou, Q.~Lv, and M.~Xiao.
 \newblock A {P}arallel {P}reconditioned {M}odified {C}onjugate {G}radient
   {M}ethod for {L}arge {S}ylvester {M}atrix {E}quation.
-\newblock 2014:1--7, 03 2014.
+\newblock {\em Mathematical Problems in Engineering}, 2014:1--7, 03 2014.
 
 \bibitem{Simoncini}
 V.~Simoncini.
 \newblock Computational {M}ethods for {L}inear {M}atrix {E}quations.
-\newblock 58:377--441, 01 2016.
+\newblock {\em SIAM Review}, 58:377--441, 01 2016.
 
 \bibitem{Xiu}
 D.~Xiu and G.~Karniadakis.
@@ -37,6 +39,6 @@ D.~Xiu and G.~Karniadakis.
 J.~Zhou, W.~Ruirui, and Q.~Niu.
 \newblock A {P}reconditioned {I}teration {M}ethod for {S}olving {S}ylvester
   {E}quations.
-\newblock 2012, 07 2012.
+\newblock {\em Journal of Applied Mathematics}, 2012, 07 2012.
 
 \end{thebibliography}

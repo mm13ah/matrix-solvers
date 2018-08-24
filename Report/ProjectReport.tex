@@ -425,7 +425,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 2000 & 7.3734 & $2.0531 \times 10^{-7}$ & $1.0265 \times 10^{-7}$ & 2.0007 & 2.5210 \\
 4000 & 40.664 & $4.8578 \times 10^{-8}$ & $2.4421 \times 10^{-8}$ & 2.0802 & 2.4634 \\
 8000 & 291.47 & $1.5975 \times 10^{-8}$ & $7.9337 \times 10^{-9}$ & 1.6048 & 2.8415 \\
-16000 & 1797.2 & $1.6116 \times 10^{-7}$ & $9.0649 \times 10^{-8}$ & -3.3352 & 2.6243 \\
+16000 & 1797.2 & $1.6116 \times 10^{-7}$ & $9.0649 \times 10^{-8}$ & -3.3349 & 2.6243 \\
 \cline{2-6}
 32000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
@@ -503,7 +503,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 2000 & 9.7767 & $2.0530 \times 10^{-7}$ & $1.0265 \times 10^{-7}$ & 2.0007 & 2.1181   \\
 4000 & 55.058 & $4.8654 \times 10^{-8}$ & $2.4421 \times 10^{-8}$ & 2.0770 &   2.4935 \\
 8000 & 358.09  & $1.5899 \times 10^{-8}$ & $7.9333 \times 10^{-9}$ & 1.6139 & 2.7013   \\
-16000 & 2379.3 & $1.5711 \times 10^{-7}$ & $9.0192 \times 10^{-8}$ & -3.3054 & 2.7321 \\
+16000 & 2379.3 & $1.5711 \times 10^{-7}$ & $9.0192 \times 10^{-8}$ & -3.3051 & 2.7321 \\
 \cline{2-6}
 32000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
@@ -550,7 +550,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 2000 & 4.5035 & $2.0541 \times 10^{-7}$ & $1.0270 \times 10^{-7}$ & 2.0000 & 2.1610 \\
 4000 & 16.906 & $5.1313 \times 10^{-8}$ & $2.5656 \times 10^{-8}$ & 2.0018 & 1.9084  \\
 8000 & 82.150 & $1.2813 \times 10^{-8}$ & $6.4065 \times 10^{-9}$ & 2.0021 & 2.2807  \\
-16000 & 411.78 & $7.7527 \times 10^{-10}$ & $3.8764 \times 10^{-10}$ & 4.0475 & 2.3255 \\
+16000 & 411.78 & $7.7527 \times 10^{-10}$ & $3.8764 \times 10^{-10}$ & 4.0471 & 2.3255 \\
 \cline{2-6}
 32000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
@@ -819,6 +819,11 @@ $n$ & Time(s) & no. iters & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}
 A parallel implementation of this method is also proposed in \cite{Hou}, which would result in better performance than given above, however, this goes beyond the scope of this project.
 
 \subsection{Conclusion}
+As can be seen by the results in this section, all the methods that compute a solution, unless otherwise specified, give very similar errors. All of the direct methods implemented are able to solve the equation faster than rewriting the system using the Kronecker product and using a sparse direct solver. They are also able to compute a solution for much larger problem sizes. From the methods implemented, we can see that having the equation in Sylvester form allowed us to take advantage of the problem's structure. This was exemplified in the case of the Bartels-Stewart algorithm and the similarity transformation method. For both of these methods, we were able to use the properties of $T$ to drastically reduce the computation time. Of all the direct methods implemented, the similarity transformation method, calculating the eigenpairs explicity and taking advantage of the fact that $P$ is unitary, was the fastest method with the best time complexity. 
+
+For the iterative methods, using the Kronecker product and solving using \texttt{sparse.linalg.cg} was faster and, for larger problem sizes, computed a solution in less iterations than the preconditioned MCG. However, for $n=8000$ the preconditioned MCG had slightly better eog, which shows for a larger problem size, if memory and time were not an issue, it may be able to beat the conjugate gradient. For $n=16000$, \texttt{sparse.linalg.cg} resulted in a memory error where as the preconditioned MCG resulted in a timing error. This shows that whilst \texttt{sparse.linalg.cg} is faster, the preconditioned MCG is more memory efficient. The other two iterative methods that were implemented, the gradient based algorithm and the MCG, took too long to compute a solution. 
+
+Of all the methods implemented, we can see that \texttt{sparse.linalg.cg} was the fastest but could not solve the same problem size as many of the other methods. It also had worse time complexity than many of the other methods, and so if memory was not an issue, we would expect the other methods to beat it for larger problem sizes.
 
 \newpage
 
@@ -919,10 +924,10 @@ Results using the Monte Carlo method, with a single uncertain parameter, are giv
 $n$ & $M$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}}$ & eoc & eog \\
 \hline
 125 & 10 & 0.15511 & 0.071286 & 0.035630 & - & - \\
-250 & 40 & 2.2698 & 0.19918 & 0.099594 & & \\
-500 & 160 & 39.878 & 0.074265 & 0.037134 & & \\
-1000 & 640 & 641.37 & 0.0050958 & 0.0025476 & & \\
-2000 & 2560 & 11957 & 0.0045691 & & & \\
+250 & 40 & 2.2698 & 0.19918 & 0.099594 & -1.4909 & 3.8712 \\
+500 & 160 & 39.878 & 0.074265 & 0.037134 & 1.4274 & 4.1350 \\
+1000 & 640 & 641.37 & 0.0050958 & 0.0025476 & 3.8709 & 4.0075 \\
+2000 & 2560 & 11957 & 0.0045691 & 0.0022845 & 0.15751 & 4.2206 \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -1013,12 +1018,12 @@ where $A = P \otimes L$ has dimension $n^2(P+1) \times n^2(P+1)$ and $f = \text{
 $n$ & $K$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}}$ & eoc & eog \\
 \hline
 125 & 1 & 0.014717 & 0.0021941 & 0.0010767 & - & - \\
-250 & 1 & 0.077675 & 0.00055263 & 0.00027120 & & \\
-500 & 1 & 0.52634 & 0.00013874 & 6.80630 $\times 10^{-5}$ & & \\
-1000 & 1 & 3.7997 & $3.4817 \times 10^{-5}$ & $1.7049 \times 10^{-5}$ & & \\
-2000 & 1 & 33.354 & $8.7386 \times 10^{-6}$ & $4.2666 \times 10^{-6}$ & & \\
-4000 & 1 & 308.21 & $2.2358 \times 10^{-6}$ & $1.0674 \times 10^{-6}$ & & \\
-8000 & 1 & 3090.0 & $6.4883 \times 10^{-7}$ & & & \\
+250 & 1 & 0.077675 & 0.00055263 & 0.00027120 & 2.0007 & 2.4000 \\
+500 & 1 & 0.52634 & 0.00013874 & 6.80630 $\times 10^{-5}$ & 1.9997 & 2.7605 \\
+1000 & 1 & 3.7997 & $3.4817 \times 10^{-5}$ & $1.7049 \times 10^{-5}$ & 1.9974 & 2.8518  \\
+2000 & 1 & 33.354 & $8.7386 \times 10^{-6}$ & $4.2666 \times 10^{-6}$ & 1.9958 & 3.1339 \\
+4000 & 1 & 308.21 & $2.2358 \times 10^{-6}$ & $1.0674 \times 10^{-6}$ & 1.9673 & 3.2080 \\
+8000 & 1 & 3090.0 & $6.4883 \times 10^{-7}$ & $2.6774 \times 10^{-7}$ & 1.7852 & 3.3256 \\
 \cline{2-7}
 16000 & \multicolumn{6}{c|}{Memory Error} \\
 \hline
@@ -1055,10 +1060,10 @@ The resulting right-hand side is a matrix, which means \texttt{sparse.linalg.sps
 $n$ & $K$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}}$ & eoc & eog \\
 \hline
 125 & 1 & 0.059279 & 0.0021941 & 0.0010767 & - & - \\
-250 & 1 & 0.25614 & 0.00055258 & 0.00027120 & & \\
-500 & 1 & 1.4756 & 0.00013872 & $6.8063 \times 10^{-5}$ & & \\
-1000 & 1 & 10.827 & $3.4752 \times 10^{-5}$ & $1.7049 \times 10^{-5}$ & & \\
-2000 & 1 & 76.430 & $8.6968 \times 10^{-6}$ & $4.2666 \times 10^{-6}$ & & \\
+250 & 1 & 0.25614 & 0.00055258 & 0.00027120 & 2.0009 & 2.1113 \\
+500 & 1 & 1.4756 & 0.00013872 & $6.8063 \times 10^{-5}$ & 1.9998 & 2.5263 \\
+1000 & 1 & 10.827 & $3.4752 \times 10^{-5}$ & $1.7049 \times 10^{-5}$ & 1.9999 & 2.8753 \\
+2000 & 1 & 76.430 & $8.6968 \times 10^{-6}$ & $4.2666 \times 10^{-6}$ & 2.0000 & 2.8195 \\
 \cline{2-7}
 4000 & \multicolumn{6}{c|}{Memory Error} \\
 \hline
@@ -1077,7 +1082,7 @@ where $u = \text{vec}(X)$, $(G_0)_{ij} = \langle \Psi_i \Psi_j \rangle$ and $(G_
 \begin{equation}
 AX + XB = C
 \end{equation}
-where $A = L^{-1}2L$, $B = G_1 G_0^{-1}$ and $C = L^{-1} F G_0^{-1}$. This can now be solved using any of the methods from Section 3, assuming that they can be adapted for sparse matrices. Computing $L^{-1}$ directly is very expensive and memory inefficient. Instead we form the linear system:
+where $A = L^{-1}2L$, $B = G_1 G_0^{-1}$ and $C = L^{-1} F G_0^{-1}$. This can now be solved using any of the methods from Section 3, assuming that they can be adapted for sparse matrices. Computing $L^{-1}$ directly is very expensive and memory inefficient, as it has large dimension and although $L$ is sparse its inverse, in general, will not be. Instead we form the linear system:
 \begin{equation}
 (L \otimes I)\text{vec}(C) = \text{vec}(FG_0^{-1})
 \end{equation}
@@ -1092,12 +1097,12 @@ Results using the conjugate gradient method \texttt{sparse.linalg.cg} to solve f
 $n$ & $K$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}}$ & eoc & eog \\
 \hline
 125 & 1 & 0.011544 & 0.0021941 & 0.0010767 & - & - \\
-250 & 1 & 0.032874 & 0.00055258 &  0.00027120 & & \\
-500 & 1 & 0.11274 & 0.00013872 & $6.8063 \times 10^{-5}$ & & \\
-1000 & 1 &  0.70258 & $3.4752 \times 10^{-5}$ & $1.7049 \times 10^{-5}$ & & \\
-2000 & 1 & 5.8607 & $8.6968 \times 10^{-6}$ & $4.2666 \times 10^{-6}$ & & \\
-4000 & 1 & 52.552 & $2.1753 \times 10^{-6}$ & $1.0672 \times 10^{-6}$ & & \\
-8000 & 1 & 761.23 & $5.4395 \times 10^{-7}$ & & & \\
+250 & 1 & 0.032874 & 0.00055258 &  0.00027120 & 2.0009 & 1.5098 \\
+500 & 1 & 0.11274 & 0.00013872 & $6.8063 \times 10^{-5}$ & 1.9998 & 1.7780 \\
+1000 & 1 &  0.70258 & $3.4752 \times 10^{-5}$ & $1.7049 \times 10^{-5}$ & 1.9999 & 2.6397 \\
+2000 & 1 & 5.8607 & $8.6968 \times 10^{-6}$ & $4.2666 \times 10^{-6}$ & 2.0000 & 3.0603 \\
+4000 & 1 & 52.552 & $2.1753 \times 10^{-6}$ & $1.0672 \times 10^{-6}$ & 2.0000 & 3.1646 \\
+8000 & 1 & 587.73 & $5.4395 \times 10^{-7}$ & $2.6686 \times 10^{-7}$ & 2.0001 & 3.4833 \\
 \cline{2-7}
 16000 & \multicolumn{6}{c|}{Memory Error} \\
 \hline
@@ -1130,18 +1135,6 @@ u_{yy} &= -\pi^2 \sin(\pi x)\sin(\pi y) - \sum_{p,q=1}^N q^2 \pi^2 \varepsilon_{
 \\ &\times \Big(2\pi^2 \sin(\pi x) \sin(\pi y) + \pi^2 \sum_{p,q=1}^N (p^2 + q^2) \varepsilon_{pq} \sin(p \pi x)\sin(q \pi y) \Big)
 \end{split}
 \end{equation}
-
-
-
-%We can increase the complexity of the PDE by introducing multiple unknown parameters that can be modelled as random variables. By redefining $\varepsilon$ as:
-%\begin{equation}
-%\varepsilon = (\varepsilon_0 + 2) + \sum_{i,j = 1}^N \varepsilon_{ij} \sin(i \pi x) \sin(j \pi y)
-%\end{equation}
-%with $\varepsilon_0 \sim u(-1, 1)$, $\varepsilon_{pq} \sim u(-2^{-\sqrt{p^2 + q^2}}, 2^{-\sqrt{p^2+q^2}})$
-%and solution $u$ as:
-%\begin{equation}
-%\sin(\pi x) \sin(\pi y) + \varepsilon = \sin(\pi x) \sin(\pi y) + (\varepsilon_0 + 2) + \sum_{i,j = 1}^N \varepsilon_{ij} \sin(i \pi x) \sin(j \pi y)
-%\end{equation}
 
 \subsubsection{Monte Carlo}
 

@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{Bartels}
 R.~H. Bartels and G.~W. Stewart.
@@ -12,17 +12,54 @@ J.~Bishop and O.~E.~Strack.
 \newblock {\em International Journal for Numerical Methods in Engineering},
   88:279 -- 306, 10 2011.
 
+\bibitem{Brewer}
+J.~Brewer.
+\newblock Kronecker {P}roducts and {M}atrix {C}alculus in {S}ystem {T}heory.
+\newblock {\em IEEE Transactions on Circuits and Systems}, 25(9):772--781,
+  September 1978.
+
 \bibitem{Paul}
 P.~Constantine.
 \newblock A {P}rimer on {S}tochastic {G}alerkin {M}ethods.
 \newblock {\em https://web.stanford.edu/\texttildelow
   paulcon/projects/SGS\_primer.html}, 03 2007.
 
+\bibitem{Demmel}
+J.~Demmel, O.~Marques, B.~Parlett, and C.~Vömel.
+\newblock Performance and {A}ccuracy of {LAPACK}'s {S}ymmetric {T}ridiagonal
+  {E}igensolvers.
+\newblock {\em SIAM Journal on Scientific Computing}, 30(3):1508--1526, 2008.
+
+\bibitem{Elliott}
+J.~Elliott.
+\newblock The {C}haracteristic {R}oots of {C}ertain {R}eal {S}ymmetric
+  {M}atrices.
+\newblock {\em https://trace.tennessee.edu/utk\_gradthes/2384}.
+
 \bibitem{Hou}
 J.~Hou, Q.~Lv, and M.~Xiao.
 \newblock A {P}arallel {P}reconditioned {M}odified {C}onjugate {G}radient
   {M}ethod for {L}arge {S}ylvester {M}atrix {E}quation.
 \newblock {\em Mathematical Problems in Engineering}, 2014:1--7, 03 2014.
+
+\bibitem{Laub}
+A.~J. Laub.
+\newblock {\em Matrix {A}nalysis {F}or {S}cientists {A}nd {E}ngineers}.
+\newblock Society for Industrial and Applied Mathematics, Philadelphia, PA,
+  USA, 2004.
+
+\bibitem{Powell}
+C.~E. Powell, D.~Silvester, and V.~Simoncini.
+\newblock An {E}fficient {R}educed {B}asis {S}olver for {S}tochastic {G}alerkin
+  {M}atrix {E}quations.
+\newblock {\em SIAM Journal on Scientific Computing}, 39(1):A141--A163, 2017.
+
+\bibitem{Shewchuk}
+J.~Shewchuk.
+\newblock An {I}ntroduction to the {C}onjugate {G}radient {M}ethod {W}ithout
+  the {A}gonizing {P}ain.
+\newblock {\em https://www.cs.cmu.edu/\texttildelow
+  quake-papers/painless-conjugate-gradient.pdf}, 08 1994.
 
 \bibitem{Simoncini}
 V.~Simoncini.

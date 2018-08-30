@@ -14,102 +14,113 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Objectives}{4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Deliverables}{4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Methodology}{4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Tasks, Milestones and Timeline}{5}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Matrix Solvers}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Plot of the solution with $n=1000$.\relax }}{7}}
-\newlabel{fig:solution}{{3}{7}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Direct Methods}{8}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Kronecker Product}{8}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Matrix Solvers}{5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Plot of the solution with $n=1000$.\relax }}{6}}
+\newlabel{fig:solution}{{3}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Direct Methods}{7}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Kronecker Product}{7}}
 \citation{Bartels}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Results obtained from solving the linear system $\mathcal  {A} x = c$ using the direct solver \texttt  {sparse.linalg.spsolve} from the SciPy library.\relax }}{9}}
-\newlabel{table:kron direct}{{1}{9}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Bartels-Stewart Algorithm}{9}}
+\citation{Parlett}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Results obtained from solving the linear system $\mathcal  {A} x = c$ using the direct solver \texttt  {sparse.linalg.spsolve} from the SciPy library.\relax }}{8}}
+\newlabel{table:kron direct}{{1}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Bartels-Stewart Algorithm}{8}}
 \citation{Demmel}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Results using SciPy's \texttt  {linalg.solve\_sylvester}.\relax }}{11}}
-\newlabel{table:bartels scipy}{{2}{11}}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Results using the simplified Bartels-Stewart algorithm.\relax }}{11}}
-\newlabel{table:bartels simplified}{{3}{11}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Results using SciPy's \texttt  {linalg.solve\_sylvester}.\relax }}{10}}
+\newlabel{table:bartels scipy}{{2}{10}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Results using the simplified Bartels-Stewart algorithm.\relax }}{10}}
+\newlabel{table:bartels simplified}{{3}{10}}
 \citation{Simoncini}
 \citation{Elliott}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Timings for each step using the simplified Bartels-Stewart algorithm.\relax }}{12}}
-\newlabel{table:bartels simplified steps}{{4}{12}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Similarity Transformation}{12}}
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Results using a similarity transformation, calculating the eigenpairs using \texttt  {numpy.linalg.eig}.\relax }}{13}}
-\newlabel{table:sim trans numpy}{{5}{13}}
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Timing results for each step of the similarity transformation method, calculating the eigenvalues and eigenvectors using \texttt  {numpy.linalg.eig}.\relax }}{14}}
-\newlabel{table:sim trans numpy steps}{{6}{14}}
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Results using a similarity transformation, calculating the eigenpairs explicity.\relax }}{14}}
-\newlabel{table:sim trans explicit}{{7}{14}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Timings for each step using the simplified Bartels-Stewart algorithm.\relax }}{11}}
+\newlabel{table:bartels simplified steps}{{4}{11}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Similarity Transformation}{11}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Results using a similarity transformation, calculating the eigenpairs using \texttt  {numpy.linalg.eig}.\relax }}{12}}
+\newlabel{table:sim trans numpy}{{5}{12}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Timing results for each step of the similarity transformation method, calculating the eigenvalues and eigenvectors using \texttt  {numpy.linalg.eig}.\relax }}{13}}
+\newlabel{table:sim trans numpy steps}{{6}{13}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Results using a similarity transformation, calculating the eigenpairs explicity.\relax }}{13}}
+\newlabel{table:sim trans explicit}{{7}{13}}
 \citation{Simoncini}
-\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Timing results for each step of the similarity transformation method, calculating the eigenpairs explicitly.\relax }}{15}}
-\newlabel{table:sim trans explicit steps}{{8}{15}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.4}Shifted System}{15}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Timing results for each step of the similarity transformation method, calculating the eigenpairs explicitly.\relax }}{14}}
+\newlabel{table:sim trans explicit steps}{{8}{14}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.4}Shifted System}{14}}
 \citation{Brewer}
-\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Results using a projection method to solve $n$ linear systems, using \texttt  {sparse.linalg.spsolve} in the second step.\relax }}{16}}
-\newlabel{table:shifted sys}{{9}{16}}
-\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Timing results of each step using a projection method to solve $n$ linear systems.\relax }}{16}}
-\newlabel{table:shifted sys steps}{{10}{16}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Iterative Methods}{16}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Kronecker Product}{16}}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Results using a projection method to solve $n$ linear systems, using \texttt  {sparse.linalg.spsolve} in the second step.\relax }}{15}}
+\newlabel{table:shifted sys}{{9}{15}}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Timing results of each step using a projection method to solve $n$ linear systems.\relax }}{15}}
+\newlabel{table:shifted sys steps}{{10}{15}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Iterative Methods}{15}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Kronecker Product}{15}}
 \citation{Shewchuk}
 \citation{Laub}
 \citation{Zhou}
-\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Expected eog for conjugate gradient method.\relax }}{18}}
-\newlabel{table:cg eog}{{11}{18}}
-\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Results obtained from solving the linear system $\mathcal  {A} x = c$ using the iterative solver \texttt  {sparse.linalg.cg} from the SciPy library.\relax }}{18}}
-\newlabel{table:kron it}{{12}{18}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Gradient Based Method}{18}}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Expected eog for conjugate gradient method.\relax }}{17}}
+\newlabel{table:cg eog}{{11}{17}}
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Results obtained from solving the linear system $\mathcal  {A} x = c$ using the iterative solver \texttt  {sparse.linalg.cg} from the SciPy library.\relax }}{17}}
+\newlabel{table:kron it}{{12}{17}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Gradient Based Method}{17}}
 \citation{Hou}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}Modified Conjugate Gradient}{19}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}Modified Conjugate Gradient}{18}}
 \citation{Hou}
 \citation{Hou}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.4}Preconditioned MCG}{20}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.4}Preconditioned MCG}{19}}
 \citation{Hou}
-\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Results obtained using the preconditioned MCG algorithm.\relax }}{21}}
-\newlabel{table:pre MCG}{{13}{21}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.5}Shifted System}{22}}
-\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Results using a projection method to solve $n$ linear systems, using \texttt  {sparse.linalg.cg} in the second step.\relax }}{23}}
-\newlabel{table:shifted it}{{14}{23}}
-\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Timing results of each step using a projection method to solve $n$ linear systems.\relax }}{23}}
-\newlabel{table:shifted it steps}{{15}{23}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Conclusion}{23}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Uncertainty}{25}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Single Parameter}{25}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Monte Carlo}{26}}
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Results obtained using the preconditioned MCG algorithm.\relax }}{20}}
+\newlabel{table:pre MCG}{{13}{20}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.5}Shifted System}{21}}
+\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Results using a projection method to solve $n$ linear systems, using \texttt  {sparse.linalg.cg} in the second step.\relax }}{22}}
+\newlabel{table:shifted it}{{14}{22}}
+\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Timing results of each step using a projection method to solve $n$ linear systems.\relax }}{22}}
+\newlabel{table:shifted it steps}{{15}{22}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Conclusion}{22}}
+\citation{Swanson}
+\citation{Pryhara}
+\citation{Breit}
+\citation{Holm}
+\citation{Bressloff}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Uncertainty}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Single Parameter}{24}}
 \citation{Bishop}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Monte Carlo}{26}}
 \citation{Paul}
+\citation{Xiu}
 \@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces Results using the Monte Carlo method with a single uncertain parameter, using the similarity transformation method calculating the eigenpairs explicitly to solve each PDE.\relax }}{27}}
 \newlabel{table:monte carlo}{{16}{27}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Stochastic Galerkin}{27}}
-\citation{Xiu}
-\@writefile{lot}{\contentsline {table}{\numberline {17}{\ignorespaces Results using the stochastic Galerkin method with a single uncertain parameter by solving the linear system using \texttt  {sparse.linalg.cg}.\relax }}{30}}
-\newlabel{table:stochastic linear}{{17}{30}}
+\@writefile{lot}{\contentsline {table}{\numberline {17}{\ignorespaces Results using the stochastic Galerkin method with a single uncertain parameter by solving the linear system using \texttt  {sparse.linalg.cg}.\relax }}{29}}
+\newlabel{table:stochastic linear}{{17}{29}}
 \citation{Powell}
 \@writefile{lot}{\contentsline {table}{\numberline {18}{\ignorespaces Results using the stochastic Galerkin method with a single uncertain parameter by solving the matrix equation using \texttt  {sparse.linalg.spsolve}.\relax }}{31}}
 \newlabel{table:stochastic matrix}{{18}{31}}
 \@writefile{lot}{\contentsline {table}{\numberline {19}{\ignorespaces Results using the stochastic Galerkin method with a single uncertain parameter by solving the Sylvester equation using \texttt  {sparse.linalg.cg} and the similarity transformation method.\relax }}{32}}
 \newlabel{table:stochastic sylvester}{{19}{32}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Multiple Parameters}{33}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Monte Carlo}{34}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Monte Carlo}{33}}
 \@writefile{lot}{\contentsline {table}{\numberline {20}{\ignorespaces Results using the Monte Carlo method with multiple uncertain parameters, using the similarity transformation method calculating the eigenpairs explicitly to solve each PDE.\relax }}{34}}
 \newlabel{table:monte carlo multiple}{{20}{34}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Stochastic Galerkin}{34}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Evaluation}{36}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Aims}{36}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Extensions}{36}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Conclusion}{36}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Evaluation}{37}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Aims}{37}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Extensions}{37}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Conclusion}{37}}
 \bibstyle{abbrv}
 \bibdata{matrixsolvers}
 \bibcite{Bartels}{1}
 \bibcite{Bishop}{2}
-\bibcite{Brewer}{3}
-\bibcite{Paul}{4}
-\bibcite{Demmel}{5}
-\bibcite{Elliott}{6}
-\bibcite{Hou}{7}
-\bibcite{Laub}{8}
-\bibcite{Powell}{9}
-\bibcite{Shewchuk}{10}
-\bibcite{Simoncini}{11}
-\bibcite{Xiu}{12}
-\bibcite{Zhou}{13}
+\bibcite{Breit}{3}
+\bibcite{Bressloff}{4}
+\bibcite{Brewer}{5}
+\bibcite{Paul}{6}
+\bibcite{Demmel}{7}
+\bibcite{Elliott}{8}
+\bibcite{Holm}{9}
+\bibcite{Hou}{10}
+\bibcite{Laub}{11}
+\bibcite{Parlett}{12}
+\bibcite{Powell}{13}
+\bibcite{Pryhara}{14}
+\bibcite{Shewchuk}{15}
+\bibcite{Simoncini}{16}
+\bibcite{Swanson}{17}
+\bibcite{Xiu}{18}
+\bibcite{Zhou}{19}

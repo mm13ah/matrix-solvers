@@ -95,7 +95,11 @@
 \pagenumbering{arabic}
 
 \section{Introduction}
-This project involves exploring methods for solving matrix equations that arise from partial differential equations (PDEs) and how a problem's structure can be exploited when dealing with equations in this form. This is not often the case when using conventional methods to solve PDEs, which usually involve stacking the unknowns of a problem into a single vector. The project then goes on to investigate how the methods explored can be applied to random PDEs (PDEs with uncertain input). We begin by constructing the matrix form of Poission's equation.
+This project involves exploring methods for solving matrix equations that arise from partial differential equations (PDEs) and investigates how a problem's structure can be exploited when dealing with equations in this form. This is not often the case when using conventional methods to solve PDEs, which usually involve stacking the unknowns of a problem into a single vector. By formulating a problem as a matrix equation and taking advantage of its structure, dramatic improvements in efficiency and accuracy can be made compared to the conventional approach. 
+
+The project then goes on to investigate how the methods explored can be applied to random PDEs (PDEs with uncertain input). Uncertainty can arise in PDEs for various different reasons (unknown coefficients, initial conditions or boundary conditions) in a variety of applications (physics, biology, finance). Random PDEs are much harder to solve as opposed to regular PDEs as the solution has an element of `randomness' to it; it is not simply deterministic. 
+
+Firstly, a model problem will be derived using Poisson's equation and different methods for solving this problem will be explored and compared. We will then proceed to introduce elements of uncertainty to the problem to see the effect this has and explore methods that can be used to solve the problem. We begin by constructing the matrix form of Poission's equation.
 
 \subsection{Possion Equation}
 As an example, define spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and let $u: \mathcal{D} \to \mathbb{R}$ be the solution of Poisson's equation:
@@ -181,7 +185,7 @@ at each internal grid point, meaning the system has $n^2$ unknowns with $n=N-2$.
 	\begin{equation}
 	f_{ij} = -\frac{1}{h^2} \big( u_{i-1j} + u_{ij-1} - 4u_{ij} + u_{i+1j} + u_{ij+1}  \big)
 	\end{equation}
-and then stack all unknowns $u_{ij}$ into a single vector $U$, resulting in the linear system $Au=f$. 
+and then stack all unknowns $u_{ij}$ into a single vector $u$, resulting in the linear system $Au=f$. 
 
 \subsection{Sylvester Equation}
 A Sylvester equation is a matrix equation of the form $AX + XB = C$, where $A$ is a $n \times n$ matrix, $B$ is a $m \times m$ matrix, and $X$ and $C$ are $n \times m$ matrices. We can write (1.4) as a Sylvester equation in the form:
@@ -190,7 +194,7 @@ A Sylvester equation is a matrix equation of the form $AX + XB = C$, where $A$ i
 	\end{equation}
 where $T$, $U$ and $F$ are of size $n \times n$.
 
-Let $\text{tridiag}(j,i,k)$ be defined as a tridiagonal matrix with $i$ on the main diagonal and $j$ and $k$ on the left and right diagonals, respectively. Then for (1.6) we have $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$ and $U_{ij} = u(x_i, y_j)$, where $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. The system has $n$ unknowns in each direction meaning there is a total of $n^2$ unknowns. The matrix equation is visualised below:
+Let $\text{tridiag}(\beta,\alpha,\gamma)$ be defined as a tridiagonal matrix with $\alpha$ on the main diagonal and $\beta$ and $\gamma$ on the left and right diagonals, respectively. Then for (1.6) we have $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$ and $U_{ij} = u(x_i, y_j)$, where $(x_i, y_j)$ are interior grid nodes for $i,j=1,\dots,n$. The system has $n$ unknowns in each direction meaning there is a total of $n^2$ unknowns. The matrix equation is visualised below:
 \begin{eqnarray}
 \frac{-1}{h^2} 
 \begin{pmatrix}
@@ -232,7 +236,7 @@ u_{n1} & u_{n2} & \dots & u_{nj} & \dots & u_{nn}
 A variety of methods can now be used to solve this equation. These methods will be explored in Section 3. 
 
 \subsection{Organisation}
-The organisation of this report is as follows. Section 2 sets out the objectives and planning of the project. Section 3 explores different methods for solving Sylvester equations. Section 4 explores ways of solving random PDEs, using the knowledge gained in Section 3. Finally, Section 5 is an evaluation of the project's success.
+The organisation of this report is as follows. Section 2 sets out the objectives and planning of the project. Section 3 explores different methods for solving a specific Sylvester equation. Section 4 introduces uncertainty into the problem studied in Section 3, and explores ways of solving this problem by building upon the knowledge gained in the previous Section. Finally, Section 5 is an evaluation of the project's success.
 
 \newpage
 
@@ -243,35 +247,35 @@ The aim of this project is to first study, implement and compare a range of matr
 \subsection{Objectives}
 The objectives of this project are as follows:
 \begin{itemize}
-\item To carry out an extensive literature review on methods for solving matrix equations (both direct and iterative) from a wide range of sources. To decide which of these methods are appropriate to implement and to gain a solid understanding of how they work. 
-\item To use and expand upon my programming experience to implement the chosen methods for solving matrix equations to solve the specified problem. 
-\item To evaluate the implementation by comparing and contrasting the methods implemented to try to decide which is the best method for solving the given problem.
-\item To study methods for solving random PDEs and adapt the methods implemented previously so they can be used to solve PDEs of this type.
+\item To carry out an extensive literature review on methods for solving matrix equations (both direct and iterative) from a variety of different sources. To decide which of these methods are appropriate to implement and to gain a solid understanding of how they work.
+\item To study ways of solving random PDEs and adapt methods that have previously been studied so that they can be used to solve PDEs of this type. 
+\item To use and expand upon my programming experience to implement the chosen methods for solving matrix equations and random PDEs. 
+\item To evaluate the implementation in each section by comparing and contrasting the methods implemented to decide which is the best method for solving the given problem.
 \item To clearly present the work carried out during the project by using and building upon my report writing skills.
 \end{itemize}
 
 \subsection{Deliverables}
 The deliverables of this project include:
 \begin{itemize}
-\item The final report that will include the details of the matrix solvers that have been studied, how the solvers were implemented, an evaluation and comparison of the implemented solvers, an analysis of how these solvers were used to solve the chosen application problem, and finally an evaluation of the success of the project.  
-\item Code that successfully implements the chosen matrix solvers so that they solve the given problem.
+\item The final report that will include the details of the methods that have been studied, how the methods were implemented, an evaluation and comparison of the implemented methods and finally an evaluation of the success of the project.  
+\item Code that successfully implements what has been studied to solve the given problem.
 \end{itemize}
 
 \subsection{Methodology}
-The methodology of this project will first involve studying academic publishings to gain an understanding of various methods for solving matrix equations. Python will be used as the programming language of choice for the implementation because of my familiarity with it, the extensive amount of documentation available for it and the excellent libraries it has available (e.g. NumPy and SciPy). GitHub will be used for version control and the final report will be written using \LaTeX. 
+The methodology of this project will first involve studying academic publishings to gain an understanding of various methods for solving matrix equations and ways of solving random PDEs. Python will be used as the programming language of choice for the implementation because of my familiarity with it, the extensive amount of documentation available for it and the excellent libraries it has available.. GitHub will be used for version control and the final report will be written using \LaTeX. 
 
-\subsection{Tasks, Milestones and Timeline}
-The steps of this project will be divided into iterations, with the problem in each iteration becoming successively more complex and difficult to solve. This is because understanding is a key part of this project, and so each iteration will build on the understanding of the last. Each iteration will consist of studying and applying matrix methods to the problem, implementing them in Python to solve the problem, evaluating the results and write up. Also rough deadlines will be given for when each iteration should be completed by, to ensure the project is on track at any given stage.
-
-The iterations are as follows:
-\begin{itemize}
-\item Introductory problem: $-u_{xx} - u_{yy} = 2 \pi^2 \sin{(\pi x)} \sin{(\pi y)}$ - deadline June 1st
-\item Problem introducing uncertainty: $-\varepsilon u_{xx} - \varepsilon u_{yy} = 2 \pi^2 \sin{(\pi x)} \sin{(\pi y)}$ - deadline June 22nd
-\item A Poisson equation on a surface defined by a height map (not yet derived) - deadline July 13th
-\item Application reaction-diffusion equation (not yet derived) - deadline August 3rd
-\end{itemize}
-
-If the project deadlines are met the remaining time will be dedicated to project evaluation, write up and any possible project extensions.
+%\subsection{Tasks, Milestones and Timeline}
+%The steps of this project will be divided into iterations, with the problem in each iteration becoming successively more complex and difficult to solve. This is because understanding is a key part of this project, and so each iteration will build on the understanding of the last. Each iteration will consist of studying and applying matrix methods to the problem, implementing them in Python to solve the problem, evaluating the results and write up. Also rough deadlines will be given for when each iteration should be completed by, to ensure the project is on track at any given stage.
+%
+%The iterations are as follows:
+%\begin{itemize}
+%\item Introductory problem: $-u_{xx} - u_{yy} = 2 \pi^2 \sin{(\pi x)} \sin{(\pi y)}$ - deadline June 1st
+%\item Problem introducing uncertainty: $-\varepsilon u_{xx} - \varepsilon u_{yy} = 2 \pi^2 \sin{(\pi x)} \sin{(\pi y)}$ - deadline June 22nd
+%\item A Poisson equation on a surface defined by a height map (not yet derived) - deadline July 13th
+%\item Application reaction-diffusion equation (not yet derived) - deadline August 3rd
+%\end{itemize}
+%
+%If the project deadlines are met the remaining time will be dedicated to project evaluation, write up and any possible project extensions.
 
 \newpage
 
@@ -314,7 +318,7 @@ Throughout the following section, each of the implemented methods will be given 
 The following measurements will be given to evaluate the performance of each of the methods implemented:
 \begin{itemize}
 \item $n$: The number of unknowns in each direction for the system - the total number of unknowns is $n^2$. The mesh size will be continually refined by a factor of $\frac{1}{2}$, meaning the total number of unknowns in each direction will be doubled at each level, until either the time limit is reached or too much memory is used. The starting value will be $n=125$, which will allow for a range of problem sizes to be tested without running more tests than necessary.
-\item Time(s): The time taken in seconds for the method to compute the solution to the problem. As previously stated the maximum time allowed will be 6000 seconds.
+\item Time(s): The time taken in seconds for the method to compute a solution to the problem. As previously stated the maximum time allowed will be 6000 seconds.
 \item $|| u - u_h ||_{L^\infty} $: An error measurement which measures the maximum difference between the actual solution and computed solution for each $u$. Defined as:
  \[ || u - u_h ||_{L^\infty} = \text{max}_{ij} | u(x_i, y_i) - u_{ij} | \]
 \item $|| u - u_h ||_{L^2} $: An error measurement which measures the average difference between the actual solution and computed solution for all $u$, defined as:
@@ -380,7 +384,7 @@ In the general case the algorithm is as follows:
 \end{enumerate}
 Here the matrices $R$ and $S$ are upper/lower triangular matrices with the eigenvalues of $A$ and $B$ on the diagonal, respectively. The matrices $P$ and $Q$ unitary matrices whose columns are orthonormal sets of eigenvectors obtained from the eigenvectors of $A$ and $B$, respectively.
 
-By breaking this algorithm down into its component parts, we can examine each part to see which is the most costly. The first step of the algorithm can be computed using \texttt{linalg.schur} from the SciPy library, which uses the QR algorithm and has time complexity $O(n^3)$. For the second step, each entry of $Y$ can be computed as:
+By breaking this algorithm down into its component parts, we can examine each part to see which is the most costly. The first step of the algorithm can be computed using \texttt{linalg.schur} from the SciPy library, which uses the QR algorithm and has time complexity $O(n^3)$ \cite{Parlett}. For the second step, each entry of $Y$ can be computed as:
 \begin{equation}
 Y_{ij} = \hat{C}_{ij} - \sum_{p=1}^{i-1} R_{ip}Y_{pj} - \sum_{q=1}^{j-1} Y_{iq}S_{qj}
 \end{equation}
@@ -429,7 +433,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 
 \subsubsection*{Simplified Implementation}
 
-Results using the simplified version of this algorithm are shown in Table \ref{table:bartels simplified}. These results demonstrate that this simplified implementation is much faster than the SciPy solver. The errors up until $n=2000$ and very similar to the errors in the previous methods, and the eoc is again very close to 2 up until $n=4000$, but after this point starts decreasing rapidly and when $n=16000$ the error becomes bigger than when $n=8000$. These can be explained by the fact that \texttt{linalg.Schur} is used to compute the Schur decomposition in the first step, which uses the QR algorithm to approximate the eigenpairs of $T$ (as there is no general formula for calculating the eigenpairs of an arbitrary matrix of size $n>4$). From the results we can see that this approximation has a significant impact on the solution for large $n$. The eog here demonstrates that this algorithm has better than cubic time complexity.
+Results using the simplified version of this algorithm are shown in Table \ref{table:bartels simplified}. These results demonstrate that this simplified implementation is much faster than the SciPy solver. The errors up until $n=2000$ and very similar to the errors in the previous methods, and the eoc is again very close to 2 up until $n=4000$, but after this point starts decreasing rapidly and when $n=16000$ the error becomes bigger than when $n=8000$. These can be explained by the fact that \texttt{linalg.Schur} is used to compute the Schur decomposition in the first step, which uses the QR algorithm to approximate the eigenpairs of $T$ (as there is no general formula for calculating the eigenpairs of an arbitrary matrix of size $n>4$). From the results we can see that this approximation has a significant impact on the error for large $n$. The eog here demonstrates that this algorithm has better than cubic time complexity.
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
@@ -886,7 +890,7 @@ $n$ & Time(s) & no. iters & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}
 \label{table:pre MCG}
 \end{table}
 
-A parallel implementation of this method is also proposed in \cite{Hou}, which would result in better performance than given above, however, this goes beyond the scope of this project.
+A parallel implementation of this method is also proposed in \cite{Hou}, which would result in faster performance than given above, however, this goes beyond the scope of this project.
 
 \subsubsection{Shifted System}
 We can use the shifted system method from Section 3.1.4 as an iterative method by using \texttt{sparse.linalg.cg} to solve the $n$ linear systems in the second step. To recap, the steps of this method for solving $TU+UT=F$ are:
@@ -972,7 +976,7 @@ Of all the methods implemented, we can see that \texttt{sparse.linalg.cg} was th
 \newpage
 
 \section{Uncertainty}
-This section explores methods for solving PDEs with uncertain input. Uncertainty can arise in PDEs if, for example, coefficients, boundary conditions or initial conditions are unknown. A solution to dealing with uncertainty is to model unknown parameters as random variables, and then appropriate methods can be used to solve the system. [\textbf{add references}]
+This section explores methods for solving PDEs with uncertain input. Uncertainty can arise in PDEs if, for example, coefficients, boundary conditions or initial conditions are unknown. There are many applications from which uncertainy can arise in PDEs, for example in heat and sound propagation \cite{Swanson}, \cite{Pryhara}, fluid-dynamics \cite{Breit}, \cite{Holm}, cell biology \cite{Bressloff} and mathematical finance \textbf{add reference}. A solution to dealing with uncertainty is to model unknown parameters as random variables, and then appropriate methods can be used to solve the system.
 
 \subsection{Single Parameter}
 The simplest way to introduce uncertainty into a PDE is by introducing a single unknown parameter. Define the spatial domain $\mathcal{D}$ as $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$, and let $\Omega$ denote the sample space. We can introduce an unknown coefficient $\varepsilon(\omega)$, where $\omega \in \Omega$ denotes dependence on a random variable and $\varepsilon: \Omega \rightarrow \mathbb{R}$ is uniformly distributed over the interval $[1,3]$. Let $u(x,y,\varepsilon) = \sin(\pi x)\sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y)$ be the exact solution of the equation:
@@ -995,29 +999,18 @@ The equation to be solved is therefore:
 - \varepsilon u_{xx} - \varepsilon u_{yy} = {} & 2\pi^2 \varepsilon \sin(\pi x) \sin(\pi y)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x) \sin(5 \pi y) \quad \text{ on } \mathcal{D} \times \Omega \nonumber \\
 u = {} & 0 \quad \text{ on } \partial \mathcal{D} \times \Omega
 \end{alignat}
-
-By discretising the domain using the centred finite difference approximations, (4.3) can be formed as a matrix equation:
-\begin{equation}
-TU + UT = F
-\end{equation}
-with $T = -\frac{\varepsilon}{h^2} \text{tridiag}(1,-2,1)$, $U_{ij} = u(x_i, y_j)$ and $F_{ij} = 2\pi^2 \varepsilon \sin(\pi x_i) \sin(\pi y_j)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x_i) \sin(5 \pi y_j)$. This problem is significantly harder to solve accurately and efficiently than the problem in Section 3 due to the fact that $\varepsilon$ is an unknown, random coefficient.
-
-As $\varepsilon$ is unknown, the exact solution to (4.3) cannot be computed and therefore solutions to (4.4) cannot be compared to the true solution. Instead, certain quantities of interest can be computed using the probability density function $\rho(\omega)$ of $\varepsilon$. Firstly, the expectation $\mathbb{E}[u]$ can be computed as:
+As $\varepsilon$ is unknown, the exact solution to (4.3) cannot be obtained and therefore computed solutions to (4.3) cannot be compared to the actual solution. Instead, certain quantities of interest can be computed using the probability density function $\rho(\omega)$ of $\varepsilon$. Firstly, the expectation $\mathbb{E}[u]$ can be computed as:
 \begin{equation}
 \mathbb{E}[u] = \int_{\Omega} u(x,y,\varepsilon) \rho(\omega) d \omega
 \end{equation}
-
 The variance $\text{Var}[u]$ can also be computed as:
 \begin{equation}
 \text{Var}[u] = \int_{\Omega} \left(u(x,y,\varepsilon) - \mathbb{E}[u] \right)^2 \rho(\omega) d \omega
 \end{equation}
-and the standard deviation as $\text{Std}[u] = \sqrt{\text{Var}[u]}$.
-
-As $\varepsilon$ is uniformly distributed over the interval $[1,3]$, it has a probability distribution function:
+and the standard deviation as $\text{Std}[u] = \sqrt{\text{Var}[u]}$. As $\varepsilon$ is uniformly distributed over the interval $[1,3]$, it has a probability distribution function:
 \begin{equation}
 \rho(\omega) = \frac{1}{2}
 \end{equation}
-
 The expectation is therefore:
 \begin{equation}
 \begin{split}
@@ -1026,7 +1019,6 @@ The expectation is therefore:
 = & \sin(\pi x) \sin(\pi y) + 2 \sin(3\pi x)\sin(5\pi y)
 \end{split}
 \end{equation}
-
 and the variance is:
 \begin{equation}
 \begin{split}
@@ -1038,11 +1030,27 @@ and the variance is:
 \end{split}
 \end{equation}
 
-which gives the standard deviation as $\text{Std}[u] = \frac{1}{\sqrt{3}} \sin(3 \pi x) \sin(5 \pi y)$. Methods can now be used which compute approximate solutions to these quantities of interest, which can then be compared to the known quantities above to give an estimation of the error. Throughout this section, the time limit will be increased to 12000 seconds.
+which gives the standard deviation as $\text{Std}[u] = \frac{1}{\sqrt{3}} \sin(3 \pi x) \sin(5 \pi y)$. Methods can now be used which compute approximate solutions to these quantities of interest, which can then be compared to the known quantities above to give an estimation of the error. In this section we choose the expectation to give an approximate measure of error.
+
+Throughout this section the following parameters will be used to evaluate performance:
+\begin{itemize}
+\item $n$: The number of unknowns in each direction - the total number of unknowns is $n^2$. As before the mesh will be continually refined by a factor of $\frac{1}{2}$ until either the time limit is reached or a memory error occurs, with the starting value as $n=125$.
+\item Time(s): The time taken in seconds for the method to compute a solution to the problem. In this section we will increase the maximum time allowed to 12000 seconds. 
+\item $|| \mathbb{E}[u] - \mu ||_{L^\infty} $: Defined similarly to the previous section, however we now measure the maximum difference between the expectation and the computed mean solution, that is:
+ \[ || \mathbb{E}[u] - \mu ||_{L^\infty} = \text{max}_{ij} | \mathbb{E}[u](x_i,y_j) - \mu_{ij} | \]
+where $\mathbb{E}[u]$ denotes the expectation and $\mu$ denotes the computed mean solution.
+\item $\left|\left| \mathbb{E}[u] - \mu \right|\right|$: Defined similarly to the previous section, however we now measure the average difference between the expectation and the computed mean solution, that is:
+\[ \left| \left| \mathbb{E}[u] - \mu \right| \right|_{L^2} = \sqrt{h^2 \sum \left| \mathbb{E}[u](x_i,y_j) - \mu_{ij} \right|^2} \]
+\item The eoc and eog are defined as in the previous section.
+\end{itemize}
+Any additional parameters which relate to the specific methods implemented will be specified. 
 
 \subsubsection{Monte Carlo}
-A simple way of solving (4.4) is to use the Monte Carlo method. The Monte Carlo method works by taking $M$ random samples of $\varepsilon$ over its range, and then solves (4.4) for each of these samples. 
-This allows the most effective method from Section 3 to be used as a `black box' strategy. Once solved, the mean solution can be calculated as:
+A simple way of solving (4.4) is to use the Monte Carlo method. The Monte Carlo method works by taking $M$ random samples of $\varepsilon$ over its range, and then solves the PDE for each of these samples. Firstly, we discretise the domain of the PDE using the centred finite difference approximations to form (4.3) as a matrix equation:
+\begin{equation}
+TU + UT = F
+\end{equation}
+with $T = -\frac{\varepsilon}{h^2} \text{tridiag}(1,-2,1)$, $U_{ij} = u(x_i, y_j)$ and $F_{ij} = 2\pi^2 \varepsilon \sin(\pi x_i) \sin(\pi y_j)+ 34 \pi^2 \varepsilon^2 \sin(3 \pi x_i) \sin(5 \pi y_j)$. We can now use the most effective method from Section 3 as a `black box' strategy. Once solved, the mean solution can be calculated as:
 \begin{equation}
 \mu = \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon)
 \end{equation}
@@ -1050,22 +1058,18 @@ where $M$ is the number of samples used in the Monte Carlo method and $u_h$ is t
 \begin{equation}
 \sigma^2 = \frac{1}{M-1}\sum_{i=1}^M (u_h - \mu)^2
 \end{equation}
-and the standard deviation is $\sigma$. Any of these quantites can be calculated and compared to the known values as a measure of error for the problem. By choosing the mean we can measure the error as:
-\begin{equation}
-\text{Error} = \bigg{|} \bigg{|} \mathbb{E}[u] - \mu \bigg{|} \bigg{|} \\
-%= & \bigg{|} \bigg{|} \mathbb{E}[u] - \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon) \bigg{|}\bigg{|}
-\end{equation}
+and the standard deviation is $\sigma$. We can then compare these quantities to the known values previously computed to calculate the error.
 
-which can be evaluated using the ${L^\infty}$ and ${L^2}$ error measures as used in the previous section. As noted in \cite{Bishop}, for the error to converge to 0 the mesh size must be decreased as the number of samples is increased. This is because the error depends both on the mesh size and the number of samples, so by changing only one of these factors the method will be converging to the error of the factor that is not being changed, rather than to 0. 
+As noted in \cite{Bishop}, for the error to converge to 0 the mesh size must be decreased as the number of samples is increased. This is because the error depends both on the mesh size and the number of samples, so by changing only one of these factors the method will be converging to the error of the factor that is not being changed, rather than to 0. 
 
-It is also worth noting that as the solution and therefore the error is dependent on a random variable, the error is then itself a random variable and therefore not guaranteed to decrease at each level, as the samples are increased. However, the law of large numbers tells us that by taking more and more samples the error in expectation should decrease.
+It is also worth noting that as the solution and therefore the error is dependent on a random variable, the error is itself a random variable and therefore not guaranteed to decrease at each level, as the samples are increased. However, the law of large numbers tells us that by taking more and more samples the error in expectation should decrease.
 
-Results using the Monte Carlo method, with a single uncertain parameter, are given in Table \ref{table:monte carlo}. Here the similarity transformation method, calculating the eigenpairs explicity, is chosen to solve the PDE for each sample. This method can be used because multiplying a matrix by a constant has the effect of changing the matrices eigenvalues by that constant, and since $\varepsilon$ is sampled, we can still calculate the eigenvalues. The eigenvectors remain unchanged when multiplying a matrix by a constant. Therefore the eigenpairs are easily obtained. The errors here are clearly much bigger than the errors in Section 3, and the eoc demonstrates that this method does not solve the problem more accurately at a convergent rate, as the step size is increased. The eog demonstrates that this method has worse than quartic time complexity.
+Results using the Monte Carlo method, with a single uncertain parameter, are given in Table \ref{table:monte carlo}. Here the similarity transformation method, calculating the eigenpairs explicity, is chosen to solve the PDE for each sample. This method can be used because multiplying a matrix by a constant has the effect of changing the matrix's eigenvalues by that constant, and since $\varepsilon$ is sampled, we can still calculate the eigenvalues. The eigenvectors remain unchanged when multiplying a matrix by a constant. Therefore the eigenpairs are easily obtained. The errors here are clearly much bigger than the errors in Section 3, and the eoc demonstrates that this method does not solve the problem more accurately at a convergent rate, as the step size is increased. The eog demonstrates that this method has worse than quartic time complexity.
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-$n$ & $M$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}}$ & eoc & eog \\
+$n$ & $M$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
 \hline
 125 & 10 & 0.15511 & 0.071286 & 0.035630 & - & - \\
 250 & 40 & 2.2698 & 0.19918 & 0.099594 & -1.4909 & 3.8712 \\
@@ -1083,24 +1087,26 @@ $n$ & $M$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}}$ & e
 \subsubsection{Stochastic Galerkin}
 The stochastic Galerkin method uses the properties of orthogonal polynomials to produce a functional approximation to the solution of a PDE with an uncertain coefficient. It does this by using a Galerkin projection to ``discretise the random dimensions to allow computation'' \cite{Paul}. 
 
-A set of polynomials $\{\Psi_n(x), n \in \mathbb{N}\}$, where $\Psi_n(x)$ is a polynomial of exact degree $n$, is orthogonal if it satisfies the orthogonality condition:
+A set of polynomials $\{\Psi_n(\varepsilon), n \in \mathbb{N}\}$, where $\Psi_n(\varepsilon)$ is a polynomial of exact degree $n$, is orthogonal if it satisfies the orthogonality condition:
 \begin{equation}
-\int_{\Omega} \Psi_n(x) \Psi_m(x) w(x) dx = h_n \delta_{nm}, \;\;\;\;\;\; n,m \in \mathbb{N}
+\int_{\Omega} \Psi_n(\varepsilon) \Psi_m(\varepsilon) w(\varepsilon) d\varepsilon = h_n \delta_{nm}, \;\;\;\;\;\; n,m \in \mathbb{N}
 \end{equation} 
-where $\Omega$ represents the support of $\{\Psi_n\}$ (the subset of the domain containing elements not mapped to zero), $w(x)$ is a weight function, $h_n$ are non-zero constants and $\delta_{nm}$ is the Kronecker delta ($\delta_{nm} = 1$ for $n=m$ and $0$ otherwise). This condition is used to define the inner product of two polynomial functions, $f(x)$ and $g(x)$, with respect to a weight function $w(x)$, as:
+where $\Omega$ represents the support of $\{\Psi_n\}$ (the subset of the domain containing elements not mapped to zero), $w(\varepsilon)$ is a weight function, $h_n$ are non-zero constants and $\delta_{nm}$ is the Kronecker delta ($\delta_{nm} = 1$ for $n=m$ and $0$ otherwise). This condition is used to define the inner product of two polynomial functions, $f(\varepsilon)$ and $g(\varepsilon)$, with respect to a weight function $w(\varepsilon)$, as:
 \begin{equation}
-\langle f, g \rangle = \int_{\Omega} f(x)g(x)w(x) dx
+\langle f, g \rangle = \int_{\Omega} f(\varepsilon)g(\varepsilon)w(\varepsilon) d\varepsilon
 \end{equation}
 
-As noted in \cite{Xiu}, certain classes of orthogonal polynomials have the exact same weight function as the probability distribtutions of certain random variables. This property allows the solution $u$ of a stochastic PDE to be approximated via a truncated polynomial chaos expansion using the distribution of the random variable, as:
+As noted in \cite{Xiu}, certain classes of orthogonal polynomials have the exact same weight function as the probability distribtution functions of certain random variables. This property allows the solution $u$ of a random PDE to be approximated via a truncated polynomial chaos expansion using the probability distribution function of the random variable as:
 \begin{equation}
 u(x,y,\varepsilon) = \sum_{k=0}^P u_k(x,y) \Psi_k(\varepsilon)
 \end{equation}
-and can then be substituted into the PDE. Here $P+1 = \frac{(K+N)!}{K!N!}$, where $N$ is the number of random variables and $K$ is a convergence parameter to be chosen. Any random quantities can be represented via a Karhunen-Loeve expansion as:
-\begin{equation}
-\alpha =  \bar{\alpha} + \sum_{k=1}^{Q}  \sqrt{\lambda_k} \phi_k \varepsilon_k
-\end{equation}
-for a spatially varying random field $\alpha$ with mean $\bar{\alpha}$, where $\lambda_k$ and $\phi_k$ are the eigenvalues and eigenfunctions of the covariance function $C_\alpha$.
+which can then be substituted into the PDE. Here $P+1 = \frac{(K+N)!}{K!N!}$, where $N$ is the number of random variables and $K$ is a convergence parameter to be chosen. In this case we have $N=1 \implies P+1=\frac{(K+1)!}{K!}\implies P=K$.
+
+%Any random quantities can be represented via a Karhunen-Loeve expansion as:
+%\begin{equation}
+%\alpha =  \bar{\alpha} + \sum_{k=1}^{Q}  \sqrt{\lambda_k} \phi_k \varepsilon_k
+%\end{equation}
+%for a spatially varying random field $\alpha$ with mean $\bar{\alpha}$, where $\lambda_k$ and $\phi_k$ are the eigenvalues and eigenfunctions of the covariance function $C_\alpha$.
 
 
 A Galerkin projection is then performed on the PDE by multiplying it by $\Psi_k$ for $k=0, \dots, P$ and taking the inner product, which gives a system of coupled deterministic differential equations, which can then be discretised and solved via, for example, the finite difference method. The resulting solution matrix will be of size $n^2 \times (P+1)$, where $n$ is the number of unknowns in each direction of the mesh and $P$ is defined as above. The mean and variance are then computed as:
@@ -1138,15 +1144,15 @@ for $k = 0, \dots, P$, where:
 
 The uncertainty has been removed from this PDE and we now have a system of coupled deterministic differential equations, which can be solved for $u$. The next step is to rewrite (4.22) in a form that can be easily solved.
 
-Firstly, we can use the finite difference method to discretise the system in space and represent the unknowns $u_i$ as a single vector\footnote{Note that here $L = I \otimes T + T \otimes I$, where $T = -\frac{1}{h^2} \text{tridiag}(1,-2,1)$ and $I$ is the identity matrix, because we are representing all unknowns in a single matrix, rather than using two matrices as before.}:
+Firstly, we can use the finite difference method to discretise the system in space and represent the unknowns $u_i$ as a single vector. Let $L$ be the five-point finite difference stencil, that is, $L= I \otimes T + T \otimes I$, where $T=-\frac{1}{h^2} \text{tridiag}(1,-2,1)$ for grid spacing $h$ and $I$ is the identity matrix. We can then represent the unknowns as:
 \begin{equation}
 Lu_i = - (u_i)_{xx} - (u_i)_{yy}
 \end{equation}
-where $L$ has dimension $n^2 \times n^2$ (the total number of unknowns) and $u_i$ is a vector of length $n^2$. We can also represent the inner product on the left-hand side as a $(P+1) \times (P+1)$ matrix:
+for $i=0,\dots,P$, where $L$ has dimension $n^2 \times n^2$ and $u_i$ is a vector of length $n^2$. We can also represent the inner product on the left-hand side as a $(P+1) \times (P+1)$ matrix:
 \begin{equation}
 P_{ij} = \langle \Psi_i (\varepsilon_0 + 2) \Psi_j \rangle
 \end{equation}
-Finally, we represent the right-hand side of the system as a $n^2 \times (P+1)$ matrix:
+for $i,j = 0,\dots,P$. Finally, we represent the right-hand side of the system as a $n^2 \times (P+1)$ matrix:
 \begin{equation}
 F_{k} = 2\pi^2 \sin(\pi x_i)\sin(\pi y_j) \langle \Psi_k (\varepsilon_0 + 2) \rangle + 34\pi^2 \sin(3\pi x_i) \sin(5\pi y_j) \langle \Psi_k (\varepsilon_0 + 2)^2 \rangle
 \end{equation}
@@ -1163,7 +1169,7 @@ where $A = P \otimes L$ has dimension $n^2(P+1) \times n^2(P+1)$ and $f = \text{
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-$n$ & $K$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}}$ & eoc & eog \\
+$n$ & $K$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
 \hline
 125 & 1 & 0.014717 & 0.0021941 & 0.0010767 & - & - \\
 250 & 1 & 0.077675 & 0.00055263 & 0.00027120 & 2.0007 & 2.4000 \\
@@ -1196,7 +1202,7 @@ One way to solve this is by using a variation of the Bartels-Stewart algorithm. 
 \item Solve $\hat{L} Y \hat{P} = \hat{F}$ for $Y$, where $\hat{L}$ and $\hat{P}$ are upper triangular.
 \item Compute solution $X = UYV^*$.
 \end{enumerate}
-The problem with this method is that the Schur forms in the first step are computed using the QR algorithm, which only works on dense matrices. Therefore a huge amount of memory is required to compute the Schur form of $L$ (of size $n^2 \times n^2$), which is impractical even for a relatively small problem size. This method was tested on the problem with $n=125$ and $K=1$, and resulted in a memory error when computing the Schur forms, which confirms that this method is not appropriate for this problem.
+The problem with this method is that the Schur forms in the first step are computed using the QR algorithm. The matrices produced in the decomposition using this algorithm are dense. Therefore a huge amount of memory is required to compute and store the Schur form of $L$ (of size $n^2 \times n^2$), which is impractical even for a relatively small problem size. This method was tested on the problem with $n=125$ and $K=1$, and resulted in a memory error when computing the Schur forms, which confirms that this method is not appropriate for this problem.
 
 Alternatively, we can right multiply by $P^{-1}$ to obtain:
 \begin{equation}
@@ -1208,7 +1214,7 @@ The resulting right-hand side is a matrix, which means \texttt{sparse.linalg.sps
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-$n$ & $K$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}}$ & eoc & eog \\
+$n$ & $K$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
 \hline
 125 & 1 & 0.059279 & 0.0021941 & 0.0010767 & - & - \\
 250 & 1 & 0.25614 & 0.00055258 & 0.00027120 & 2.0009 & 2.1113 \\
@@ -1234,19 +1240,19 @@ where $u = \text{vec}(X)$, $(G_0)_{ij} = \langle \Psi_i \Psi_j \rangle$ and $(G_
 \begin{equation}
 AX + XB = C
 \end{equation}
-where $A = L^{-1}2L$, $B = G_1 G_0^{-1}$ and $C = L^{-1} F G_0^{-1}$. This can now be solved using any of the methods from Section 3, assuming that they can be adapted for sparse matrices. Computing $L^{-1}$ directly is very expensive and memory inefficient, as it has large dimension and although $L$ is sparse its inverse, in general, will not be. The matrix $A$ is simply $L^{-1}2L = 2L^{-1}L = 2I$. To solve for $C$, we form the linear system:
+where $A = L^{-1}2L$, $B = G_1 G_0^{-1}$ and $C = L^{-1} F G_0^{-1}$. This can now be solved using any of the methods from Section 3, assuming that they can be adapted for sparse matrices. Computing $L^{-1}$ directly is very expensive and memory inefficient, as it has large dimension and although $L$ is sparse its inverse, in general, will not be. We do not need to compute $L^{-1}$ directly, we just need its effect on the equation. The matrix $A$ is easily computed as $L^{-1}2L = 2L^{-1}L = 2I$. To compute $C$, we form the linear system:
 \begin{equation}
 (L \otimes I)\text{vec}(C) = \text{vec}(FG_0^{-1})
 \end{equation}
-where $I$ is the identity matrix of dimension $(P+1)$. We can then solve for $C$ and reshape it back into a vector, which vastly speeds up computation time and drastically reduces memory requirements. The eigenvalues and eigenvectors of $A$ are simply 2 and the columns of the identity matrix, respectively. As $B$ is a square matrix with dimension $(P+1)$, as long as $K$ is chosen not to be too large, computing the eigenpairs of $B$ will be cheap and approximating them will not have a large impact on the solution. We can therefore use \texttt{numpy.linalg.eig} to calculate the eigenpairs.
+where $I$ is the identity matrix of dimension $(P+1)$. We can then solve for $C$ and reshape it back into a vector, which vastly speeds up computation time and drastically reduces memory requirements. The eigenvalues of $A$ are simply 2 and the eigenvectors are the columns of the identity matrix. As $B$ is a square matrix with dimension $(P+1)$, as long as $K$ is chosen not to be too large, computing the eigenpairs of $B$ will be cheap and approximating them will not have a large impact on the error. We can therefore use \texttt{numpy.linalg.eig} to calculate the eigenpairs.
 
-Results using the conjugate gradient method \texttt{sparse.linalg.cg}, with a convergence tolerance of $10^{-9}$, to solve for $C$ and the similarity transformation method to solve for $X$ are given in Table \ref{table:stochastic sylvester}. Here we to used \texttt{numpy.linalg.eigs} to compute the eigenpairs of $B$.
+Results using the conjugate gradient method \texttt{sparse.linalg.cg} with a convergence tolerance of $10^{-9}$ to solve for $C$ and the similarity transformation method to solve for $X$ are given in Table \ref{table:stochastic sylvester}.
 
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-$n$ & $K$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}}$ & eoc & eog \\
+$n$ & $K$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
 \hline
 125 & 1 & 0.011544 & 0.0021941 & 0.0010767 & - & - \\
 250 & 1 & 0.032874 & 0.00055258 &  0.00027120 & 2.0009 & 1.5098 \\
@@ -1282,8 +1288,8 @@ which gives:
 u_{xx} &= -\pi^2 \sin(\pi x)\sin(\pi y) - \sum_{p,q=1}^N 2^{-(p+q)} p^2 \pi^2 \varepsilon_{pq} \sin(p\pi x)\sin(q\pi y) \\
 u_{yy} &= -\pi^2 \sin(\pi x)\sin(\pi y) - \sum_{p,q=1}^N 2^{-(p+q)} q^2 \pi^2 \varepsilon_{pq} \sin(p\pi x)\sin(q\pi y) \\
 \implies f &= \varepsilon \Big(2\pi^2 \sin(\pi x) \sin(\pi y) + \pi^2 \sum_{p,q=1}^N 2^{-(p+q)} (p^2 + q^2) \varepsilon_{pq} \sin(p \pi x)\sin(q \pi y) \Big) \\
-&= \Big(\sum_{p,q=1}^N 2^{-(p+q)} \varepsilon_{pq} \sin(p\pi x)\sin(q\pi y) \Big)
-\\ &\times \Big(2\pi^2 \sin(\pi x) \sin(\pi y) + \pi^2 \sum_{p,q=1}^N 2^{-(p+q)} (p^2 + q^2) \varepsilon_{pq} \sin(p \pi x)\sin(q \pi y) \Big)
+%&= \Big(\sum_{p,q=1}^N 2^{-(p+q)} \varepsilon_{pq} \sin(p\pi x)\sin(q\pi y) \Big)
+%\\ &\times \Big(2\pi^2 \sin(\pi x) \sin(\pi y) + \pi^2 \sum_{p,q=1}^N 2^{-(p+q)} (p^2 + q^2) \varepsilon_{pq} \sin(p \pi x)\sin(q \pi y) \Big)
 \end{split}
 \end{equation}
 There are now $N^2$ random variables in the equation. As before, we discretise the spatial dimensions using the centred finite difference approximations to obtain:
@@ -1336,7 +1342,7 @@ $N$ & $n$ & $M$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}
 We can see from these results that the time taken to compute a solution is significantly more than for the single parameter Monte Carlo method. This is because the summations of $\varepsilon_{pq}$ depend on the spatial dimensions $x$ and $y$. In other words, that means that the summation changes and therefore needs to be recalculated depending on the grid point. Because the spatial dimensions run from $i,j=1,\dots,n$ and the summations run from $p,q=1,\dots,N$, calculating the summation therefore takes time complexity $O(n^2 N^2)$. Doing this for each of the samples therefore takes time complexity $O(m n^2 N^2)$, which is why the method takes a significantly long time to compute a solution.
 
 \subsubsection{Stochastic Galerkin}
-The stochastic Galerkin method can also be used to solve the problem with multiple uncertain parameters, however it is now significantly more complex to discretise the random dimensions. We begin with:
+We can use the stochastic Galerkin method to solve the problem with multiple uncertain parameters, however it is now significantly more complex. We begin with:
 \begin{equation}
 \varepsilon(-u_{xx} - u_{yy}) = f
 \end{equation}
@@ -1344,33 +1350,49 @@ with $\varepsilon$ and $f$ defined as above. The first step is to approximate th
 \begin{equation}
 \varepsilon \sum_{i=0}^P (-(u_i)_{xx} - (u_i)_{yy}) \Psi_i = f
 \end{equation}
-where $\Psi$ denote the Legendre polynomials, as in the single parameter case. Next we multiply by $\Psi_k$ and take the inner product, which gives:
+where $\Psi$ denote the $N$-dimensional Legendre polynomials [\textbf{add how to calculate}]. Next we multiply by $\Psi_k$ and take the inner product, which gives:
 \begin{equation}
 \sum_{i=0}^P (-(u_i)_{xx} - (u_i)_{yy}) \langle \Psi_k \varepsilon \Psi_i \rangle = \langle f \Psi_k \rangle
 \end{equation}
 for $k=0,\dots,P$. Here we have:
 \begin{equation}
-\langle \Psi_i \varepsilon \Psi_k \rangle = \sum_{p,q=1}^N 2^{-(p+q)} \sin(p\pi x)\sin(q\pi y) \langle \Psi_i \varepsilon_{pq} \Psi_k \rangle
+\langle \Psi_i \varepsilon \Psi_k \rangle = \sum_{p,q=1}^N \langle \Psi_i \varepsilon_{pq} \Psi_k \rangle 2^{-(p+q)} \sin(p\pi x)\sin(q\pi y) 
 \end{equation}
 and:
 \begin{equation}
-\langle f \Psi_k \rangle = 2 \pi^2 \sin(\pi x)\sin(\pi y) \sum_{p,q=1}^N 2^{-(p+q)} \sin(p \pi x) \sin(q \pi y) \langle \Psi_k \varepsilon_{pq} \rangle  \nonumber
+\langle f \Psi_k \rangle = 2 \pi^2 \sin(\pi x)\sin(\pi y) \sum_{p,q=1}^N \langle \Psi_k \varepsilon_{pq} \rangle 2^{-(p+q)} \sin(p \pi x) \sin(q \pi y)  \nonumber
 \end{equation}
 \begin{equation}
-+ \left(\pi^2 \sum_{p,q=1}^N 2^{-(p+q)} (p^2 + q^2) \sin(p \pi x)\sin(q \pi y) \langle \Psi_k \varepsilon_{pq} \rangle \right) \left(\sum_{p,q=1}^N 2^{-(p+q)}  \sin(p \pi x)\sin(q \pi y) \langle \Psi_k \varepsilon_{pq} \rangle \right)
++ \left(\pi^2 \sum_{p,q=1}^N \langle \Psi_k \varepsilon_{pq} \rangle 2^{-(p+q)} (p^2 + q^2) \sin(p \pi x)\sin(q \pi y) \right) \left(\sum_{p,q=1}^N 2^{-(p+q)} \langle \Psi_k \varepsilon_{pq} \rangle \sin(p \pi x)\sin(q \pi y) \right)
 \end{equation}
-We now have a deterministic coupled set of differential equations which we can solve. As before, we rewrite (4.41) into a form that we can solve. As $\varepsilon_{pq} \sim u(-1,1)$ for all $p,q=1 \dots, N$, varying $p$ and $q$ does not change the inner (as the integral will be evaluated using the same limits and probability density function), therefore we can represent the inner products as:
+We now have a deterministic coupled set of differential equations which we can solve. As before, we rewrite (4.41) into a form that can be easily solved. Firstly, we use the finite difference method to discretise in space and represent the unknowns $u_i$ as a single vector:
 \begin{equation}
-\langle \Psi_i \varepsilon_{pq} \Psi_k \rangle = \langle \Psi_i \varepsilon_0 \Psi_k \rangle
+Lu_i = - (u_i)_{xx} - (u_i)_{yy}
 \end{equation}
-and 
+for $i=0,\dots,P$. Next, we represent the inner product on the left-hand side as:
 \begin{equation}
-\langle \Psi_k \varepsilon_{pq} \rangle = \langle \Psi_k \varepsilon_0 \rangle
+P_{ij}^{(pq)} = \langle \Psi_i \varepsilon \Psi_j \rangle
 \end{equation}
-for all $p,q=1 \dots N$. This means we can remove the inner product from the summations, separating the random and spatial dimensions. We use the finite difference method to discretise the system in space and represent the unknowns $u_i$ as a single vector:
+for $i,j=0,\dots,P$ and $p,q=1,\dots,N$, where each $p$ and $q$ correspond to the inner products of each random variable. We now represent the summation on the left-hand side as a $n^2 \times n^2$ diagonal matrix $D$, which has entries:
 \begin{equation}
-Lu_i = -(u_i)_xx - (u_i)_yy \sum_{p,q=1} 2^{-(p+q)} \sin(p \pi x)\sin(q \pi y)
+D_k^{(pq)} = 2^{-(p+q)} \sin(p \pi x_i) \sin(q \pi y_j)
 \end{equation}
+on the diagonal, for $k=1,\dots,n^2$ (as $i$ and $j$ run from $i,j=1,\dots,n$). Lastly, we represent the right-hand side of the system as:
+\begin{equation}
+F_k = 2 \pi^2 \sin(\pi x_i) \sin(\pi y) \sum_{p,q=1}^N \langle \Psi_k \varepsilon_{pq} \rangle 2^{-(p+q)} \sin(p \pi x)\sin(q \pi y) \nonumber
+\end{equation}
+\begin{equation}
++ \left(\pi^2 \sum_{p,q=1}^N \langle \Psi_k \varepsilon_{pq} \rangle 2^{-(p+q)} (p^2 + q^2) \sin(p \pi x)\sin(q \pi y) \right) \left(\sum_{p,q=1}^N 2^{-(p+q)} \langle \Psi_k \varepsilon_{pq} \rangle \sin(p \pi x)\sin(q \pi y) \right)
+\end{equation}
+for $k=0,\dots,P$ (the random dimensions) and $i,j=1,\dots,n$ (the vectorised spatial dimensions). We can now proceed with solving the system in a variety of ways.
+
+\subsubsection*{Linear System}
+We can represent (4.41) as a linear system in the form:
+\begin{equation}
+Au = f
+\end{equation}
+where $A=\left( \sum_{p,q=1}^N P^{(pq)} \otimes D^{(pq)} \right) \left( I \otimes L \right)$ has dimension $n^2(P+1) \times n^2(P+1)$ and $f = \text{vec}(F)$ and $u$ are vectors of dimension $n^2(P+1)$.
+
 
 \newpage
 

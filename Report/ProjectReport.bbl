@@ -12,6 +12,16 @@ J.~Bishop and O.~E.~Strack.
 \newblock {\em International Journal for Numerical Methods in Engineering},
   88:279 -- 306, 10 2011.
 
+\bibitem{Breit}
+D.~{Breit} and M.~{Hofmanov{\'a}}.
+\newblock {Stochastic Navier-Stokes equations for compressible fluids}.
+\newblock {\em ArXiv e-prints}, Sept. 2014.
+
+\bibitem{Bressloff}
+P.~Bressloff.
+\newblock {\em Stochastic Processes in Cell Biology}, volume~41.
+\newblock 08 2014.
+
 \bibitem{Brewer}
 J.~Brewer.
 \newblock Kronecker {P}roducts and {M}atrix {C}alculus in {S}ystem {T}heory.
@@ -34,7 +44,13 @@ J.~Demmel, O.~Marques, B.~Parlett, and C.~Vömel.
 J.~Elliott.
 \newblock The {C}haracteristic {R}oots of {C}ertain {R}eal {S}ymmetric
   {M}atrices.
-\newblock {\em https://trace.tennessee.edu/utk\_gradthes/2384}.
+\newblock {\em https://trace.tennessee.edu/utk\_gradthes/2384}, 1953.
+
+\bibitem{Holm}
+D.~D. {Holm}.
+\newblock {Variational principles for stochastic fluid dynamics}.
+\newblock {\em Proceedings of the Royal Society of London Series A},
+  471:20140963--20140963, Mar. 2015.
 
 \bibitem{Hou}
 J.~Hou, Q.~Lv, and M.~Xiao.
@@ -48,11 +64,23 @@ A.~J. Laub.
 \newblock Society for Industrial and Applied Mathematics, Philadelphia, PA,
   USA, 2004.
 
+\bibitem{Parlett}
+B.~N. Parlett.
+\newblock The {QR} {A}lgorithm.
+\newblock {\em Computing in Science and Engg.}, 2(1):38--42, Jan. 2000.
+
 \bibitem{Powell}
 C.~E. Powell, D.~Silvester, and V.~Simoncini.
 \newblock An {E}fficient {R}educed {B}asis {S}olver for {S}tochastic {G}alerkin
   {M}atrix {E}quations.
 \newblock {\em SIAM Journal on Scientific Computing}, 39(1):A141--A163, 2017.
+
+\bibitem{Pryhara}
+L.~Pryhara and G.~Shevchenko.
+\newblock Approximations for a solution to stochastic heat equation with stable
+  noise.
+\newblock {\em Modern Stochastics: Theory and Applications}, 3(2):133--144,
+  2016.
 
 \bibitem{Shewchuk}
 J.~Shewchuk.
@@ -65,6 +93,11 @@ J.~Shewchuk.
 V.~Simoncini.
 \newblock Computational {M}ethods for {L}inear {M}atrix {E}quations.
 \newblock {\em SIAM Review}, 58:377--441, 01 2016.
+
+\bibitem{Swanson}
+J.~Swanson.
+\newblock Variations of the solution to a stochastic heat equation.
+\newblock {\em Ann. Probab.}, 35(6):2122--2159, 11 2007.
 
 \bibitem{Xiu}
 D.~Xiu and G.~Karniadakis.

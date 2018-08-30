@@ -1348,19 +1348,28 @@ where $\Psi$ denote the Legendre polynomials, as in the single parameter case. N
 \begin{equation}
 \sum_{i=0}^P (-(u_i)_{xx} - (u_i)_{yy}) \langle \Psi_k \varepsilon \Psi_i \rangle = \langle f \Psi_k \rangle
 \end{equation}
-for $k=0,\dots,P$. Writing out the inner products explicitly is more complex than in the single parameter case. Here we have:
+for $k=0,\dots,P$. Here we have:
 \begin{equation}
-\langle \Psi_i \varepsilon \Psi_k \rangle = \sum_{p,q=1}^N 2^{-(p+q)} \sin(p \pi x) \sin(p\pi x)\sin(q\pi y) \langle \Psi_i \varepsilon_{pq} \Psi_k \rangle
+\langle \Psi_i \varepsilon \Psi_k \rangle = \sum_{p,q=1}^N 2^{-(p+q)} \sin(p\pi x)\sin(q\pi y) \langle \Psi_i \varepsilon_{pq} \Psi_k \rangle
 \end{equation}
 and:
 \begin{equation}
-\begin{split}
-\langle f \Psi_k \rangle = {} & 2 \pi^2 \sin(\pi x)\sin(\pi y) \sum_{p,q=1}^N 2^{-(p+q)} \langle \Psi_k \varepsilon_{pq} \rangle \sin(p \pi x) \sin(q \pi y) \\
-+ {} & \left(\pi^2 \sum_{p,q=1}^N 2^{-(p+q)} (p^2 + q^2) \sin(p \pi x)\sin(q \pi y) \langle \Psi_k \varepsilon_{pq} \rangle \right) \\
-\times {} & \left(\sum_{p,q=1}^N 2^{-(p+q)}  \sin(p \pi x)\sin(q \pi y) \langle \Psi_k \varepsilon_{pq} \rangle \right) \\
-%= {} & 2 \pi^2 \sin(\pi x)\sin(\pi y) \sum_{p,q=1}^N 2^{-(p+q)} \langle \Psi_k \varepsilon_{pq} \rangle \sin(p \pi x) \sin(q \pi y) \\
-%+ {} & \pi^2 \sum_{p,q=1}^N \sum_{r,s=1}^N 2^{-(p+q)} 2^{-(r+s)} (p^2+q^2) \sin(p \pi x) \sin(q \pi y) \sin (r \pi x) \sin (s \pi y) \langle \Psi_k \varepsilon_{pq} \rangle \langle \Psi_k \varepsilon_{rs} \rangle
-\end{split}
+\langle f \Psi_k \rangle = 2 \pi^2 \sin(\pi x)\sin(\pi y) \sum_{p,q=1}^N 2^{-(p+q)} \sin(p \pi x) \sin(q \pi y) \langle \Psi_k \varepsilon_{pq} \rangle  \nonumber
+\end{equation}
+\begin{equation}
++ \left(\pi^2 \sum_{p,q=1}^N 2^{-(p+q)} (p^2 + q^2) \sin(p \pi x)\sin(q \pi y) \langle \Psi_k \varepsilon_{pq} \rangle \right) \left(\sum_{p,q=1}^N 2^{-(p+q)}  \sin(p \pi x)\sin(q \pi y) \langle \Psi_k \varepsilon_{pq} \rangle \right)
+\end{equation}
+We now have a deterministic coupled set of differential equations which we can solve. As before, we rewrite (4.41) into a form that we can solve. As $\varepsilon_{pq} \sim u(-1,1)$ for all $p,q=1 \dots, N$, varying $p$ and $q$ does not change the inner (as the integral will be evaluated using the same limits and probability density function), therefore we can represent the inner products as:
+\begin{equation}
+\langle \Psi_i \varepsilon_{pq} \Psi_k \rangle = \langle \Psi_i \varepsilon_0 \Psi_k \rangle
+\end{equation}
+and 
+\begin{equation}
+\langle \Psi_k \varepsilon_{pq} \rangle = \langle \Psi_k \varepsilon_0 \rangle
+\end{equation}
+for all $p,q=1 \dots N$. This means we can remove the inner product from the summations, separating the random and spatial dimensions. We use the finite difference method to discretise the system in space and represent the unknowns $u_i$ as a single vector:
+\begin{equation}
+Lu_i = -(u_i)_xx - (u_i)_yy \sum_{p,q=1} 2^{-(p+q)} \sin(p \pi x)\sin(q \pi y)
 \end{equation}
 
 \newpage

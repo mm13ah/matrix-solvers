@@ -43,8 +43,13 @@ J.~Demmel, O.~Marques, B.~Parlett, and C.~Vömel.
 \bibitem{Elliott}
 J.~Elliott.
 \newblock The {C}haracteristic {R}oots of {C}ertain {R}eal {S}ymmetric
-  {M}atrices.
+  {M}atrices. {M}aster's {T}hesis, {U}niversity of {T}ennessee.
 \newblock {\em https://trace.tennessee.edu/utk\_gradthes/2384}, 1953.
+
+\bibitem{Grau}
+M.~Grau-Sánchez, M.~Noguera, and J.~M. Gutiérrez.
+\newblock On some computational orders of convergence.
+\newblock {\em Applied Mathematics Letters}, 23(4):472 -- 478, 2010.
 
 \bibitem{Holm}
 D.~D. {Holm}.
@@ -64,6 +69,11 @@ A.~J. Laub.
 \newblock Society for Industrial and Applied Mathematics, Philadelphia, PA,
   USA, 2004.
 
+\bibitem{Pan}
+V.~Y. Pan, Z.~Q. Chen, and A.~Zheng.
+\newblock The complexity of the algebraic eigenproblem.
+\newblock {\em http://comet.lehman.cuny.edu/vpan/pdf/165.pdf}, 1998.
+
 \bibitem{Parlett}
 B.~N. Parlett.
 \newblock The {QR} {A}lgorithm.
@@ -82,12 +92,31 @@ L.~Pryhara and G.~Shevchenko.
 \newblock {\em Modern Stochastics: Theory and Applications}, 3(2):133--144,
   2016.
 
+\bibitem{Schacke}
+K.~Sch\"acke.
+\newblock On the {K}ronecker {P}roduct. {M}aster's {T}hesis, {U}niversity of
+  {W}aterloo.
+\newblock {\em https://www.math.uwaterloo.ca/\texttildelow
+  hwolkowi/henry/reports/kronthesisschaecke04.pdf}, 2004.
+
 \bibitem{Shewchuk}
 J.~Shewchuk.
 \newblock An {I}ntroduction to the {C}onjugate {G}radient {M}ethod {W}ithout
   the {A}gonizing {P}ain.
 \newblock {\em https://www.cs.cmu.edu/\texttildelow
   quake-papers/painless-conjugate-gradient.pdf}, 08 1994.
+
+\bibitem{Shreve03}
+S.~E. Shreve.
+\newblock {\em Stochastic {C}alculus for {F}inance {I}: {T}he {B}inomial
+  {A}sset {P}ricing {M}odel: {B}inomial {A}sset {P}ricing {M}odel}.
+\newblock Springer-Verlag, New York, NY, 2003.
+
+\bibitem{Shreve04}
+S.~E. Shreve.
+\newblock {\em Stochastic {C}alculus for {F}inance {II}: {C}ontinuous-time
+  {M}odels}.
+\newblock Springer, New York, NY; Heidelberg, 2004.
 
 \bibitem{Simoncini}
 V.~Simoncini.

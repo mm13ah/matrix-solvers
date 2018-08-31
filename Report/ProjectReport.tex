@@ -323,7 +323,7 @@ The following measurements will be given to evaluate the performance of each of 
  \[ || u - u_h ||_{L^\infty} = \text{max}_{ij} | u(x_i, y_i) - u_{ij} | \]
 \item $|| u - u_h ||_{L^2} $: An error measurement which measures the average difference between the actual solution and computed solution for all $u$, defined as:
 \[ || u - u_h ||_{L^2} = \sqrt{h^2 \sum | u(x_i,y_j) - u_{ij} |^2} \]
-\item Experimental order of convergence (eoc): Measures the rate of convergence of a method as the problem size is increased, which should approach 2 as the step size is increased. Defined as:
+\item Experimental order of convergence (eoc): Measures the rate of convergence of a method as the problem size is increased \cite{Grau}. As we are using the centred finite difference approximations which are second order, this should be approximately 2.  Defined as:
 \[ \text{eoc}(i) = \frac{\log(\nicefrac{E_i}{E_{i-1}})}{\log(\nicefrac{h_i}{h_{i-1}})} \]
 where $E_i$ is the error (chosen here as $|| u - u_h ||_{L^\infty}$) and $h_i$ is the mesh size at level $i$. 
 \item Experimental order of growth (eog): Measures the order of growth of the execution time of an algorithm as the problem size is increased (that is, the approximate time complexity). Defined as:
@@ -336,7 +336,7 @@ All non-integer measurements will be given to five significant figures. It is wo
 \subsection{Direct Methods}
 
 \subsubsection{Kronecker Product}
-A simple approach to solving this equation is to use the Kronecker product to rewrite (3.5) as a standard vector linear system. The Sylvester equation $AX + XB = C$ can be written as the standard vector linear system:
+A simple approach to solving this equation is to use the Kronecker product to rewrite (3.5) as a standard vector linear system \cite{Laub}. The Sylvester equation $AX + XB = C$ can be written as the standard vector linear system:
 \begin{equation}
 \mathcal{A}x = c
 \end{equation}
@@ -408,7 +408,7 @@ As the eigenvectors of $T$ are already orthogonal, they only need to be normalis
 This property reduces the complexity of the second step to $O(n^2)$, as only the diagonal elements need to be calculated and so the two summations are not necessary. We can therefore expect the algorithm to run faster than in the general case and to be dominated by the first step. We should therefore expect this algorithm to have, in the worst case, time complexity $O(n^3)$.
 
 \subsubsection*{SciPy Solver}
-The SciPy library has a built in solver for solving Sylvester equations, \texttt{linalg.solve \_sylvester}, which uses the Bartels-Stewart algorithm. We can use this to test the general algorithm. Results using this solver are given in Table \ref{table:bartels scipy}. We can see from the results that this solver is much faster than using the Kronecker product and \texttt{spsolve}. The errors here are almost exactly the same as the errors in Table \ref{table:kron direct}, and up to $n=4000$, the eoc is very close to 2, but for $n=8000$ the moves beyond 2. The eog seems to change depending on the problem size, however for large $n$ has close to cubic time complexity. Although it is difficult to analyse the steps of this solver directly, \texttt{solve\_sylvester} makes use of LAPACK, an optimised software library for solving linear algebra problems, to compute the Schur decomposition in the first step. LAPACK uses a couple of different methods for computing the eigenpairs of symmetric tridiagonal matrices \cite{Demmel}. It is likely that the method changes depending on the problem size, which causes the changes in the eog and the spike in the eoc for $n=8000$. 
+The SciPy library has a built in solver for solving Sylvester equations, \texttt{linalg.solve\_sylvester}, which uses the Bartels-Stewart algorithm. We can use this to test the general algorithm. Results using this solver are given in Table \ref{table:bartels scipy}. We can see from the results that this solver is much faster than using the Kronecker product and \texttt{spsolve}. The errors here are almost exactly the same as the errors in Table \ref{table:kron direct}, and up to $n=4000$, the eoc is very close to 2, but for $n=8000$ it moves beyond 2. The eog seems to change depending on the problem size, however for large $n$ has close to cubic time complexity. Although it is difficult to analyse the steps of this solver directly, \texttt{solve\_sylvester} makes use of LAPACK, an optimised software library for solving linear algebra problems, to compute the Schur decomposition in the first step. LAPACK uses a couple of different methods for computing the eigenpairs of symmetric tridiagonal matrices \cite{Demmel}. It is likely that the method changes depending on the problem size, which causes the changes in the eog and the spike in the eoc for $n=8000$. 
 
 \begin{table}[H]
 \centering
@@ -488,7 +488,7 @@ A similarity transformation \cite{Simoncini} can be used to solve the Sylvester 
 	\end{enumerate}
 \item Compute the solution $X = P \widetilde{X} Q^{-1}$, where $\widetilde{X}_{ij} = \frac{\widetilde{C}_{ij}}{\lambda_i + \mu_j}$ and $\widetilde{C} = P^{-1}CQ$.
 \end{enumerate}
-Here $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$, $\mu_1, \dots, \mu_m$ are the eigenvalues of $B$ and the columns of $P$ and $Q$ are the eigenvectors of $A$ and $B$, respectively. We can analyse the steps of this algorithm as done previously to obtain the time complexity. Step 1a consists of computing the eigenpairs of $A$ and $B$, which in general is $O(n^3)$. Step 1b computes the inverse of $P$ and $Q$ which is greater than $O(n^2)$. The last step involves matrix multiplication which is at most $O(n^3)$. Therefore we can expect this algorithm in the general case to have, in the worst case, complexity $O(n^3)$, with the steps 1a and 2 dominating. 
+Here $\lambda_1, \dots, \lambda_n$ are the eigenvalues of $A$, $\mu_1, \dots, \mu_m$ are the eigenvalues of $B$ and the columns of $P$ and $Q$ are the eigenvectors of $A$ and $B$, respectively. We can analyse the steps of this algorithm as done previously to obtain the time complexity. Step 1a consists of computing the eigenpairs of $A$ and $B$, which in general is $O(n^3)$ \cite{Pan}. Step 1b computes the inverse of $P$ and $Q$ which is no more than $O(n^3)$. The last step involves matrix multiplication which is at most $O(n^3)$. Therefore we can expect this algorithm in the general case to have, in the worst case, complexity $O(n^3)$, with the first step dominating.
 
 For $TU+UT=F$ this method also simplifies. The steps are: 
 \begin{enumerate}
@@ -684,15 +684,25 @@ $n$ & 1a & 1b & 2 & 3 & Total & eog \\
 \subsection{Iterative Methods}
 
 \subsubsection{Kronecker Product}
-Similarly to Section 3.1.1, the Kronecker product can be used to rewrite the matrix equation as a standard vector linear system. A standard iterative solver can then be used to solve the system, which can provide a base case for comparison. The conjugate gradient method is an effective method for solving linear systems where the coefficient matrix is symmetric positive definite (SPD), so to use this method we need to prove that $\mathcal{T} = I \otimes T + T \otimes I$ is SPD. From \cite{Brewer} we have that a matrix $A \otimes B$ is SPD if $A$ and $B$ are symmetric and sign definite of the same sign. In the case of $\mathcal{T}$, $I$ is SPD and the sum of two SPD matrices is also SPD. Therefore to prove that $\mathcal{T}$ is SPD we just need to prove that $T$ is SPD. A matrix is SPD if and only if all of its eigenvalues are positive. From (3.9), we know that the eigenvalues of $T$ are: 
-\[ \lambda_i = \frac{2}{h^2} \Big( 1 - \cos \Big( \frac{i \pi}{n+1} \Big) \Big) \]
-for $i=1, \dots, n$. We therefore have $\cos \Big( \frac{i \pi}{n+1} \Big) < 1$ for $0<i<n+1$ and so $\lambda_i > 0$ for all $i$, hence $T$ is SPD and therefore so is $\mathcal{T}$. We can therefore use the conjugate gradient method to solve the Kronecker formulation of this problem. 
+Similarly to Section 3.1.1, the Kronecker product can be used to rewrite the matrix equation as a standard vector linear system. A standard iterative solver can then be used to solve the system, which can provide a base case for comparison. The choice of the iterative method used largely depends on the problem.
 
-The conjugate gradient method has time complexity $O(m\sqrt{\kappa})$ \cite{Shewchuk}, where $m$ is the number of non-zero entries in the coefficient matrix and $\kappa$ is the condition number of the coefficient matrix. Firstly, we have $m=5n^2 - 4n$ as there are $n^2$ entries on the main diagonal, and then $n^2 - n$ entries on the left, right, lower left and upper right diagonals. Because $\mathcal{T}$ is Hermitian and therefore normal, we can calculate its condition number as:
+The conjugate gradient method is an effective method for solving linear systems where the coefficient matrix is symmetric positive definite (SPD), so to use this method we need to prove that the coefficient matrix in the Kronecker formulation, that is, $\mathcal{T} = I \otimes T + T \otimes I$, is SPD.
+
+From \cite{Brewer}, we have that a matrix $A \otimes B$ is SPD if $A$ and $B$ are symmetric and sign definite of the same sign. In the case of $\mathcal{T}$, clearly $I$ is SPD and it is obvious that the sum of two SPD matrices is SPD. Therefore to prove that $\mathcal{T}$ is SPD, we just need to prove that $T$ is SPD. 
+
+A matrix is SPD if and only if all of its eigenvalues are positive. From (3.9), we know that the eigenvalues of $T$ are: 
+\[ \lambda_i = \frac{2}{h^2} \Big( 1 - \cos \Big( \frac{i \pi}{n+1} \Big) \Big) \]
+for $i=1, \dots, n$. Clearly $0 < \frac{i \pi}{n+1}$ for all $i$, and so $\cos \Big( \frac{i \pi}{n+1} \Big) < 1 \implies \lambda_i > 0$ for all $i$. Hence $T$ is SPD and therefore so is $\mathcal{T}$. We can therefore use the conjugate gradient method to solve the Kronecker formulation of this problem. 
+
+Although the conjugate gradient method is commonly employed as an iterative solver, it can also be used as a direct solver. We can therefore study its convergence properties as a direct solver, and then expect its implementation as an iterative solver to be slightly better than in the direct case. 
+
+As a direct solver, the conjugate gradient method has time complexity $O(m\sqrt{\kappa})$ \cite{Shewchuk}, where $m$ is the number of non-zero entries in the coefficient matrix and $\kappa$ is the condition number of the coefficient matrix. For the matrix $\mathcal{T}$, we have $m=5n^2 - 4n$ as there are $n^2$ entries on the main diagonal, and then $n^2 - n$ entries on the left, right, lower left and upper right diagonals. Because $\mathcal{T}$ is Hermitian and therefore normal, we can calculate its condition number as:
 \begin{equation}
 \kappa = \frac{|\mu_{\text{max}}(\mathcal{T})|}{|\mu_{\text{min}}(\mathcal{T})|}
 \end{equation}
-where $\mu$ denotes the eigenvalues of $\mathcal{T}$. From \cite{Laub}, we have that $\mathcal{T}$ has $n^2$ eigenvalues which are $\lambda_i + \lambda_j$ for $i,j=1,\dots,n$, where $\lambda$ denotes the eigenvalues of $T$. The condition number of $\mathcal{T}$ is therefore:
+where $\mu$ denotes the eigenvalues of $\mathcal{T}$. 
+
+From \cite{Schacke}, for general matrices $A$ and $B$ we have that if $a$ is an eigenvalue of matrix $A$ and $b$ is an eigenvalue of matrix $B$, then $a + b$ is an eigenvalue of the matrix $I \otimes A + B \otimes I$. Hence the eigenvalues are $\mathcal{T}$ are simply $\lambda_i + \lambda_j$ for $i,j=1,\dots,n$, where $\lambda$ denotes the eigenvalues of $T$. The condition number of $\mathcal{T}$ is therefore:
 \begin{equation}
 \kappa = \frac{|\text{max} (\lambda_i + \lambda_j)|}{|\text{min}(\lambda_i + \lambda_j)|} 
 = \frac{\left|\text{max} \left(\frac{2}{h^2} \left(1-\cos \left( \frac{i\pi}{n+1} \right) \right) 
@@ -708,12 +718,11 @@ We therefore have:
 \begin{equation}
 m\sqrt{\kappa} = (5n^2-4n) \times \sqrt \frac{1-\cos \left(\frac{n \pi}{n+1} \right)}{1-\cos \left(\frac{\pi}{n+1} \right)}
 \end{equation}
-We can calculate the expected eog as:
+We can now calculate the expected eog as:
 \begin{equation}
 \frac{\log(m \sqrt \kappa)}{\log(n)}
 \end{equation}
-
-Table \ref{table:cg eog} shows the expected eog of different problem sizes calculated using (3.15). As we are using the conjugate gradient iteratively, we should expect the actual eog to be slightly less than these values, as they are the expected eog of the method converging to the exact solution of the finite difference method, rather than to within a convergence tolerance of the solution.
+for different problem sizes. Table \ref{table:cg eog} shows the expected eog of different problem sizes calculated using (3.15). As previously mentioned, as we are going to use the conjugate gradient as an iterative method we should expect the eog to be slightly less than these values. 
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
@@ -726,8 +735,7 @@ Expected eog & 3.2401 & 3.2098 & 3.1864 & 3.1676 & 3.1523 & 3.1396 & 3.1288 & 3.
 \caption{Expected eog for conjugate gradient method.}
 \label{table:cg eog}
 \end{table}
-
-Results using the conjugate gradient method \texttt{sparse.linalg.cg} from the ScipPy library, using a convergence tolerance of $10^{-11}$, are given in Table \ref{table:kron it}. 
+The SciPy library has a built-in solver, \texttt{sparse.linalg.cg}, that uses the conjugate gradient method. Results of using this method with a convergence tolerance of $10^{-11}$ are given in Table \ref{table:kron it}. 
 
 The results show errors similar to all the direct methods. The eoc demonstrates that the algorithm solves the problem increasingly accurately as $n$ is increased. We can see from these results that this method is faster than the direct methods implemented for $n \leq 4000$, however the time taken grows significantly for $n=8000$. This is also reflected in the eog, which increases significantly when $n=8000$. For $n<8000$, the eog is slightly better than the predicted eog, which was expected. However, when $n=8000$ the actual eog is much higher than the predicted eog [\textbf{add comment}]. For $n=16000$, using this solver results in a memory error, as it requires too much memory to compute the Kronecker product $\mathcal{T} = I \otimes T + T \otimes I$.
 
@@ -868,7 +876,7 @@ Choosing $\alpha = \pm \nicefrac{\sqrt{n}}{||T||_F}$ and calculating $\widetilde
 	and return to Step 2.
 \end{enumerate}
 
-Results using the preconditioned MCG algorithm with a tolerance of $10^{-11}$ are given in Table \ref{table:pre MCG}. These results demonstrate that this method vastly outperforms the standard MCG algorithm. The errors are similar to previous methods and the eoc is close to 2 for all values of $n$. The eog shows that, for large $n$, this algorithm has has close to cubic time complexity. 
+Results using the preconditioned MCG algorithm with a tolerance of $10^{-11}$ are given in Table \ref{table:pre MCG}. These results demonstrate that preconditioning has a very postive effect on the MCG algorithm, as we are now able to a solution for problem sizes up to $n=2000$. However, this method is still worse than the standard conjugate gradient method used on the Kronecker formulation of the problem, as it took longer, used more iterations and has worse eog for the problem sizes it was able to solve. The errors given here are similar to the previous methods and the eoc is close to 2 for all values of $n$. 
 
 \begin{table}[H]
 \centering
@@ -908,7 +916,7 @@ To use this method, we need to show that the coefficient matrix $T+s_i I$ in the
 \begin{equation} 
 T+s_i I = -\frac{1}{h^2} \text{tridiag}(1,-2,1) + \frac{2}{h^2}\left(1 - \cos\left(\frac{i\pi}{n+1}\right)\right)I
 \end{equation}
-for $i=1,\dots,n$, which is clearly SPD as we have already shown that $T$ is SPD and the eigenvalues of $T$ are positive, and clearly $I$ is SPD. 
+for $i=1,\dots,n$, which is clearly SPD as we have already shown that $T$ is SPD and the eigenvalues of $T$ are positive.
 
 Using (3.9) and (3.10) to calculate the eigenpairs explicitly and calculating the transpose of $W$ instead of the inverse, the first and third steps have time complexity $O(n)$ and $O(n^2)$, respectively, as before. As previously stated, the conjugate gradient method has time complexity $O(m\sqrt(\kappa)$, where $m$ is the number of non-zero entries in the coefficient matrix and $\kappa$ is the condition number of the coefficient matrix. $T+s_i I$ has $n$ entries on the diagonal and $n-1$ entries on the left and right diagonals, so we have $m=3n-2$. Also, $T$ is normal and therefore we can calculate its condition number as:
 \begin{equation}
@@ -922,19 +930,19 @@ We can therefore expect this implementation to run in time complexity $O(n^2 \sq
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-$n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
+$n$ & Time(s) & no. iters & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eog \\
 \hline
-125 & 0.020357 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
-250 & 0.085435 & $1.3054 \times 10^{-5}$ & $6.5274 \times 10^{-6}$ & 2.0001  & 2.0693 \\
-500 & 0.65115 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999  & 2.9301 \\
-1000 & 4.0059 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 2.6211 \\
-2000 & 46.288 & $2.0541 \times 10^{-7}$ & $1.0270 \times 10^{-7}$ & 2.0000 & 3.5304 \\
-4000 & 491.65 & $5.1342 \times 10^{-8}$ & $2.5671 \times 10^{-8}$ & 2.0009 &  3.4089 \\
-8000 & 5159.3 & $1.2824 \times 10^{-8}$ & $6.4120 \times 10^{-9}$ & 1.9990 & 3.3915 \\
-\cline{2-6} 
-16000 & \multicolumn{5}{c|}{Time Limit Reached} \\
+125 & 0.020357 & 7875 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
+250 & 0.085435 & 31375 & $1.3054 \times 10^{-5}$ & $6.5274 \times 10^{-6}$ & 2.0001  & 2.0693 \\
+500 & 0.65115 & 194928 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999  & 2.9301 \\
+1000 & 4.0059 & 1620950 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 2.6211 \\
+2000 & 46.288 & 16938024 & $2.0541 \times 10^{-7}$ & $1.0270 \times 10^{-7}$ & 2.0000 & 3.5304 \\
+4000 & 491.65 & 131672555 & $5.1342 \times 10^{-8}$ & $2.5671 \times 10^{-8}$ & 2.0009 &  3.4089 \\
+8000 & 5159.3 & 898206811 & $1.2824 \times 10^{-8}$ & $6.4120 \times 10^{-9}$ & 1.9990 & 3.3915 \\
+\cline{2-7} 
+16000 & \multicolumn{6}{c|}{Time Limit Reached} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -976,7 +984,7 @@ Of all the methods implemented, we can see that \texttt{sparse.linalg.cg} was th
 \newpage
 
 \section{Uncertainty}
-This section explores methods for solving PDEs with uncertain input. Uncertainty can arise in PDEs if, for example, coefficients, boundary conditions or initial conditions are unknown. There are many applications from which uncertainy can arise in PDEs, for example in heat and sound propagation \cite{Swanson}, \cite{Pryhara}, fluid-dynamics \cite{Breit}, \cite{Holm}, cell biology \cite{Bressloff} and mathematical finance \textbf{add reference}. A solution to dealing with uncertainty is to model unknown parameters as random variables, and then appropriate methods can be used to solve the system.
+This section explores methods for solving PDEs with uncertain input. Uncertainty can arise in PDEs if, for example, coefficients, boundary conditions or initial conditions are unknown. There are many applications from which uncertainy can arise in PDEs, for example in heat and sound propagation \cite{Swanson}, \cite{Pryhara}, fluid-dynamics \cite{Breit}, \cite{Holm}, cell biology \cite{Bressloff} and mathematical finance \cite{Shreve03}, \cite{Shreve04}. A solution to dealing with uncertainty is to model unknown parameters as random variables, and then appropriate methods can be used to solve the system.
 
 \subsection{Single Parameter}
 The simplest way to introduce uncertainty into a PDE is by introducing a single unknown parameter. Define the spatial domain $\mathcal{D}$ as $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$, and let $\Omega$ denote the sample space. We can introduce an unknown coefficient $\varepsilon(\omega)$, where $\omega \in \Omega$ denotes dependence on a random variable and $\varepsilon: \Omega \rightarrow \mathbb{R}$ is uniformly distributed over the interval $[1,3]$. Let $u(x,y,\varepsilon) = \sin(\pi x)\sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y)$ be the exact solution of the equation:
@@ -1034,7 +1042,7 @@ which gives the standard deviation as $\text{Std}[u] = \frac{1}{\sqrt{3}} \sin(3
 
 Throughout this section the following parameters will be used to evaluate performance:
 \begin{itemize}
-\item $n$: The number of unknowns in each direction - the total number of unknowns is $n^2$. As before the mesh will be continually refined by a factor of $\frac{1}{2}$ until either the time limit is reached or a memory error occurs, with the starting value as $n=125$.
+\item $n$: The number of unknowns in each direction - the total number of unknowns is $n^2$. As before, the mesh will be continually refined by a factor of $\frac{1}{2}$ until either the time limit is reached or a memory error occurs, with the starting value as $n=125$.
 \item Time(s): The time taken in seconds for the method to compute a solution to the problem. In this section we will increase the maximum time allowed to 12000 seconds. 
 \item $|| \mathbb{E}[u] - \mu ||_{L^\infty} $: Defined similarly to the previous section, however we now measure the maximum difference between the expectation and the computed mean solution, that is:
  \[ || \mathbb{E}[u] - \mu ||_{L^\infty} = \text{max}_{ij} | \mathbb{E}[u](x_i,y_j) - \mu_{ij} | \]
@@ -1054,7 +1062,7 @@ with $T = -\frac{\varepsilon}{h^2} \text{tridiag}(1,-2,1)$, $U_{ij} = u(x_i, y_j
 \begin{equation}
 \mu = \frac{1}{M} \sum_{i=1}^M u_h (x, y, \varepsilon)
 \end{equation}
-where $M$ is the number of samples used in the Monte Carlo method and $u_h$ is the solution obtained from the finite difference method using a mesh of size $h$. Similarly, the variance can also be computed as:
+where $M$ is the number of samples used in the Monte Carlo method and $u_h$ is the solution obtained from the finite difference method using a mesh of size $h$. Similarly, the variance can be computed as:
 \begin{equation}
 \sigma^2 = \frac{1}{M-1}\sum_{i=1}^M (u_h - \mu)^2
 \end{equation}
@@ -1062,9 +1070,13 @@ and the standard deviation is $\sigma$. We can then compare these quantities to 
 
 As noted in \cite{Bishop}, for the error to converge to 0 the mesh size must be decreased as the number of samples is increased. This is because the error depends both on the mesh size and the number of samples, so by changing only one of these factors the method will be converging to the error of the factor that is not being changed, rather than to 0. 
 
-It is also worth noting that as the solution and therefore the error is dependent on a random variable, the error is itself a random variable and therefore not guaranteed to decrease at each level, as the samples are increased. However, the law of large numbers tells us that by taking more and more samples the error in expectation should decrease.
+It is also worth noting that as the solution and therefore the error is dependent on a random variable, the error is itself a random variable and therefore an increase in the number of samples does not guarantee a reduction in error. However, the law of large numbers tells us that by taking more and more samples the error in expectation should decrease.
 
-Results using the Monte Carlo method, with a single uncertain parameter, are given in Table \ref{table:monte carlo}. Here the similarity transformation method, calculating the eigenpairs explicity, is chosen to solve the PDE for each sample. This method can be used because multiplying a matrix by a constant has the effect of changing the matrix's eigenvalues by that constant, and since $\varepsilon$ is sampled, we can still calculate the eigenvalues. The eigenvectors remain unchanged when multiplying a matrix by a constant. Therefore the eigenpairs are easily obtained. The errors here are clearly much bigger than the errors in Section 3, and the eoc demonstrates that this method does not solve the problem more accurately at a convergent rate, as the step size is increased. The eog demonstrates that this method has worse than quartic time complexity.
+We choose to use the similarity transformation method from the previous section, calculating the eigenpairs explicity, to solve the PDE for each sample. This method can be used because multiplying a matrix by a constant has the effect of changing the matrix's eigenvalues by that constant and the eigenvectors remain unchanged. This is easy to see by multiplying a general matrix $A$ with eigenvalue $\lambda$ and eigenvector $v$ by a constant $\alpha$, as we have $Av = \lambda v \implies \alpha A v = \alpha \lambda v$. Since we already know the eigenpairs of $-\frac{1}{h^2} \text{tridiag}(1,-2,1)$ from the previous section and $\varepsilon$ is sampled, we can easily obtain the eigenpairs of $T$. 
+
+To ensure the results obtained by this method are reproducible, each sampled $\varepsilon$ will be seeded. This means that the error computed by this method will be dependent on the seed chosen. To counter this, computation will be repeated with 10 different seeds (the integers from $0, \dots, 9$) and the error and time taken will be taken as the average error and time taken from each seed used.
+
+Results using the Monte Carlo method, with a single uncertain parameter, are given in Table \ref{table:monte carlo}. The errors here are clearly much bigger than the errors in Section 3, and the eoc demonstrates that this method does not solve the problem more accurately at a convergent rate, as the step size is increased. The eog demonstrates that this method has worse than quartic time complexity.
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}

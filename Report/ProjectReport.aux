@@ -26,6 +26,7 @@
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Results obtained from solving the linear system $\mathcal  {A} x = c$ using the direct solver \texttt  {sparse.linalg.spsolve} from the SciPy library.\relax }}{8}}
 \newlabel{table:kron direct}{{1}{8}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Bartels-Stewart Algorithm}{8}}
+\citation{Quandt}
 \citation{Demmel}
 \@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Results using SciPy's \texttt  {linalg.solve\_sylvester}.\relax }}{10}}
 \newlabel{table:bartels scipy}{{2}{10}}
@@ -73,9 +74,9 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.5}Shifted System}{21}}
 \@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Results using a projection method to solve $n$ linear systems, using \texttt  {sparse.linalg.cg} in the second step.\relax }}{22}}
 \newlabel{table:shifted it}{{14}{22}}
-\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Timing results of each step using a projection method to solve $n$ linear systems.\relax }}{22}}
-\newlabel{table:shifted it steps}{{15}{22}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Conclusion}{22}}
+\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Timing results of each step using a projection method to solve $n$ linear systems.\relax }}{23}}
+\newlabel{table:shifted it steps}{{15}{23}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Conclusion}{23}}
 \citation{Swanson}
 \citation{Pryhara}
 \citation{Breit}
@@ -86,12 +87,13 @@
 \@writefile{toc}{\contentsline {section}{\numberline {4}Uncertainty}{24}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Single Parameter}{24}}
 \citation{Bishop}
+\citation{Kalos}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Monte Carlo}{26}}
 \citation{Paul}
-\citation{Xiu}
 \@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces Results using the Monte Carlo method with a single uncertain parameter, using the similarity transformation method calculating the eigenpairs explicitly to solve each PDE.\relax }}{27}}
 \newlabel{table:monte carlo}{{16}{27}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Stochastic Galerkin}{27}}
+\citation{Xiu}
 \@writefile{lot}{\contentsline {table}{\numberline {17}{\ignorespaces Results using the stochastic Galerkin method with a single uncertain parameter by solving the linear system using \texttt  {sparse.linalg.cg}.\relax }}{30}}
 \newlabel{table:stochastic linear}{{17}{30}}
 \citation{Powell}
@@ -101,36 +103,49 @@
 \newlabel{table:stochastic sylvester}{{19}{32}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Multiple Parameters}{33}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Monte Carlo}{33}}
+\citation{Paul}
 \@writefile{lot}{\contentsline {table}{\numberline {20}{\ignorespaces Results using the Monte Carlo method with multiple uncertain parameters, using the similarity transformation method calculating the eigenpairs explicitly to solve each PDE.\relax }}{34}}
 \newlabel{table:monte carlo multiple}{{20}{34}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Stochastic Galerkin}{34}}
+\citation{Hessenberg}
+\citation{Simoncini}
+\citation{Monsalve}
+\citation{Powell}
+\citation{Barth}
+\citation{Barreira}
 \@writefile{toc}{\contentsline {section}{\numberline {5}Evaluation}{37}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Aims}{37}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Extensions}{37}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Conclusion}{37}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Conclusion}{38}}
 \bibstyle{abbrv}
 \bibdata{matrixsolvers}
-\bibcite{Bartels}{1}
-\bibcite{Bishop}{2}
-\bibcite{Breit}{3}
-\bibcite{Bressloff}{4}
-\bibcite{Brewer}{5}
-\bibcite{Paul}{6}
-\bibcite{Demmel}{7}
-\bibcite{Elliott}{8}
-\bibcite{Grau}{9}
-\bibcite{Holm}{10}
-\bibcite{Hou}{11}
-\bibcite{Laub}{12}
-\bibcite{Pan}{13}
-\bibcite{Parlett}{14}
-\bibcite{Powell}{15}
-\bibcite{Pryhara}{16}
-\bibcite{Schacke}{17}
-\bibcite{Shewchuk}{18}
-\bibcite{Shreve03}{19}
-\bibcite{Shreve04}{20}
-\bibcite{Simoncini}{21}
-\bibcite{Swanson}{22}
-\bibcite{Xiu}{23}
-\bibcite{Zhou}{24}
+\bibcite{Barreira}{1}
+\bibcite{Bartels}{2}
+\bibcite{Barth}{3}
+\bibcite{Bishop}{4}
+\bibcite{Breit}{5}
+\bibcite{Bressloff}{6}
+\bibcite{Brewer}{7}
+\bibcite{Paul}{8}
+\bibcite{Demmel}{9}
+\bibcite{Elliott}{10}
+\bibcite{Hessenberg}{11}
+\bibcite{Grau}{12}
+\bibcite{Holm}{13}
+\bibcite{Hou}{14}
+\bibcite{Kalos}{15}
+\bibcite{Laub}{16}
+\bibcite{Monsalve}{17}
+\bibcite{Pan}{18}
+\bibcite{Parlett}{19}
+\bibcite{Powell}{20}
+\bibcite{Pryhara}{21}
+\bibcite{Quandt}{22}
+\bibcite{Schacke}{23}
+\bibcite{Shewchuk}{24}
+\bibcite{Shreve03}{25}
+\bibcite{Shreve04}{26}
+\bibcite{Simoncini}{27}
+\bibcite{Swanson}{28}
+\bibcite{Xiu}{29}
+\bibcite{Zhou}{30}

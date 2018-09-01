@@ -4,45 +4,46 @@ The top-level auxiliary file: ProjectReport.aux
 The style file: abbrv.bst
 Database file #1: matrixsolvers.bib
 Warning--empty publisher in Bressloff
-You've used 24 entries,
+Warning--empty year in Quandt
+You've used 30 entries,
             2118 wiz_defined-function locations,
-            675 strings with 7685 characters,
-and the built_in function-call counts, 6864 in all, are:
-= -- 667
-> -- 269
+            720 strings with 8681 characters,
+and the built_in function-call counts, 8669 in all, are:
+= -- 841
+> -- 345
 < -- 1
-+ -- 118
-- -- 84
-* -- 481
-:= -- 1189
-add.period$ -- 72
-call.type$ -- 24
-change.case$ -- 110
++ -- 150
+- -- 108
+* -- 613
+:= -- 1497
+add.period$ -- 90
+call.type$ -- 30
+change.case$ -- 139
 chr.to.int$ -- 0
-cite$ -- 25
-duplicate$ -- 261
-empty$ -- 569
-format.name$ -- 84
-if$ -- 1406
+cite$ -- 32
+duplicate$ -- 327
+empty$ -- 717
+format.name$ -- 108
+if$ -- 1779
 int.to.chr$ -- 0
-int.to.str$ -- 24
-missing$ -- 28
-newline$ -- 123
-num.names$ -- 48
-pop$ -- 99
+int.to.str$ -- 30
+missing$ -- 35
+newline$ -- 153
+num.names$ -- 60
+pop$ -- 126
 preamble$ -- 1
-purify$ -- 90
+purify$ -- 114
 quote$ -- 0
-skip$ -- 170
+skip$ -- 212
 stack$ -- 0
-substring$ -- 457
-swap$ -- 25
+substring$ -- 582
+swap$ -- 31
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 88
-warning$ -- 1
-while$ -- 64
-width$ -- 26
-write$ -- 259
-(There was 1 warning)
+type$ -- 110
+warning$ -- 2
+while$ -- 80
+width$ -- 32
+write$ -- 323
+(There were 2 warnings)

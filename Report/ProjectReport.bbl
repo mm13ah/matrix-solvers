@@ -1,9 +1,22 @@
 \begin{thebibliography}{10}
 
+\bibitem{Barreira}
+R.~Barreira, C.~M~Elliott, and A.~Madzvamuse.
+\newblock The surface finite element method for pattern formation on evolving
+  biological surfaces.
+\newblock {\em Journal of mathematical biology}, 63:1095--119, 12 2011.
+
 \bibitem{Bartels}
 R.~H. Bartels and G.~W. Stewart.
 \newblock {S}olution of the {M}atrix {E}quation {AX + XB = C}.
 \newblock {\em Commun. ACM}, 15(9):820--826, Sept. 1972.
+
+\bibitem{Barth}
+A.~Barth and A.~Lang.
+\newblock Multilevel {M}onte {C}arlo method with applications to stochastic
+  partial differential equations.
+\newblock {\em International Journal of Computer Mathematics},
+  89(18):2479--2498, 2012.
 
 \bibitem{Bishop}
 J.~Bishop and O.~E.~Strack.
@@ -14,12 +27,12 @@ J.~Bishop and O.~E.~Strack.
 
 \bibitem{Breit}
 D.~{Breit} and M.~{Hofmanov{\'a}}.
-\newblock {Stochastic Navier-Stokes equations for compressible fluids}.
+\newblock {Stochastic {N}avier-{S}tokes equations for compressible fluids}.
 \newblock {\em ArXiv e-prints}, Sept. 2014.
 
 \bibitem{Bressloff}
 P.~Bressloff.
-\newblock {\em Stochastic Processes in Cell Biology}, volume~41.
+\newblock {\em Stochastic {P}rocesses in {C}ell {B}iology}, volume~41.
 \newblock 08 2014.
 
 \bibitem{Brewer}
@@ -46,6 +59,12 @@ J.~Elliott.
   {M}atrices. {M}aster's {T}hesis, {U}niversity of {T}ennessee.
 \newblock {\em https://trace.tennessee.edu/utk\_gradthes/2384}, 1953.
 
+\bibitem{Hessenberg}
+G.~Golub, S.~Nash, and C.~V. Loan.
+\newblock A {H}essenberg-{S}chur method for the problem {AX + XB= C}.
+\newblock {\em IEEE Transactions on Automatic Control}, 24(6):909--913,
+  December 1979.
+
 \bibitem{Grau}
 M.~Grau-Sánchez, M.~Noguera, and J.~M. Gutiérrez.
 \newblock On some computational orders of convergence.
@@ -63,15 +82,25 @@ J.~Hou, Q.~Lv, and M.~Xiao.
   {M}ethod for {L}arge {S}ylvester {M}atrix {E}quation.
 \newblock {\em Mathematical Problems in Engineering}, 2014:1--7, 03 2014.
 
+\bibitem{Kalos}
+M.~H. Kalos and P.~A. Whitlock.
+\newblock {\em Monte {C}arlo {M}ethods. {V}ol. 1: {B}asics}.
+\newblock Wiley-Interscience, New York, NY, USA, 1986.
+
 \bibitem{Laub}
 A.~J. Laub.
 \newblock {\em Matrix {A}nalysis {F}or {S}cientists {A}nd {E}ngineers}.
 \newblock Society for Industrial and Applied Mathematics, Philadelphia, PA,
   USA, 2004.
 
+\bibitem{Monsalve}
+M.~Monsalve.
+\newblock Block linear method for large scale {S}ylvester equations.
+\newblock {\em Computational \& Applied Mathematics}, 27:47 -- 59, 00 2008.
+
 \bibitem{Pan}
 V.~Y. Pan, Z.~Q. Chen, and A.~Zheng.
-\newblock The complexity of the algebraic eigenproblem.
+\newblock The {C}omplexity of the {A}lgebraic {E}igenproblem.
 \newblock {\em http://comet.lehman.cuny.edu/vpan/pdf/165.pdf}, 1998.
 
 \bibitem{Parlett}
@@ -91,6 +120,11 @@ L.~Pryhara and G.~Shevchenko.
   noise.
 \newblock {\em Modern Stochastics: Theory and Applications}, 3(2):133--144,
   2016.
+
+\bibitem{Quandt}
+R.~E. Quandt.
+\newblock Some {B}asic {M}atrix {T}heorems. {P}rinceton {U}niversity.
+\newblock {\em http://www.quandt.com/papers/basicmatrixtheorems.pdf}.
 
 \bibitem{Schacke}
 K.~Sch\"acke.

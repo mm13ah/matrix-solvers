@@ -5,45 +5,45 @@ The style file: abbrv.bst
 Database file #1: matrixsolvers.bib
 Warning--empty publisher in Bressloff
 Warning--empty year in Quandt
-You've used 30 entries,
+You've used 31 entries,
             2118 wiz_defined-function locations,
-            720 strings with 8681 characters,
-and the built_in function-call counts, 8669 in all, are:
-= -- 841
-> -- 345
+            728 strings with 8859 characters,
+and the built_in function-call counts, 8947 in all, are:
+= -- 870
+> -- 352
 < -- 1
-+ -- 150
-- -- 108
-* -- 613
-:= -- 1497
-add.period$ -- 90
-call.type$ -- 30
-change.case$ -- 139
++ -- 153
+- -- 110
+* -- 632
+:= -- 1545
+add.period$ -- 94
+call.type$ -- 31
+change.case$ -- 143
 chr.to.int$ -- 0
-cite$ -- 32
-duplicate$ -- 327
-empty$ -- 717
-format.name$ -- 108
-if$ -- 1779
+cite$ -- 33
+duplicate$ -- 338
+empty$ -- 742
+format.name$ -- 110
+if$ -- 1838
 int.to.chr$ -- 0
-int.to.str$ -- 30
-missing$ -- 35
-newline$ -- 153
-num.names$ -- 60
-pop$ -- 126
+int.to.str$ -- 31
+missing$ -- 36
+newline$ -- 159
+num.names$ -- 62
+pop$ -- 127
 preamble$ -- 1
-purify$ -- 114
+purify$ -- 117
 quote$ -- 0
-skip$ -- 212
+skip$ -- 219
 stack$ -- 0
-substring$ -- 582
-swap$ -- 31
+substring$ -- 602
+swap$ -- 32
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 110
+type$ -- 114
 warning$ -- 2
-while$ -- 80
-width$ -- 32
-write$ -- 323
+while$ -- 83
+width$ -- 33
+write$ -- 336
 (There were 2 warnings)

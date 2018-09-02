@@ -1,5 +1,12 @@
 \begin{thebibliography}{10}
 
+\bibitem{Edwards}
+E.~J. Allen.
+\newblock Derivation of stochastic partial differential equations for size- and
+  age-structured populations.
+\newblock {\em Journal of Biological Dynamics}, 3(1):73--86, 2009.
+\newblock PMID: 22880751.
+
 \bibitem{Barreira}
 R.~Barreira, C.~M~Elliott, and A.~Madzvamuse.
 \newblock The surface finite element method for pattern formation on evolving

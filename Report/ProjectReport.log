@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.7.8)  1 SEP 2018 17:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.7.8)  2 SEP 2018 23:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1233,7 +1233,11 @@ Package geometry Warning: Over-specification in `h'-direction.
 Package geometry Warning: Over-specification in `v'-direction.
     `height' (845.04684pt) is ignored.
 
-(./ProjectReport.aux)
+(./ProjectReport.aux
+
+LaTeX Warning: Label `table:galerkin multiple' multiply defined.
+
+)
 \openout1 = `ProjectReport.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 83.
@@ -1429,16 +1433,16 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 <img/solution2.png, id=43, 426.59375pt x 355.3275pt>
 File: img/solution2.png Graphic file (type png)
 <use img/solution2.png>
-Package pdftex.def Info: img/solution2.png  used on input line 310.
+Package pdftex.def Info: img/solution2.png  used on input line 308.
 (pdftex.def)             Requested size: 213.29634pt x 177.6633pt.
  [5] [6 <./img/solution2.png>]
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 351.
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 349.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 ) [7] [8] [9] [10]
-Overfull \hbox (18.2572pt too wide) in paragraph at lines 484--485
+Overfull \hbox (18.2572pt too wide) in paragraph at lines 482--483
 []\T1/cmr/m/n/10.95 Compute the eigen-de-com-po-si-tions $\OML/cmm/m/it/10.95 P
 []AP \OT1/cmr/m/n/10.95 = [](\OML/cmm/m/it/10.95 ^^U[]; [] ; ^^U[]\OT1/cmr/m/n/
 10.95 )$ \T1/cmr/m/n/10.95 and $\OML/cmm/m/it/10.95 Q[]BQ \OT1/cmr/m/n/10.95 = 
@@ -1448,9 +1452,32 @@ Overfull \hbox (18.2572pt too wide) in paragraph at lines 484--485
 
 [11]
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 514.
- [12] [13] [14] [15] [16] [17] [18] [19] [20] [21] [22] [23] [24] [25]
-Overfull \hbox (48.11777pt too wide) in paragraph at lines 1065--1067
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 512.
+ [12] [13] [14] [15] [16] [17] [18] [19] [20] [21] [22]
+<img/direct.png, id=108, 446.66875pt x 354.32375pt>
+File: img/direct.png Graphic file (type png)
+<use img/direct.png>
+Package pdftex.def Info: img/direct.png  used on input line 981.
+(pdftex.def)             Requested size: 268.00331pt x 212.59589pt.
+ [23 <./img/direct.png>]
+<img/iterative.png, id=114, 436.63126pt x 354.32375pt>
+File: img/iterative.png Graphic file (type png)
+<use img/iterative.png>
+Package pdftex.def Info: img/iterative.png  used on input line 990.
+(pdftex.def)             Requested size: 261.98077pt x 212.59589pt.
+<img/methods.png, id=115, 436.63126pt x 354.32375pt>
+File: img/methods.png Graphic file (type png)
+<use img/methods.png>
+Package pdftex.def Info: img/methods.png  used on input line 999.
+(pdftex.def)             Requested size: 261.98077pt x 212.59589pt.
+ [24 <./img/iterative.png> <./img/methods.png>] [25]
+<img/single.png, id=124, 433.62pt x 289.08pt>
+File: img/single.png Graphic file (type png)
+<use img/single.png>
+Package pdftex.def Info: img/single.png  used on input line 1064.
+(pdftex.def)             Requested size: 303.53192pt x 202.35461pt.
+ [26 <./img/single.png>]
+Overfull \hbox (48.11777pt too wide) in paragraph at lines 1091--1093
 \T1/cmr/m/n/10.95 with $\OML/cmm/m/it/10.95 T \OT1/cmr/m/n/10.95 = \OMS/cmsy/m/
 n/10.95 ^^@[][]\OT1/cmr/m/n/10.95 (1\OML/cmm/m/it/10.95 ; \OMS/cmsy/m/n/10.95 ^
 ^@\OT1/cmr/m/n/10.95 2\OML/cmm/m/it/10.95 ; \OT1/cmr/m/n/10.95 1)$\T1/cmr/m/n/1
@@ -1463,64 +1490,72 @@ OT1/cmr/m/n/10.95 (3\OML/cmm/m/it/10.95 ^^Yx[]\OT1/cmr/m/n/10.95 ) [](5\OML/cmm
 /m/it/10.95 ^^Yy[]\OT1/cmr/m/n/10.95 )$\T1/cmr/m/n/10.95 .
  []
 
-[26] [27] [28] [29] [30] [31] [32] [33] [34]
-Overfull \hbox (3.55827pt too wide) detected at line 1392
+[27] [28] [29] [30] [31] [32] [33] [34]
+File: img/solution2.png Graphic file (type png)
+<use img/solution2.png>
+Package pdftex.def Info: img/solution2.png  used on input line 1349.
+(pdftex.def)             Requested size: 213.29634pt x 177.6633pt.
+ [35] [36]
+Overfull \hbox (3.55827pt too wide) detected at line 1425
 \OT1/cmr/m/n/10.95 + [] []
  []
 
-
-Overfull \hbox (3.55827pt too wide) detected at line 1411
+[37]
+Overfull \hbox (3.55827pt too wide) detected at line 1444
 \OT1/cmr/m/n/10.95 + [] []
  []
 
-[35] [36] [37] [38] (./ProjectReport.bbl
-Underfull \hbox (badness 10000) in paragraph at lines 45--49
+[38] [39] [40] [41] (./ProjectReport.bbl
+Underfull \hbox (badness 10000) in paragraph at lines 52--56
 []\T1/cmr/m/n/10.95 P. Con-stan-tine.  A Primer on Stochas-tic Galerkin Meth-od
 s.
  []
 
-[39]
-Underfull \hbox (badness 10000) in paragraph at lines 125--128
+[42]
+Underfull \hbox (badness 10000) in paragraph at lines 132--135
 []\T1/cmr/m/n/10.95 R. E. Quandt.  Some Ba-sic Ma-trix The-o-rems. Prince-ton U
 ni-ver-sity.
  []
 
-) [40] (./ProjectReport.aux) ) 
+) [43] (./ProjectReport.aux)
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
 Here is how much of TeX's memory you used:
- 19570 strings out of 492982
- 370660 string characters out of 6134897
- 543351 words of memory out of 5000000
- 22646 multiletter control sequences out of 15000+600000
+ 19596 strings out of 492982
+ 371114 string characters out of 6134897
+ 543449 words of memory out of 5000000
+ 22669 multiletter control sequences out of 15000+600000
  22168 words of font info for 57 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,19n,77p,1247b,659s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-sup
-er-ts1.enc}{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc}{/usr/sha
-re/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/font
-s/type1/public/amsfonts/cmextra/cmex8.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-r6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/s
-hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/t
-exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texmf/font
-s/type1/public/cm-super/sfbx1095.pfb></usr/share/texmf/fonts/type1/public/cm-su
-per/sfbx1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1440.pfb></u
-sr/share/texmf/fonts/type1/public/cm-super/sfrm0600.pfb></usr/share/texmf/fonts
-/type1/public/cm-super/sfrm0800.pfb></usr/share/texmf/fonts/type1/public/cm-sup
-er/sfrm0900.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1095.pfb></us
-r/share/texmf/fonts/type1/public/cm-super/sfti1095.pfb></usr/share/texmf/fonts/
-type1/public/cm-super/sftt0900.pfb></usr/share/texmf/fonts/type1/public/cm-supe
-r/sftt1095.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
-
-Output written on ProjectReport.pdf (42 pages, 576677 bytes).
+ 55i,19n,77p,1215b,659s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}{/usr/share/texmf
+/fonts/enc/dvips/cm-super/cm-super-t1.enc}{/usr/share/texlive/texmf-dist/fonts/
+enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmex
+tra/cmex8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmm
+i10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/font
+s/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
+/amsfonts/symbols/msbm10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx
+1095.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share
+/texmf/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf/fonts/type1/p
+ublic/cm-super/sfrm0600.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm0
+800.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm0900.pfb></usr/share/
+texmf/fonts/type1/public/cm-super/sfrm1095.pfb></usr/share/texmf/fonts/type1/pu
+blic/cm-super/sfti1095.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt09
+00.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt1095.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
+Output written on ProjectReport.pdf (45 pages, 705806 bytes).
 PDF statistics:
- 248 PDF objects out of 1000 (max. 8388607)
- 175 compressed objects within 2 object streams
+ 266 PDF objects out of 1000 (max. 8388607)
+ 182 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 23 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 43 words of extra memory for PDF output out of 10000 (max. 10000000)
 

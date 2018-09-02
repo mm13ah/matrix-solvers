@@ -95,11 +95,9 @@
 \pagenumbering{arabic}
 
 \section{Introduction}
-This project involves exploring methods for solving matrix equations that arise from partial differential equations (PDEs) and investigates how a problem's structure can be exploited when dealing with equations in this form. This is not often the case when using conventional methods to solve PDEs, which usually involve stacking the unknowns of a problem into a single vector. By formulating a problem as a matrix equation and taking advantage of its structure, dramatic improvements in efficiency can be made compared to the conventional approach. 
+This project involves exploring methods for solving matrix equations that arise from partial differential equations (PDEs) and investigates how a problem's structure can be exploited when dealing with equations in this form. Exploiting a problem based on its structure is not often possible when using conventional methods to solve PDEs, which usually involve stacking the unknowns of a problem into a single vector. By formulating a problem as a matrix equation and taking advantage of its structure, dramatic improvements in efficiency can be made compared to the conventional approach. The project then goes on to investigate how the methods explored can be applied to random PDEs (PDEs with uncertain input). Uncertainty can arise in PDEs for various different reasons (unknown coefficients, initial conditions or boundary conditions) in a variety of applications (physics \cite{Swanson}, \cite{Pryhara}, \cite{Breit}, \cite{Holm}, biology \cite{Bressloff}, \cite{Edwards}, finance \cite{Shreve03}, \cite{Shreve04}). Random PDEs are much harder to solve as opposed to regular PDEs as the solution has an element of `randomness' to it; it is not simply deterministic. 
 
-The project then goes on to investigate how the methods explored can be applied to random PDEs (PDEs with uncertain input). Uncertainty can arise in PDEs for various different reasons (unknown coefficients, initial conditions or boundary conditions) in a variety of applications (physics, biology, finance). Random PDEs are much harder to solve as opposed to regular PDEs as the solution has an element of `randomness' to it; it is not simply deterministic. 
-
-Firstly, a model problem will be derived using Poisson's equation and different methods for solving this problem will be explored and compared. We will then proceed to introduce elements of uncertainty to the problem to see the effect this has and explore methods that can be used to solve the problem. We begin by constructing the matrix form of Poission's equation.
+Firstly, a model problem will be derived using Poisson's equation and different methods for solving this problem will be explored and compared. We will then proceed to introduce elements of uncertainty to the problem to see the effect this has and explore methods that can be used to solve this problem. We begin by constructing the matrix form of Poission's equation.
 
 \subsection{Possion Equation}
 As an example, define spatial domain $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$ and let $u: \mathcal{D} \to \mathbb{R}$ be the solution of Poisson's equation:
@@ -242,7 +240,7 @@ The organisation of this report is as follows. Section 2 sets out the objectives
 
 \section{Scope and Schedule}
 \subsection{Aim}
-The aim of this project is to first study, implement and compare a range of matrix equation solvers. Following this, the project will look at how the solvers implememented can be applied and adapted to solve random PDEs.
+The aim of this project is to first study, implement and compare a range of matrix equation solvers. Following this, the project will look at ways of solving random PDEs and how the methods implemented can be applied to PDEs of this type.
 
 \subsection{Objectives}
 The objectives of this project are as follows:
@@ -258,7 +256,7 @@ The objectives of this project are as follows:
 The deliverables of this project include:
 \begin{itemize}
 \item The final report that will include the details of the methods that have been studied, how the methods were implemented, an evaluation and comparison of the implemented methods and finally an evaluation of the success of the project.  
-\item Code that successfully implements what has been studied to solve the given problem.
+\item Code that successfully implements what has been studied in the project.
 \end{itemize}
 
 \subsection{Methodology}
@@ -348,9 +346,9 @@ The equivalent linear system for the matrix equation $TU + UT = F$ is:
 \end{equation}
 where $\mathcal{T} = I \otimes T + T \otimes I$, $u = \text{vec}(U)$ and $f = \text{vec}(F)$.
 
-This is the exact linear system that would be obtained from equation (1.5), that is, stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. \texttt{sparse.linalg.spsolve} is a direct sparse solver from the SciPy library that uses a LU decomposition to solve a linear system. Using an LU decomposition to solve a linear system has time complexity $O(n^3)$
+This is the exact linear system that would be obtained from equation (1.5), that is, stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. \texttt{sparse.linalg.spsolve} is a direct sparse solver from the SciPy library that uses a LU decomposition to solve a linear system. Using a LU decomposition to solve a linear system has time complexity $O(n^3)$ [\textbf{add comment on cost}].
 
-Results solving this linear system using the direct sparse solver \texttt{sparse.linalg.spsolve} from the SciPy library are shown in Table \ref{table:kron direct}. As can be seen from the results, both of the errors decrease as the problem size $n$ is increased and the eoc is close to 2 for all $n$. This demonstrates that this method is solving the problem more and more accurately as the problem size is increased. As we increase $n$ the eog grows beyond $3$, which shows that this algorithm has worse than cubic time complexity for large $n$. For $n=4000$, this method results in a memory error. This is because \texttt{spsolve} tries to compute a (incomplete) LU decomposition of $\mathcal{T}$ which destroys the sparsity of the matrix and therefore requires much more memory to store it. The SciPy documentation notes that ``this solver assumes the resulting matrix X is sparse...If the resulting X is dense...consider converting A to a dense matrix and using \texttt{scipy.linalg.solve} or its variants.'' \texttt{scipy.linalg.solve} was tested to see how it would compare to the sparse solver. It was much slower for the problem sizes it was able to solve and resulted in a memory error for $n=500$.
+Results solving this linear system using \texttt{sparse.linalg.spsolve} are shown in Table \ref{table:kron direct}. As can be seen from the results, both of the errors decrease as the problem size $n$ is increased and the eoc is close to 2 for all $n$. This demonstrates that this method is solving the problem more and more accurately as the problem size is increased. As we increase $n$ the eog grows beyond $3$, which shows that this algorithm has worse than cubic time complexity for large $n$. For $n=4000$, this method results in a memory error. This is because \texttt{spsolve} tries to compute a (incomplete) LU decomposition of $\mathcal{T}$ which destroys the sparsity of the matrix and therefore requires much more memory to store it. The SciPy documentation notes that ``this solver assumes the resulting matrix X is sparse...If the resulting X is dense...consider converting A to a dense matrix and using \texttt{scipy.linalg.solve} or its variants.'' \texttt{scipy.linalg.solve} was tested to see how it would compare to the sparse solver. It was much slower for the problem sizes it was able to solve and resulted in a memory error for $n=500$.
 
 \begin{table}[H]
 \centering
@@ -831,7 +829,7 @@ $X^{(k+1)} = \widetilde{A}X^{(k)} \widetilde{B} + \widetilde{C}$, with:
 \[ \widetilde{A} = I + 2(\alpha A - I)^{-1} \]
 \[ \widetilde{B} = I + 2(\alpha B - I)^{-1} \]
 \[ \widetilde{C} = -2\alpha(\alpha A - I)^{-1} C (\alpha B - I)^{-1} \]
-where $\alpha$ is a parameter that needs to be chosen and $I$ is the identity matrix. In \cite{Hou}, they suggest choosing $\alpha = \pm \nicefrac{\sqrt{n}}{||A||_F}$ or $\alpha = \pm \nicefrac{\sqrt{n}}{||B||_F}$, where $||A||_F = \sqrt{[A,A]} = \sqrt{\text{tr}(A^TA)}$, for good convergence. Once $\alpha$ has been chosen and $\widetilde{A}, \widetilde{B}$ and $\widetilde{C}$ have been calculated, the algorithm is as follows:
+where $\alpha$ is a parameter that needs to be chosen and $I$ is the identity matrix. In \cite{Hou}, they suggest choosing $\alpha = \pm \nicefrac{\sqrt{n}}{||A||_F}$ or $\alpha = \pm \nicefrac{\sqrt{n}}{||B||_F}$, where $||A||_F = \sqrt{[A,A]} = \sqrt{\text{tr}(A^TA)}$ (the Frobenius norm), for good convergence. Once $\alpha$ has been chosen and $\widetilde{A}, \widetilde{B}$ and $\widetilde{C}$ have been calculated, the algorithm is as follows:
 \begin{enumerate}
 \item Choose initial guess $X^{(0)}$ and calculate:
 	\begin{itemize}
@@ -976,16 +974,37 @@ $n$ & 1a & 1b & 2 & 3 & Total & eog \\
 \end{table}
 
 \subsection{Conclusion}
-As can be seen by the results in this section, all the methods that compute a solution, unless otherwise specified, give very similar errors. All of the direct methods implemented are able to solve the equation faster than rewriting the system using the Kronecker product and using a sparse direct solver. They are also able to compute a solution for much larger problem sizes. From the methods implemented, we can see that having the equation in Sylvester form allowed us to take advantage of the problem's structure. This was exemplified in the case of the Bartels-Stewart algorithm and the similarity transformation method. For both of these methods, we were able to use the properties of $T$ to drastically reduce the computation time. Of all the direct methods implemented, the similarity transformation method, calculating the eigenpairs explicity and taking advantage of the fact that $P$ is unitary, was the fastest method with the best time complexity. 
+As can be seen by the results in this section, all the methods that compute a solution, unless otherwise specified, give very similar errors. All of the direct methods implemented are able to solve the equation faster than rewriting the system using the Kronecker product and using a sparse direct solver. They are also able to compute a solution for much larger problem sizes. From the methods implemented, we can see that having the equation in Sylvester form allowed us to take advantage of the problem's structure. This was exemplified in the case of the Bartels-Stewart algorithm and the similarity transformation method. For both of these methods, we were able to use the properties of $T$ to drastically reduce the computation time. Of all the direct methods implemented, the similarity transformation method, calculating the eigenpairs explicitly and taking advantage of the fact that $P$ is unitary, was the fastest method with the best time complexity. Comparisons of the eogs of the direct methods are given in Figure \ref{fig:direct}.
 
-For the iterative methods, using the Kronecker product and solving using \texttt{sparse.linalg.cg} was faster and, for larger problem sizes, computed a solution in less iterations than the preconditioned MCG and the shifted system method. For $n=16000$, \texttt{sparse.linalg.cg} resulted in a memory error where as the shifted system method resulted in a timing error. This shows that whilst \texttt{sparse.linalg.cg} is faster, the shifted system method is more memory efficient. The other two iterative methods that were implemented, the gradient based algorithm and the MCG, took too long to compute a solution. 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=.6]{img/direct.png}
+\caption{The experimental orders of growth of the direct methods.}
+\label{fig:direct}
+\end{figure}
 
-Of all the methods implemented, we can see that the similarity transformation method, calculating the eigenpairs explicity and taking advantage of the fact $P$ is unitary, was the fastest method for large $n$ with the lowest time complexity. We have therefore shown that, by forming this problem as a Sylvester equation and taking advantage of the problem's structure, we were able to dramatically improve performance in terms of both memory requirements and time taken to compute a solution.
+For the iterative methods, using the Kronecker product and solving using \texttt{sparse.linalg.cg} was faster and, for larger problem sizes, computed a solution in less iterations than the preconditioned MCG and the shifted system method. For $n=16000$, \texttt{sparse.linalg.cg} resulted in a memory error where as the shifted system method resulted in a timing error. This shows that whilst \texttt{sparse.linalg.cg} is faster, the shifted system method is more memory efficient. The other two iterative methods that were implemented, the gradient based algorithm and the MCG, took too long to compute a solution. A comparison of the eogs of the iterative methods is given in Figure \ref{fig:iterative}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=.6]{img/iterative.png}
+\caption{The experimental orders of growth of the iterative methods.}
+\label{fig:iterative}
+\end{figure}
+
+Of all the methods implemented, we can see that the similarity transformation method, calculating the eigenpairs explicitly and taking advantage of the fact $P$ is unitary, was the fastest method for large $n$ with the lowest time complexity. We have therefore shown that, by forming this problem as a Sylvester equation and taking advantage of the problem's structure, we were able to dramatically improve performance in terms of both memory requirements and time taken to compute a solution. A comparison of the eogs of all methods is given in Figure \ref{fig:methods}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=.6]{img/methods.png}
+\caption{The experimental orders of growth of all methods implemented.}
+\label{fig:methods}
+\end{figure}
 
 \newpage
 
 \section{Uncertainty}
-This section explores methods for solving PDEs with uncertain input. Uncertainty can arise in PDEs if, for example, coefficients, boundary conditions or initial conditions are unknown. There are many applications from which uncertainy can arise in PDEs, for example in heat and sound propagation \cite{Swanson}, \cite{Pryhara}, fluid-dynamics \cite{Breit}, \cite{Holm}, cell biology \cite{Bressloff} and mathematical finance \cite{Shreve03}, \cite{Shreve04}. A solution to dealing with uncertainty is to model unknown parameters as random variables, and then appropriate methods can be used to solve the problem. 
+This section explores methods for solving PDEs with uncertain input. Uncertainty can arise in PDEs if, for example, coefficients, boundary conditions or initial conditions are unknown. There are many applications from which uncertainy can arise in PDEs, for example in heat and sound propagation \cite{Swanson}, \cite{Pryhara}, fluid-dynamics \cite{Breit}, \cite{Holm}, cell biology \cite{Bressloff}, population biology \cite{Edwards} and mathematical finance \cite{Shreve03}, \cite{Shreve04}. A solution to dealing with uncertainty is to model unknown parameters as random variables, and then appropriate methods can be used to solve the problem. 
 
 \subsection{Single Parameter}
 The simplest way to introduce uncertainty into a PDE is by introducing a single unknown parameter. Define the spatial domain $\mathcal{D}$ as $\mathcal{D} = \{(x,y) : 0 \leq x \leq 1, \; 0 \leq y \leq 1 \}$, and let $\Omega$ denote the sample space. We can introduce an unknown coefficient $\varepsilon(\omega)$, where $\omega \in \Omega$ denotes dependence on a random variable and $\varepsilon: \Omega \rightarrow \mathbb{R}$ is uniformly distributed over the interval $[1,3]$. Let $u(x,y,\varepsilon) = \sin(\pi x)\sin(\pi y) + \varepsilon \sin(3 \pi x) \sin(5 \pi y)$ be the exact solution of the equation:
@@ -1039,17 +1058,24 @@ and the variance is:
 \end{split}
 \end{equation}
 
-which gives the standard deviation as $\text{Std}[u] = \frac{1}{\sqrt{3}} \sin(3 \pi x) \sin(5 \pi y)$. Methods can now be used which compute approximate solutions to these quantities of interest, which can then be compared to the known quantities above to give an estimation of the error. In this section we choose the expectation to give an approximate measure of error.
+which gives the standard deviation as $\text{Std}[u] = \frac{1}{\sqrt{3}} \sin(3 \pi x) \sin(5 \pi y)$. Methods can now be used which compute approximate solutions to these quantities of interest, which can then be compared to the known quantities above to give an estimation of the error. In this section we choose the expectation to give an approximate measure of error. A plot of the expectation, with $n=1000$, is given in Figure \ref{fig:single}. As can be seen from this figure, the expectation is more complex than the exact solution in the previous section.
+
+\begin{figure}[H]
+\includegraphics[scale=.7]{img/single.png}
+\centering
+\caption{Plot of the expectation of the single random parameter problem with $n=1000$.}
+\label{fig:single}
+\end{figure} 
 
 Throughout this section the following parameters will be used to evaluate performance:
 \begin{itemize}
 \item $n$: The number of unknowns in each direction - the total number of unknowns is $n^2$. As before, the mesh will be continually refined by a factor of $\frac{1}{2}$ until either the time limit is reached or a memory error occurs, with the starting value as $n=125$.
 \item Time(s): The time taken in seconds for the method to compute a solution to the problem. In this section we will increase the maximum time allowed to 12000 seconds. 
 \item $|| \mathbb{E}[u] - \mu ||_{L^\infty} $: Defined similarly to the previous section, however we now measure the maximum difference between the expectation and the computed mean solution, that is:
- \[ || \mathbb{E}[u] - \mu ||_{L^\infty} = \text{max}_{ij} | \mathbb{E}[u](x_i,y_j) - \mu_{ij} | \]
+ \[ || \mathbb{E}[u] - \mu ||_{L^\infty} = \text{max}_{ij} \big| \mathbb{E}[u](x_i,y_j) - \mu_{ij} \big| \]
 where $\mathbb{E}[u]$ denotes the expectation and $\mu$ denotes the computed mean solution.
-\item $\left|\left| \mathbb{E}[u] - \mu \right|\right|$: Defined similarly to the previous section, however we now measure the average difference between the expectation and the computed mean solution, that is:
-\[ \left| \left| \mathbb{E}[u] - \mu \right| \right|_{L^2} = \sqrt{h^2 \sum \left| \mathbb{E}[u](x_i,y_j) - \mu_{ij} \right|^2} \]
+\item $\left|\left| \mathbb{E}[u] - \mu \right|\right|_{L^2}$: Defined similarly to the previous section, however we now measure the average difference between the expectation and the computed mean solution, that is:
+\[ \left| \left| \mathbb{E}[u] - \mu \right| \right|_{L^2} = \sqrt{h^2 \sum \big| \mathbb{E}[u](x_i,y_j) - \mu_{ij} \big|^2} \]
 \item The eoc and eog are defined as in the previous section, that is:
 \[ \text{eoc}(i) = \frac{\log(\nicefrac{E_i}{E_{i-1}})}{\log(\nicefrac{h_i}{h_{i-1}})} \]
 where $E_i$ is the error (chosen here as $|| \mathbb{E}[u] - \mu ||_{L^\infty}$) and $h_i$ is the mesh size at level $i$,
@@ -1079,7 +1105,7 @@ It is also worth noting that as the solution and therefore the error is dependen
 
 We choose to use the similarity transformation method from the previous section, calculating the eigenpairs explicity, to solve the PDE for each sample. This method can be used because multiplying a matrix by a constant has the effect of changing the matrix's eigenvalues by that constant and the eigenvectors remain unchanged. This is easy to see by multiplying a general matrix $A$ with eigenvalue $\lambda$ and eigenvector $v$ by a constant $\alpha$, as we have $Av = \lambda v \implies \alpha A v = \alpha \lambda v$. Since we already know the eigenpairs of $-\frac{1}{h^2} \text{tridiag}(1,-2,1)$ from the previous section and $\varepsilon$ is sampled, we can easily obtain the eigenpairs of $T$. 
 
-To ensure that the results obtained by this method are reproducible, each sampled $\varepsilon$ will be seeded. This means that the error computed by this method will be dependent on the seed chosen. To counter this, computation will be repeated with 10 different seeds (the integers from $0, \dots, 9$) and the error and time taken will be taken as the average error and time taken from each seed used.
+To ensure that the results obtained by this method are reproducible, each sampled $\varepsilon$ will be seeded. This means that the error computed by this method will be dependent on the seed chosen. To counter this, the computation will be repeated with 10 different seeds (the integers from $0, \dots, 9$) and the error and time taken will be taken as the average error and time taken from each seed used.
 
 Results using the Monte Carlo method, with a single uncertain parameter, are given in Table \ref{table:monte carlo}. The errors here are clearly much bigger than the errors in Section 3,  complexity.
 \begin{table}[H]
@@ -1092,7 +1118,7 @@ $n$ & $M$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[
 250 & 40 & 2.2733 & 0.10691 & 0.053455 & 0.71166 & 3.9058 \\
 500 & 160 & 38.146 & 0.049836 & 0.024919 & 1.1043 & 4.0687 \\
 1000 & 640 & 628.53 & 0.017791 & 0.0088953 & 1.4882 & 4.0424 \\
-2000 & 2560 &  &  &  &  &  \\
+2000 & 2560 & 10755 & 0.0068244 & 0.0034121 & 1.3834 & 4.0969 \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -1113,7 +1139,7 @@ where $\Omega$ represents the support of $\{\Psi_n\}$ (the subset of the domain 
 \langle f, g \rangle = \int_{\Omega} f(\varepsilon)g(\varepsilon)w(\varepsilon) d\varepsilon
 \end{equation}
 
-As noted in \cite{Xiu}, certain classes of orthogonal polynomials have the exact same weight function as the probability distribtution functions of certain random variables. This property allows the solution $u$ of a random PDE to be approximated via a truncated polynomial chaos expansion using the probability distribution function of the random variable as:
+As noted in \cite{Xiu}, certain classes of orthogonal polynomials have the exact same weight function as the probability distribution functions of certain random variables. This property allows the solution $u$ of a random PDE to be approximated via a truncated polynomial chaos expansion using the probability distribution function of the random variable as:
 \begin{equation}
 u(x,y,\varepsilon) = \sum_{k=0}^P u_k(x,y) \Psi_k(\varepsilon)
 \end{equation}
@@ -1134,7 +1160,7 @@ A Galerkin projection is then performed on the PDE by multiplying it by $\Psi_k$
 \sigma^2 = \sum_{k=1}^P u_k^2 \mathbb{E}[\Psi_k^2]
 \end{equation}
 
-For equation (4.4), $\varepsilon$ is uniformly distrubted over the interval $[1,3]$. We introduce the substitution $\varepsilon = \varepsilon_0 + 2$ into this equation, with $\varepsilon_0 \sim u(-1,1)$, so that the random variable in the equation has zero expectation. We then use the Legendre polynomials, which have the same weighting function as the probability density function of the uniform distribution, to solve the equation. They are defined as the polynomials which solve the equation:
+For equation (4.4), $\varepsilon$ is uniformly distributed over the interval $[1,3]$. We introduce the substitution $\varepsilon = \varepsilon_0 + 2$ into this equation, with $\varepsilon_0 \sim u(-1,1)$, so that the random variable in the equation has zero expectation. We then use the Legendre polynomials, which have the same weighting function as the probability density function of the uniform distribution, to solve the equation. They are defined as the polynomials which solve the equation:
 \begin{equation}
 \frac{d}{d\varepsilon} \left[ (1-\varepsilon^2) \frac{d\Psi_n(\varepsilon)}{d\varepsilon} \right] + n(n+1) \Psi_n(\varepsilon) = 0 
 \end{equation}
@@ -1144,7 +1170,7 @@ From equation (4.3), we now have:
 \begin{equation}
 (\varepsilon_0+2)(- u_{xx} - u_{yy}) = f
 \end{equation}
-with $f = 2\pi^2 (\varepsilon_0 +2) \sin(\pi x) \sin(\pi y)+ 34 \pi^2 (\varepsilon_0 + 2)^2 \sin(3 \pi x) \sin(5 \pi y)$. Approximating the solution $u$ using a polynomial chaos expansion and subtituting gives:
+with $f = 2\pi^2 (\varepsilon_0 +2) \sin(\pi x) \sin(\pi y)+ 34 \pi^2 (\varepsilon_0 + 2)^2 \sin(3 \pi x) \sin(5 \pi y)$. Approximating the solution $u$ using a polynomial chaos expansion and substituting gives:
 \begin{equation}
 (\varepsilon_0 + 2) \sum_{i=0}^P (-(u_i)_{xx} -(u_i)_{yy}) \Psi_i = f
 \end{equation}
@@ -1317,7 +1343,14 @@ As all $\varepsilon_{pq}$ are uniformly distributed between -1 and 1, they have 
 \begin{equation}
 \mathbb{E}[u] = \sin(\pi x)\sin(\pi y)
 \end{equation}
-As before we can use methods to calculate an approximation of the expectation and then compare it to the known expectation to give a measure of error.
+As before we can use methods to calculate an approximation of the expectation and then compare it to the known expectation to give a measure of error. Note that this expectation is the same as the exact solution in Section 3. A plot of the expectation, with $n=1000$, is given in Figure \ref{fig:multiple}.
+
+\begin{figure}[H]
+\includegraphics[scale=.5]{img/solution2.png}
+\centering
+\caption{Plot of the expectation of the multiple random parameter problem with $n=1000$.}
+\label{fig:multiple}
+\end{figure} 
 
 \subsubsection{Monte Carlo}
 We can use Monte Carlo to solve (4.32), as done previously. We simply take random $M$ samples of each $\varepsilon_{pq}$ and solve the PDE for each of these samples. The expectation is then calculated as the mean solution. As before, we discretise the spatial dimensions using the centred finite difference approximations to obtain:
@@ -1350,8 +1383,8 @@ $N$ & $n$ & $M$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}
 \cline{4-8}
 & 1000 & 640 & \multicolumn{5}{c|}{Time limit reached} \\
 \hline
-\multirow{4}{*}{8} & 125 & 10 &  &  &  & - & - \\
-& 250 & 40 &  &  & & - & - \\
+\multirow{4}{*}{8} & 125 & 10 & 0.13894 & 0.10960 & 0.044472 & - & - \\
+& 250 & 40 & 2.2092 & 0.054684 & 0.022630 & - & - \\
 & 500 & 160 & & & & - & - \\
 \cline{4-8}
 & 1000 & 640 & \multicolumn{5}{c|}{Time limit reached} \\
@@ -1396,11 +1429,11 @@ Lu_i = - (u_i)_{xx} - (u_i)_{yy}
 \end{equation}
 for $i=0,\dots,P$. Next, we represent the inner product on the left-hand side as:
 \begin{equation}
-P_{ij}^{(pq)} = \langle \Psi_i \varepsilon \Psi_j \rangle
+P_{ij} = \langle \Psi_i \varepsilon_{pq} \Psi_j \rangle
 \end{equation}
 for $i,j=0,\dots,P$ and $p,q=1,\dots,N$, where each $p$ and $q$ correspond to the inner products of each random variable. We now represent the summation on the left-hand side as a $n^2 \times n^2$ diagonal matrix $D$, which has entries:
 \begin{equation}
-D_k^{(pq)} = 2^{-(p+q)} \sin(p \pi x_i) \sin(q \pi y_j)
+D_k = \sum_{p,q=1}^N 2^{-(p+q)} \sin(p \pi x_i) \sin(q \pi y_j)
 \end{equation}
 on the diagonal, for $k=1,\dots,n^2$ (as $i$ and $j$ run from $i,j=1,\dots,n$). Lastly, we represent the right-hand side of the system as:
 \begin{equation}
@@ -1416,30 +1449,93 @@ We can represent (4.41) as a linear system in the form:
 \begin{equation}
 Au = f
 \end{equation}
-where $A=\left( \sum_{p,q=1}^N P^{(pq)} \otimes D^{(pq)} \right) \left( I \otimes L \right)$ has dimension $n^2(P+1) \times n^2(P+1)$ and $f = \text{vec}(F)$ and $u$ are vectors of dimension $n^2(P+1)$.
+where $A=\left( P \otimes D \right) \left( I \otimes L \right)$ has dimension $n^2(P+1) \times n^2(P+1)$ and $f = \text{vec}(F)$ and $u$ are vectors of dimension $n^2(P+1)$. Here $I$ is the identity matrix of size $(P+1) \times (P+1)$.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+$N$ & $n$ & $K$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}}$ & eoc & eog \\
+\hline
+\multirow{4}{*}{2} & 125 & 1 & 1.1174 & $5.4475 \times 10^{-5}$ & $2.7192 \times 10^{-5}$ & - & - \\
+& 250 & 1 & 7.8475 & $1.6508 \times 10^{-5}$ & $7.8571 \times 10^{-6}$ & - & - \\
+& 500 & 1 & 63.485 & $6.9480 \times 10^{-6}$ & $3.0622 \times 10^{-6}$  & - & - \\
+\cline{4-8}
+& 1000 & 1 & \multicolumn{5}{c|}{Memory Error} \\
+\hline
+\multirow{4}{*}{4} & 125 & 1 & 34.658 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
+& 250 & 1 & 221.33 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & - & - \\
+\cline{4-8}
+& 500 & 1 & \multicolumn{5}{c|}{Memory Error} \\
+\hline
+\multirow{4}{*}{8} & 125 & 1 & & & & - & - \\
+& 250 & 1 & & & & - & - \\
+& 500 & 1 & & & & - & - \\
+\cline{4-8}
+& 1000 & 1 & \multicolumn{5}{c|}{Time limit reached} \\
+\hline
+\end{tabular}
+\captionsetup{justification=centering}
+\caption{Results using the stochastic Galerkin method with multiple uncertain parameters to solve a linear system using \texttt{spsolve}.}
+\label{table:galerkin multiple}
+\end{table}
+
+\subsubsection{Matrix Equation}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+$N$ & $n$ & $K$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}}$ & eoc & eog \\
+\hline
+\multirow{4}{*}{2} & 125 & 1 & 0.057401 & $5.4475 \times 10^{-5}$ & $2.7192 \times 10^{-5}$ & - & - \\
+& 250 & 1 & 0.29013 & $1.6508 \times 10^{-5}$ & $7.8571 \times 10^{-6}$ & - & - \\
+& 500 & 1 & 1.6387 & $6.9480 \times 10^{-6}$ & $3.0622 \times 10^{-6}$  & - & - \\
+& 1000 & 1 & 11.469 & $4.9213 \times 10^{-6}$ & $1.9335 \times 10^{-6}$ & & \\
+& 2000 & 1 & 77.098 & $4.4465 \times 10^{-6}$ & $1.6728 \times 10^{-6}$ & & \\
+\cline{4-8}
+& 4000 & 1 & \multicolumn{5}{c|}{Memory Error} \\
+\hline
+\multirow{4}{*}{4} & 125 & 1 & 0.081032 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
+& 250 & 1 & 0.40200 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & - & - \\
+& 500 & 1 & 2.1681 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & - & - \\
+& 1000 & 1 & 13.925 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & - & - \\
+& 2000 & 1 & 88.442 & $2.0540 \times 10^{-7}$ & $1.0270 \times 10^{-7}$ & - & - \\
+\cline{4-8}
+& 4000 & 1 & \multicolumn{5}{c|}{Memory Error} \\
+\hline
+\multirow{4}{*}{8} & 125 & 1 & & & & - & - \\
+& 250 & 1 & & & & - & - \\
+& 500 & 1 & & & & - & - \\
+\cline{4-8}
+& 1000 & 1 & \multicolumn{5}{c|}{Time limit reached} \\
+\hline
+\end{tabular}
+\captionsetup{justification=centering}
+\caption{Results using the stochastic Galerkin method with multiple uncertain parameters to solve a linear system using \texttt{spsolve}.}
+\label{table:galerkin multiple}
+\end{table}
 
 \newpage
 
 \section{Evaluation}
-This section will evaluate whether the project's aims and objectives given in Section 2 were met. It will then go onto state possible project extensions and a give brief conclusion of the success of the project.
+This section will evaluate whether the project's aims and objectives given in Section 2 were met. It will then go on to state possible project extensions and give a brief conclusion of the success of the project.
 
 \subsection{Aims}
-The were two main aims of this project. This first was to study, implement and compare a variety of different methods for solving matrix equations (or more specifically, Sylvester equations). This has clearly been achieved in Section 3, as a number of different methods, both direct and iterative, were studied and analysed, implemented correctly and then compared and evaluated. Also, where possible, general methods were improved upon by taking advantage of the problem's structure. This demonstrates that a deep understanding of what was studied has been achieved.
+There were two main aims of this project. The first was to study, implement and compare a variety of different methods for solving matrix equations (or more specifically, Sylvester equations). This has clearly been achieved in Section 3, as a number of different methods, both direct and iterative, were studied and analysed, implemented correctly and then compared and evaluated. Also, where possible, general methods were improved upon by taking advantage of the problem's structure. This demonstrates that a deep understanding of what was studied has been achieved.
 
-The other aim of this project was to study methods that are used to solve random PDEs and adapt what had been studied in Section 3 to solve PDEs of this type. This was demonstrated in Section 4, where randomness was introduced into the problem. We firstly studied two methods, Monte Carlo and stochastic Galerkin, which can be used to solve random PDEs, and then used the knowledge that had been gained in the previous section to solve the problem. It is therefore clear that the aims of the project have been met.
+The other aim of this project was to study methods that are used to solve random PDEs and adapt what had been studied in Section 3 to solve PDEs of this type. This was demonstrated in Section 4, where randomness was introduced into the problem. We firstly studied two methods, Monte Carlo and stochastic Galerkin, which can be used to solve random PDEs. We then used the knowledge that had been gained in the previous section to solve the problem. It is therefore clear that the aims of the project have been met.
 
 \subsection{Extensions}
 There are a number of possible extensions that, given additional time, could be applied to this project. These include:
 \begin{itemize}
-\item Additional matrix solvers: A number of different methods for solving matrix equations were studied, implemented and compared throughout this project. However, if time was not a constraint, additional methods could have been considered in this project, for example the Hessenberg-Schur method \cite{Hessenberg}, the ADI iteration \cite{Simoncini} and a block linear method \cite{Monsalve}.
-\item Additional methods for solving random PDEs: In this project we chose to study two general methods for solving random PDEs, Monte Carlo and stochastic Galerkin, so that these could be studied in depth and we could relate them to what was studied in Section 3. Given additional time, other ways of solving random PDEs could have also been studied, for example reduced basis methods \cite{Powell} and multi-level Monte Carlo methods \cite{Barth}.
-\item Application problem: When the project was first devised, an application problem was going to be chosen to apply the knowledge gained throughout the project to a particular application. However, during the project it was decided to instead analyse the content in Section 3 and 4 in more detail. Given additional time, what has been studied in this project could be applied to a particular application problem, for example, something similar to \cite{Barreira}.
+\item Additional matrix solvers: A number of different methods for solving matrix equations were studied, implemented and compared throughout this project. However, if time was not a constraint, additional methods could have been considered, for example the Hessenberg-Schur method \cite{Hessenberg}, the ADI iteration \cite{Simoncini} and a block linear method \cite{Monsalve}.
+\item Additional methods for solving random PDEs: In this project we chose to study two general methods for solving random PDEs, Monte Carlo and stochastic Galerkin, so that these could be studied in depth and we could relate them to what was studied in Section 3. Given additional time, other ways of solving random PDEs could have also been studied, for example, reduced basis methods \cite{Powell} and multi-level Monte Carlo methods \cite{Barth}.
+\item Application problem: The initial plan of the project was to end up with an application problem that could be solved using the knowledge gained from Sections 3 and 4. However, during the project, it was decided to instead analyse the content in Sections 3 and 4 in more detail. Given additional time, what has been studied in this project could be applied to a particular application problem, for example, something similar to \cite{Barreira} involving randomness.
 \end{itemize}
 
 \subsection{Conclusion}
-Throughout this project, an understanding of what has been studied has been exemplified through analysis, implementation and comparsion. A comprehensive understanding of methods for solving both matrix equations and random PDEs has been displayed by analysing the theoretical aspects of the methods. A correct implementation has been demonstrated by the results given, which, in most cases, match the theoretical analysis of the methods. A detailed comparison and evaluation of what has been studied and implemented has also been given. 
-
-This project has been very challenging but also incredibly rewarding, as it has allowed me to build upon and develop many skills. These include, but are not limited to, analytical (research and analysis of algorithms), programming ability (implementation of algorithms), mathematical (proofs and analysis), time keeping (meeting deadlines), communication (weekly meetings with my supervisor) and report writing skills (using \LaTeX). Therefore, in conclusion, this project has been an overall success.
+A comprehensive understanding of methods for solving both matrix equations and random PDEs has been displayed throughout this project by analysing, implementing, comparing and evaluating these topics. Therefore, the objectives have clearly been met. Although this project has been very challenging, it has also been incredibly rewarding as it has allowed me to build upon and develop many skills. These include, but are not limited to, areas such as analysis (research and analysis of algorithms), programming (implementation of algorithms), mathematics (proofs and analysis), time keeping (meeting deadlines), communication (ongoing dialogue with my supervisor) and report writing (using \LaTeX). Therefore, I feel that this project has been a success.
 
 \newpage
 

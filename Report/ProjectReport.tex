@@ -260,7 +260,7 @@ The deliverables of this project include:
 \end{itemize}
 
 \subsection{Methodology}
-The methodology of this project will first involve studying academic publishings to gain an understanding of various methods for solving matrix equations and ways of solving random PDEs. Python will be used as the programming language of choice for the implementation because of my familiarity with it, the extensive amount of documentation available for it and the excellent libraries it has available.. GitHub will be used for version control and the final report will be written using \LaTeX. 
+The methodology of this project will first involve studying academic publishings to gain an understanding of various methods for solving matrix equations and ways of solving random PDEs. Python will be used as the programming language of choice for the implementation because of my familiarity with it, the extensive amount of documentation available for it and the excellent libraries it has available. GitHub will be used for version control and the final report will be written using \LaTeX. 
 
 %\subsection{Tasks, Milestones and Timeline}
 %The steps of this project will be divided into iterations, with the problem in each iteration becoming successively more complex and difficult to solve. This is because understanding is a key part of this project, and so each iteration will build on the understanding of the last. Each iteration will consist of studying and applying matrix methods to the problem, implementing them in Python to solve the problem, evaluating the results and write up. Also rough deadlines will be given for when each iteration should be completed by, to ensure the project is on track at any given stage.
@@ -346,9 +346,9 @@ The equivalent linear system for the matrix equation $TU + UT = F$ is:
 \end{equation}
 where $\mathcal{T} = I \otimes T + T \otimes I$, $u = \text{vec}(U)$ and $f = \text{vec}(F)$.
 
-This is the exact linear system that would be obtained from equation (1.5), that is, stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. \texttt{sparse.linalg.spsolve} is a direct sparse solver from the SciPy library that uses a LU decomposition to solve a linear system. Using a LU decomposition to solve a linear system has time complexity $O(n^3)$ [\textbf{add comment on cost}].
+This is the exact linear system that would be obtained from equation (1.5), that is, stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. \texttt{sparse.linalg.spsolve} is a direct sparse solver from the SciPy library that uses a LU decomposition to solve a linear system. Using a LU decomposition to solve a linear system of size $n$ has time complexity, at most, $O(n^3)$. However, as we have used the Kronecker product to form our linear system, it has size $n^2$. We can therefore expect this method to run in worse than $O(n^3)$ (and no more than $O(n^6)$).
 
-Results solving this linear system using \texttt{sparse.linalg.spsolve} are shown in Table \ref{table:kron direct}. As can be seen from the results, both of the errors decrease as the problem size $n$ is increased and the eoc is close to 2 for all $n$. This demonstrates that this method is solving the problem more and more accurately as the problem size is increased. As we increase $n$ the eog grows beyond $3$, which shows that this algorithm has worse than cubic time complexity for large $n$. For $n=4000$, this method results in a memory error. This is because \texttt{spsolve} tries to compute a (incomplete) LU decomposition of $\mathcal{T}$ which destroys the sparsity of the matrix and therefore requires much more memory to store it. The SciPy documentation notes that ``this solver assumes the resulting matrix X is sparse...If the resulting X is dense...consider converting A to a dense matrix and using \texttt{scipy.linalg.solve} or its variants.'' \texttt{scipy.linalg.solve} was tested to see how it would compare to the sparse solver. It was much slower for the problem sizes it was able to solve and resulted in a memory error for $n=500$.
+Results solving the equation using the Kronecker product to from a linear system and solving the system using \texttt{sparse.linalg.spsolve} are shown in Table \ref{table:kron direct}. As can be seen from the results, both of the errors decrease as the problem size $n$ is increased and the eoc is close to 2 for all $n$. This demonstrates that this method is solving the problem more and more accurately as the problem size is increased. As we increase $n$ the eog grows beyond $3$, which shows that this algorithm has worse than cubic time complexity for large $n$, as expected. For $n=4000$, this method results in a memory error. This is because \texttt{spsolve} tries to compute a (incomplete) LU decomposition of $\mathcal{T}$ which destroys the sparsity of the matrix and therefore requires much more memory to store it. The SciPy documentation notes that ``this solver assumes the resulting matrix X is sparse...If the resulting X is dense...consider converting A to a dense matrix and using \texttt{scipy.linalg.solve} or its variants.'' \texttt{scipy.linalg.solve} was tested to see how it would compare to the sparse solver. It was much slower for the problem sizes it was able to solve and resulted in a memory error for $n=500$.
 
 \begin{table}[H]
 \centering
@@ -679,6 +679,8 @@ $n$ & 1a & 1b & 2 & 3 & Total & eog \\
 \label{table:shifted sys steps}
 \end{table}
 
+\newpage
+
 \subsection{Iterative Methods}
 
 \subsubsection{Kronecker Product}
@@ -973,6 +975,8 @@ $n$ & 1a & 1b & 2 & 3 & Total & eog \\
 \label{table:shifted it steps}
 \end{table}
 
+\newpage
+
 \subsection{Conclusion}
 As can be seen by the results in this section, all the methods that compute a solution, unless otherwise specified, give very similar errors. All of the direct methods implemented are able to solve the equation faster than rewriting the system using the Kronecker product and using a sparse direct solver. They are also able to compute a solution for much larger problem sizes. From the methods implemented, we can see that having the equation in Sylvester form allowed us to take advantage of the problem's structure. This was exemplified in the case of the Bartels-Stewart algorithm and the similarity transformation method. For both of these methods, we were able to use the properties of $T$ to drastically reduce the computation time. Of all the direct methods implemented, the similarity transformation method, calculating the eigenpairs explicitly and taking advantage of the fact that $P$ is unitary, was the fastest method with the best time complexity. Comparisons of the eogs of the direct methods are given in Figure \ref{fig:direct}.
 
@@ -1099,15 +1103,15 @@ where $M$ is the number of samples used in the Monte Carlo method and $u_h$ is t
 \end{equation}
 and the standard deviation is $\sigma$. We can then compare these quantities to the known values previously computed to calculate the error.
 
-As noted in \cite{Bishop}, for the error to converge to 0 the mesh size must be decreased as the number of samples is increased. This is because the error depends both on the mesh size and the number of samples, so by changing only one of these factors the method will be converging to the error of the factor that is not being changed, rather than to 0. It is well known that the convergence rate of the Monte Carlo method is proportional to $\frac{1}{\sqrt{M}}$ \cite{Kalos}, this should therefore be reflected in the eoc. The order of growth depends on the method chosen to solve the PDE for each sample and how the samples are increased at each level. We will choose to increase the number of samples by a factor of 4 as the mesh size is halved to allow for a wide range of sample sizes to be tested without having to increase the execution time by too much.
+As noted in \cite{Bishop}, for the error to converge to 0 the mesh size must be decreased as the number of samples is increased. This is because the error depends both on the mesh size and the number of samples, so by changing only one of these factors the method will be converging to the error of the factor that is not being changed, rather than to 0. It is also worth noting that as the solution and therefore the error is dependent on a random variable, the error is itself a random variable and therefore an increase in the number of samples does not guarantee a reduction in error. However, the law of large numbers tells us that by taking more and more samples the error in expectation should decrease.
 
-It is also worth noting that as the solution and therefore the error is dependent on a random variable, the error is itself a random variable and therefore an increase in the number of samples does not guarantee a reduction in error. However, the law of large numbers tells us that by taking more and more samples the probability that the error will increase tends to 0 and therefore the error in expectation should decrease.
+It is well known that the convergence rate of the Monte Carlo method is proportional to $\frac{1}{\sqrt{M}}$ \cite{Kalos}, we should therefore expect the eoc to be much lower than the eoc of the methods in the previous section. The order of growth depends on both the method chosen to solve the PDE for each sample and the rate at which the samples are increased at each level. We will choose to increase the number of samples by a factor of 4 as the mesh size is halved to allow for a wide range of sample sizes to be tested without having to increase the execution time by too much.
 
 We choose to use the similarity transformation method from the previous section, calculating the eigenpairs explicity, to solve the PDE for each sample. This method can be used because multiplying a matrix by a constant has the effect of changing the matrix's eigenvalues by that constant and the eigenvectors remain unchanged. This is easy to see by multiplying a general matrix $A$ with eigenvalue $\lambda$ and eigenvector $v$ by a constant $\alpha$, as we have $Av = \lambda v \implies \alpha A v = \alpha \lambda v$. Since we already know the eigenpairs of $-\frac{1}{h^2} \text{tridiag}(1,-2,1)$ from the previous section and $\varepsilon$ is sampled, we can easily obtain the eigenpairs of $T$. 
 
 To ensure that the results obtained by this method are reproducible, each sampled $\varepsilon$ will be seeded. This means that the error computed by this method will be dependent on the seed chosen. To counter this, the computation will be repeated with 10 different seeds (the integers from $0, \dots, 9$) and the error and time taken will be taken as the average error and time taken from each seed used.
 
-Results using the Monte Carlo method, with a single uncertain parameter, are given in Table \ref{table:monte carlo}. The errors here are clearly much bigger than the errors in Section 3,  complexity.
+Results using the Monte Carlo method, with a single uncertain parameter, are given in Table \ref{table:monte carlo}. The errors here are clearly much bigger than the errors in the previous section, and decrease at a much slower rate, as exemplified by the eoc. The eog here is approximately of order 4, much higher than using the similarity transformation method on the PDE without randomness. This is not surprising as the method needs to be repeated $M$ times, which also causes a dramatic increase in the time taken to compute a solution, as now we are only able to solve the problem for up to $n=2000$ before the (increased) time limit is reached.  
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -1119,6 +1123,8 @@ $n$ & $M$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[
 500 & 160 & 38.146 & 0.049836 & 0.024919 & 1.1043 & 4.0687 \\
 1000 & 640 & 628.53 & 0.017791 & 0.0088953 & 1.4882 & 4.0424 \\
 2000 & 2560 & 10755 & 0.0068244 & 0.0034121 & 1.3834 & 4.0969 \\
+\cline{2-7}
+4000 & \multicolumn{6}{c|}{Time limit reached} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -1132,7 +1138,7 @@ The stochastic Galerkin method uses the properties of orthogonal polynomials to 
 
 A set of polynomials $\{\Psi_n(\varepsilon), n \in \mathbb{N}\}$, where $\Psi_n(\varepsilon)$ is a polynomial of exact degree $n$, is orthogonal if it satisfies the orthogonality condition:
 \begin{equation}
-\int_{\Omega} \Psi_n(\varepsilon) \Psi_m(\varepsilon) w(\varepsilon) d\varepsilon = h_n \delta_{nm}, \;\;\;\;\;\; n,m \in \mathbb{N}
+\int_{\Omega} \Psi_n(\varepsilon) \Psi_m(\varepsilon) w(\varepsilon) d\varepsilon = h_n \delta_{nm}, \quad n,m \in \mathbb{N}
 \end{equation} 
 where $\Omega$ represents the support of $\{\Psi_n\}$ (the subset of the domain containing elements not mapped to zero), $w(\varepsilon)$ is a weight function, $h_n$ are non-zero constants and $\delta_{nm}$ is the Kronecker delta ($\delta_{nm} = 1$ for $n=m$ and $0$ otherwise). This condition is used to define the inner product of two polynomial functions, $f(\varepsilon)$ and $g(\varepsilon)$, with respect to a weight function $w(\varepsilon)$, as:
 \begin{equation}
@@ -1143,7 +1149,7 @@ As noted in \cite{Xiu}, certain classes of orthogonal polynomials have the exact
 \begin{equation}
 u(x,y,\varepsilon) = \sum_{k=0}^P u_k(x,y) \Psi_k(\varepsilon)
 \end{equation}
-which can then be substituted into the PDE. Here $P+1 = \frac{(K+N)!}{K!N!}$, where $N$ is the number of random variables and $K$ is a convergence parameter to be chosen. In this case we have $N=1 \implies P+1=\frac{(K+1)!}{K!}\implies P=K$.
+which can then be substituted into the PDE. Here $P+1 = \frac{(K+R)!}{K!R!}$, where $R$ is the number of random variables and $K$ is a convergence parameter to be chosen. In this case we have $R=1 \implies P+1=\frac{(K+1)!}{K!}\implies P=K$.
 
 %Any random quantities can be represented via a Karhunen-Loeve expansion as:
 %\begin{equation}
@@ -1164,7 +1170,7 @@ For equation (4.4), $\varepsilon$ is uniformly distributed over the interval $[1
 \begin{equation}
 \frac{d}{d\varepsilon} \left[ (1-\varepsilon^2) \frac{d\Psi_n(\varepsilon)}{d\varepsilon} \right] + n(n+1) \Psi_n(\varepsilon) = 0 
 \end{equation}
-The SciPy library has a built in function, \texttt{special.legendre}, for calculating Legendre polynomials, which will be used along with the numerical integration function \texttt{integrate.quad}, to evaluate the inner product. 
+The SciPy library has a built in function, \texttt{special.legendre}, for calculating Legendre polynomials, which will be used along with the numerical integration function \texttt{integrate.quad}, to evaluate the inner product. We now omit the notation $\Psi_k (\varepsilon)$ to denote dependence on $\varepsilon$ and simply write $\Psi_k$.
 
 From equation (4.3), we now have:
 \begin{equation}
@@ -1185,7 +1191,7 @@ for $k = 0, \dots, P$, where:
 + 34 \pi^2 \sin(3 \pi x) \sin(5 \pi y) \langle \Psi_k (\varepsilon_0 + 2)^2 \rangle
 \end{equation}
 
-The uncertainty has been removed from this PDE and we now have a system of coupled deterministic differential equations, which can be solved for $u$. The next step is to rewrite (4.22) in a form that can be easily solved.
+The uncertainty has been removed from this PDE and we now have a system of coupled deterministic differential equations, which can be solved for $u$. The next step is to rewrite (4.20) in a form that can be easily solved.
 
 Firstly, we can use the finite difference method to discretise the system in space and represent the unknowns $u_i$ as a single vector. Let $L$ be the five-point finite difference stencil, that is, $L= I \otimes T + T \otimes I$, where $T=-\frac{1}{h^2} \text{tridiag}(1,-2,1)$ for grid spacing $h$ and $I$ is the identity matrix. We can then represent the unknowns as:
 \begin{equation}
@@ -1199,10 +1205,10 @@ for $i,j = 0,\dots,P$. Finally, we represent the right-hand side of the system a
 \begin{equation}
 F_{k} = 2\pi^2 \sin(\pi x_i)\sin(\pi y_j) \langle \Psi_k (\varepsilon_0 + 2) \rangle + 34\pi^2 \sin(3\pi x_i) \sin(5\pi y_j) \langle \Psi_k (\varepsilon_0 + 2)^2 \rangle
 \end{equation}
-where $k = 0, \dots, P$ represents the columns (the random discretisation) and $i,j = 1, \dots, n$ represent the rows (the vectorised spatial dicretisation). We can now use these matrices to rewrite (4.22) in a form that can be easily solved.
+where $k = 0, \dots, P$ represents the columns (the random discretisation) and $i,j = 1, \dots, n$ represent the rows (the vectorised spatial dicretisation). We can now use these matrices to rewrite (4.20) in a form that can be easily solved. When using this method we will choose $K=1 \implies P=1$, as increasing $K$ does not have a significant affect on the error but vastly increases computation time. 
 
 \subsubsection*{Linear System}
-The simplest way to solve (4.22) is to form the problem as a linear system. By reshaping $F$ into a vector we can represent the problem in the form:
+The simplest way to solve (4.20) is to form the problem as a linear system. By reshaping $F$ into a vector we can represent the problem in the form:
 \begin{equation}
 Au = f
 \end{equation} 
@@ -1210,19 +1216,19 @@ where $A = P \otimes L$ has dimension $n^2(P+1) \times n^2(P+1)$ and $f = \text{
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|}
 \hline
-$n$ & $K$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
+$n$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
 \hline
-125 & 1 & 0.014717 & 0.0021941 & 0.0010767 & - & - \\
-250 & 1 & 0.077675 & 0.00055263 & 0.00027120 & 2.0007 & 2.4000 \\
-500 & 1 & 0.52634 & 0.00013874 & 6.80630 $\times 10^{-5}$ & 1.9997 & 2.7605 \\
-1000 & 1 & 3.7997 & $3.4817 \times 10^{-5}$ & $1.7049 \times 10^{-5}$ & 1.9974 & 2.8518  \\
-2000 & 1 & 33.354 & $8.7386 \times 10^{-6}$ & $4.2666 \times 10^{-6}$ & 1.9958 & 3.1339 \\
-4000 & 1 & 308.21 & $2.2358 \times 10^{-6}$ & $1.0674 \times 10^{-6}$ & 1.9673 & 3.2080 \\
-8000 & 1 & 3090.0 & $6.4883 \times 10^{-7}$ & $2.6774 \times 10^{-7}$ & 1.7852 & 3.3256 \\
-\cline{2-7}
-16000 & \multicolumn{6}{c|}{Memory Error} \\
+125 & 0.014717 & 0.0021941 & 0.0010767 & - & - \\
+250 & 0.077675 & 0.00055263 & 0.00027120 & 2.0007 & 2.4000 \\
+500 & 0.52634 & 0.00013874 & 6.80630 $\times 10^{-5}$ & 1.9997 & 2.7605 \\
+1000 & 3.7997 & $3.4817 \times 10^{-5}$ & $1.7049 \times 10^{-5}$ & 1.9974 & 2.8518  \\
+2000 & 33.354 & $8.7386 \times 10^{-6}$ & $4.2666 \times 10^{-6}$ & 1.9958 & 3.1339 \\
+4000 & 308.21 & $2.2358 \times 10^{-6}$ & $1.0674 \times 10^{-6}$ & 1.9673 & 3.2080 \\
+8000 & 3090.0 & $6.4883 \times 10^{-7}$ & $2.6774 \times 10^{-7}$ & 1.7852 & 3.3256 \\
+\cline{2-6}
+16000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -1230,10 +1236,10 @@ $n$ & $K$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[
 \label{table:stochastic linear}
 \end{table}
 
-From these results we can see that the errors here are significantly less than the Monte Carlo method. The eoc is much closer to 2 for all values of $n$, demonstrating that this method is solving the problem increasingly accurately as $n$ is increased. The eog is slightly more than 3, a significant improvement on the Monte Carlo method which had an eog of approximately 4. 
+From these results we can see that the errors here are significantly less than the Monte Carlo method and the eoc is much closer to 2, especially for $n<8000$. The eog is slightly more than 3, a significant improvement on the Monte Carlo method which had an eog of approximately 4. Also the time taken taken to compute a solution is clearly much less than the Monte Carlo method, and we were able to compute a solution for problem sizes up to $n=8000$ before a memory error occurred. It is therefore clear that using this method has a significant advantage over the Monte Carlo method.
 
 \subsubsection*{Matrix Equation}
-An alternative approach to solving (4.22) is to rewrite it as a matrix equation, in the form:
+An alternative approach to solving (4.20) is to rewrite it as a matrix equation, in the form:
 \begin{equation}
 LXP = F
 \end{equation} 
@@ -1251,21 +1257,21 @@ Alternatively, we can right multiply by $P^{-1}$ to obtain:
 \begin{equation}
 LX = FP^{-1}
 \end{equation}
-The resulting right-hand side is a matrix, which means \texttt{sparse.linalg.spsolve} can be used to compute a solution\footnote{\texttt{sparse.linalg.cg} cannot be used here as it requires the right-hand side to be a vector, but \texttt{spsolve} can be used when the right-hand side is a matrix.}. Results of doing so are given in Table \ref{table:stochastic matrix}. The errors here are similar to the errors when solving the linear system, the differences are likely due to using a direct solver rather than an iterative one. The eoc demonstrates that this method is solving the problem more accurately as the step size is increased in comparison to the previous method. The eog is also slightly better than solving the linear system. For $n=4000$, this method results in a memory error, as \texttt{spsolve} destroys the sparsity of $L$, which significantly increases memory requirements, as previously mentioned.
+The resulting right-hand side is a matrix, which means \texttt{sparse.linalg.spsolve} can be used to compute a solution\footnote{\texttt{sparse.linalg.cg} cannot be used here as it requires the right-hand side to be a vector, but \texttt{spsolve} can be used when the right-hand side is a matrix.}. Results of doing so are given in Table \ref{table:stochastic matrix}. It is clear from these results that, for problem sizes it is able to solve for, this method takes longer than using the conjugate gradient method on the linear system. The errors here are similar to the errors when solving the linear system, the differences are likely due to using a direct solver rather than an iterative one, which is also likely why, for problem sizes it is able to solve, the eoc is closer to 2 than the previous method. The eog is also slightly better than solving the linear system. For $n=4000$, this method results in a memory error, as \texttt{spsolve} destroys the sparsity of $L$, which significantly increases memory requirements, as previously mentioned.
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|}
 \hline
-$n$ & $K$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
+$n$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
 \hline
-125 & 1 & 0.059279 & 0.0021941 & 0.0010767 & - & - \\
-250 & 1 & 0.25614 & 0.00055258 & 0.00027120 & 2.0009 & 2.1113 \\
-500 & 1 & 1.4756 & 0.00013872 & $6.8063 \times 10^{-5}$ & 1.9998 & 2.5263 \\
-1000 & 1 & 10.827 & $3.4752 \times 10^{-5}$ & $1.7049 \times 10^{-5}$ & 1.9999 & 2.8753 \\
-2000 & 1 & 76.430 & $8.6968 \times 10^{-6}$ & $4.2666 \times 10^{-6}$ & 2.0000 & 2.8195 \\
-\cline{2-7}
-4000 & \multicolumn{6}{c|}{Memory Error} \\
+125 & 0.059279 & 0.0021941 & 0.0010767 & - & - \\
+250 & 0.25614 & 0.00055258 & 0.00027120 & 2.0009 & 2.1113 \\
+500 & 1.4756 & 0.00013872 & $6.8063 \times 10^{-5}$ & 1.9998 & 2.5263 \\
+1000 & 10.827 & $3.4752 \times 10^{-5}$ & $1.7049 \times 10^{-5}$ & 1.9999 & 2.8753 \\
+2000 & 76.430 & $8.6968 \times 10^{-6}$ & $4.2666 \times 10^{-6}$ & 2.0000 & 2.8195 \\
+\cline{2-6}
+4000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -1283,11 +1289,11 @@ where $u = \text{vec}(X)$, $(G_0)_{ij} = \langle \Psi_i \Psi_j \rangle$ and $(G_
 \begin{equation}
 AX + XB = C
 \end{equation}
-where $A = L^{-1}2L$, $B = G_1 G_0^{-1}$ and $C = L^{-1} F G_0^{-1}$. This can now be solved using any of the methods from Section 3, assuming that they can be adapted for sparse matrices. Computing $L^{-1}$ directly is very expensive and memory inefficient, as it has large dimension and although $L$ is sparse its inverse, in general, will not be. We do not need to compute $L^{-1}$ directly, we just need its effect on the equation. The matrix $A$ is easily computed as $L^{-1}2L = 2L^{-1}L = 2I$. To compute $C$, we form the linear system:
+where $A = L^{-1}2L$, $B = G_1 G_0^{-1}$ and $C = L^{-1} F G_0^{-1}$. This can now be solved using any of the methods from Section 3, assuming that they can be adapted for sparse matrices. Computing $L^{-1}$ directly is very expensive and memory inefficient, as it has large dimension and although $L$ is sparse its inverse, in general, will not be. We do not, however, need to compute $L^{-1}$ directly, we just need its effect on the equation. The matrix $A$ is easily computed as $L^{-1}2L = 2L^{-1}L = 2I$. To compute $C$, we form the linear system:
 \begin{equation}
 (L \otimes I)\text{vec}(C) = \text{vec}(FG_0^{-1})
 \end{equation}
-where $I$ is the identity matrix of dimension $(P+1)$. We can then solve for $C$ and reshape it back into a vector, which vastly speeds up computation time and drastically reduces memory requirements. The eigenvalues of $A$ are simply 2 and the eigenvectors are the columns of the identity matrix. As $B$ is a square matrix with dimension $(P+1)$, as long as $K$ is chosen not to be too large, computing the eigenpairs of $B$ will be cheap and approximating them will not have a large impact on the error. We can therefore use \texttt{numpy.linalg.eig} to calculate the eigenpairs.
+where $I$ is the identity matrix of dimension $(P+1)$. We can then solve for $C$ and reshape it back into a vector, which vastly speeds up computation time and drastically reduces memory requirements. The eigenvalues and eigenvectors of $A$ are simply 2 and the columns of the identity matrix, respectively. As $B$ is a square matrix with dimension $(P+1)=2$ (as we have set $P=1$), computing the eigenpairs of $B$ will be cheap and approximating them will not have a large impact on the error. We can therefore use \texttt{numpy.linalg.eig} to calculate the eigenpairs.
 
 Results using the conjugate gradient method \texttt{sparse.linalg.cg} with a convergence tolerance of $10^{-9}$ to solve for $C$ and the similarity transformation method to solve for $X$ are given in Table \ref{table:stochastic sylvester}.
 
@@ -1313,10 +1319,14 @@ $n$ & $K$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[
 \label{table:stochastic sylvester}
 \end{table}
 
+From these results we can see that, in terms of timing, errors and the eoc, solving this problem as a Sylvester equation is faster and more efficient than solving as a linear system or alternative matrix equation. The eog here is less than the eog when solving as a linear system for $n<8000$, and then only slightly higher when $n=8000$, which could be explained by the fact it is solving two problems (solving for $C$ and then for $X$), and therefore the cost increases when $n$ is large. As with solving the linear system, when $n=16000$ solving the system in this form resulted in a memory error. 
+
+We have now shown that the stochastic Galerkin method significantly outperforms the Monte Carlo method in the single parameter case. We have also shown that forming the stochastic Galerkin problem as a Sylvester equation has significant benefit, compared to forming the problem as a linear system and alternative matrix equation. We now move on to introduce multiple unknown parameters into the problem.
+
 \newpage
 
 \subsection{Multiple Parameters}
-Multiple unknown parameters can be introduced into the PDE, which makes it significantly harder to solve accurately and efficiently. Each parameter is again modelled as a random variable. Let $\varepsilon$ now be defined as:
+Multiple unknown parameters can be introduced into the PDE, which makes it significantly harder to solve accurately and efficiently. Each parameter is modelled as an independent random variable. Let $\varepsilon$ now be defined as:
 \begin{equation}
 \varepsilon = \sum_{p,q = 1}^N 2^{-(p+q)} \varepsilon_{pq} \sin(p \pi x) \sin(q \pi y)
 \end{equation}
@@ -1353,7 +1363,7 @@ As before we can use methods to calculate an approximation of the expectation an
 \end{figure} 
 
 \subsubsection{Monte Carlo}
-We can use Monte Carlo to solve (4.32), as done previously. We simply take random $M$ samples of each $\varepsilon_{pq}$ and solve the PDE for each of these samples. The expectation is then calculated as the mean solution. As before, we discretise the spatial dimensions using the centred finite difference approximations to obtain:
+We can use Monte Carlo to solve (4.32), as done previously. We simply take $M$ random samples of each $\varepsilon_{pq}$ and solve the PDE for each of these samples. The expectation is then calculated as the mean solution. As before, we discretise the spatial dimensions using the centred finite difference approximations to obtain:
 \begin{equation}
 TU + UT = F
 \end{equation}
@@ -1362,20 +1372,18 @@ with $T= -\frac{\varepsilon}{h^2}\text{tridiag}(1,-2,1)$, $U_{ij} = u(x_i,y_j)$ 
 
 We can now choose the best method from Section 3 to solve (4.36) for each sample. As with the single parameter Monte Carlo method, we use the similarity transformation method, calculating the eigenpairs explicitly. 
 
-As before, the number of samples will be increased by a factor of 4 as the mesh size is halved. We will vary the number of random variables to see how this affects the error. One thing to note is that the summations of $\varepsilon_{pq}$ depend on the spatial dimensions $x$ and $y$. In other words, that means that the summation changes and therefore needs to be recalculated depending on the grid point. Because of this, constructing the problem will take an increasingly longer time as both $n$ and $N$ are increased. However, we are only interested in how long this method takes to solve the problem, and so we will only time how long this method takes to compute a solution. 
-
-Results of doing so are given in Table \ref{table:monte carlo multiple}.
+As before, the number of samples will be increased by a factor of 4 as the mesh size is halved. We will vary the number of random variables to see how this affects the error. One thing to note is that the summation of $\varepsilon_{pq}$ depends on the spatial dimensions $x$ and $y$. In other words, that means that the summation changes and therefore needs to be recalculated depending on the grid point. Because of this, constructing the problem will take an increasingly longer time as both $n$ and $N$ are increased. However, we are only interested in how long this method takes to solve the problem, and so we will only time how long this method takes to compute a solution. Results using this method are given in Table \ref{table:monte carlo multiple}.
 
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
-$N$ & $n$ & $M$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}}$ & eoc & eog \\
+$N$ & $n$ & $M$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
 \hline
 \multirow{4}{*}{2} & 125 & 10 & 0.13827 & 0.097171 & 0.039979 & - & - \\
 & 250 & 40 & 2.1282 & 0.050053 & 0.020736 & - & - \\
 & 500 & 160 & 40.034 & 0.036890 & 0.017075 & - & - \\
-& 1000 & 640 &  &  &  & - & - \\
+& 1000 & 640 & 580.94 & 0.032707 & 0.016318 & - & - \\
 \hline
 \multirow{4}{*}{4} & 125 & 10 & 0.13955 & 0.088060 & 0.035807 & - & - \\
 & 250 & 40 & 2.1259 & 0.081807 & 0.036437 & - & - \\
@@ -1404,11 +1412,11 @@ with $\varepsilon$ and $f$ defined as above. The first step is to approximate th
 \begin{equation}
 \varepsilon \sum_{i=0}^P (-(u_i)_{xx} - (u_i)_{yy}) \Psi_i = f
 \end{equation}
-where $\Psi$ now denotes the $N$-dimensional Legendre polynomials, which are calculated by taking the product of one-dimensional Legendre polynomials \cite{Paul}, that is:
+with $P+1 = \frac{(K+R)!}{K!R!}$ where $R$ is the number of random variables and $K$ is a convergence parameter to be chosen. In this case we have $R = N^2 \implies P=\frac{(K+N^2)!}{K!N^2!}$. Here $\Psi$ now denotes the $N^2$-dimensional Legendre polynomials (as there are $N^2$ random variables), which are calculated by taking the product of one-dimensional Legendre polynomials \cite{Paul}, that is:
 \begin{equation}
-\Psi_N (\varepsilon_{11}, \varepsilon_{12}, \dots, \varepsilon_{NN}) = \Psi_{i_{11}} (\varepsilon_{11})  \Psi_{i_{12}} (\varepsilon_{12}) \dots \Psi_{i_{NN}} (\varepsilon_{NN})  
+\Psi_{N^2} (\varepsilon_{11}, \varepsilon_{12}, \dots, \varepsilon_{NN}) = \Psi_{i_{11}} (\varepsilon_{11})  \Psi_{i_{12}} (\varepsilon_{12}) \dots \Psi_{i_{NN}} (\varepsilon_{NN})  
 \end{equation}
-where $i_{11} + i_{12} + \dots + i_{NN} \leq N$. Next we multiply by $\Psi_k$ and take the inner product, which gives:
+which has weight function $w(\varepsilon_{11}, \dots, \varepsilon_{NN}) = \frac{1}{2^{N^2}}$. Note that here $i_{11} + i_{12} + \dots + i_{NN} \leq N^2$. Next we multiply by $\Psi_k$ and take the inner product, which gives:
 \begin{equation}
 \sum_{i=0}^P (-(u_i)_{xx} - (u_i)_{yy}) \langle \Psi_k \varepsilon \Psi_i \rangle = \langle f \Psi_k \rangle
 \end{equation}
@@ -1431,7 +1439,7 @@ for $i=0,\dots,P$. Next, we represent the inner product on the left-hand side as
 \begin{equation}
 P_{ij} = \langle \Psi_i \varepsilon_{pq} \Psi_j \rangle
 \end{equation}
-for $i,j=0,\dots,P$ and $p,q=1,\dots,N$, where each $p$ and $q$ correspond to the inner products of each random variable. We now represent the summation on the left-hand side as a $n^2 \times n^2$ diagonal matrix $D$, which has entries:
+for $i,j=0,\dots,P$. We now represent the summation on the left-hand side as a $n^2 \times n^2$ diagonal matrix $D$, which has entries:
 \begin{equation}
 D_k = \sum_{p,q=1}^N 2^{-(p+q)} \sin(p \pi x_i) \sin(q \pi y_j)
 \end{equation}
@@ -1442,20 +1450,22 @@ F_k = 2 \pi^2 \sin(\pi x_i) \sin(\pi y) \sum_{p,q=1}^N \langle \Psi_k \varepsilo
 \begin{equation}
 + \left(\pi^2 \sum_{p,q=1}^N \langle \Psi_k \varepsilon_{pq} \rangle 2^{-(p+q)} (p^2 + q^2) \sin(p \pi x)\sin(q \pi y) \right) \left(\sum_{p,q=1}^N 2^{-(p+q)} \langle \Psi_k \varepsilon_{pq} \rangle \sin(p \pi x)\sin(q \pi y) \right)
 \end{equation}
-for $k=0,\dots,P$ (the random discretisation) and $i,j=1,\dots,n$ (the vectorised spatial discretisation). We can now proceed with solving the system in a variety of ways.
+for $k=0,\dots,P$ (the random discretisation) and $i,j=1,\dots,n$ (the vectorised spatial discretisation). We can now proceed with solving the system in a variety of ways. Again we set $K=1 \implies P = \frac{(N^2 + 1)!}{N^2 !} - 1$, as higher values of $K$ do not have a significant impact on the error but vastly increase computation time. As with the multiple parameter Monte Carlo method, we are only interested in the time taken to solve the problem (not construct it) and therefore will only time how long a method takes to compute a solution.
 
 \subsubsection*{Linear System}
-We can represent (4.41) as a linear system in the form:
+We can represent (4.40) as a linear system in the form:
 \begin{equation}
 Au = f
 \end{equation}
-where $A=\left( P \otimes D \right) \left( I \otimes L \right)$ has dimension $n^2(P+1) \times n^2(P+1)$ and $f = \text{vec}(F)$ and $u$ are vectors of dimension $n^2(P+1)$. Here $I$ is the identity matrix of size $(P+1) \times (P+1)$.
+where $A=\left( P \otimes D \right) \left( I \otimes L \right)$ has dimension $n^2(P+1) \times n^2(P+1)$ and $f = \text{vec}(F)$ and $u$ are vectors of dimension $n^2(P+1)$. Here $I$ is the identity matrix of size $(P+1)$. We can now use a standard sparse solver to solve the system. From this formulation it is not clear that $A$ has symmetric structure and so, instead of using the conjugate gradient method, we use \texttt{sparse.linalg.spsolve} to solve the system. Results of doing so are given in Table \ref{table:galerkin multiple linear}.
+
+Results in a memory error for much lower values of $n$ than the single parameter case as the coefficient matrix $A$ is much less sparse.
 
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
-$N$ & $n$ & $K$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}}$ & eoc & eog \\
+$N$ & $n$ & $K$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
 \hline
 \multirow{4}{*}{2} & 125 & 1 & 1.1174 & $5.4475 \times 10^{-5}$ & $2.7192 \times 10^{-5}$ & - & - \\
 & 250 & 1 & 7.8475 & $1.6508 \times 10^{-5}$ & $7.8571 \times 10^{-6}$ & - & - \\
@@ -1468,25 +1478,32 @@ $N$ & $n$ & $K$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}
 \cline{4-8}
 & 500 & 1 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
-\multirow{4}{*}{8} & 125 & 1 & & & & - & - \\
-& 250 & 1 & & & & - & - \\
-& 500 & 1 & & & & - & - \\
-\cline{4-8}
-& 1000 & 1 & \multicolumn{5}{c|}{Time limit reached} \\
-\hline
 \end{tabular}
 \captionsetup{justification=centering}
 \caption{Results using the stochastic Galerkin method with multiple uncertain parameters to solve a linear system using \texttt{spsolve}.}
-\label{table:galerkin multiple}
+\label{table:galerkin multiple linear}
 \end{table}
 
 \subsubsection{Matrix Equation}
+We can alternatively form (4.40) as a matrix equation. From (4.47) we have:
+\begin{equation}
+\begin{split}
+& (P \otimes D)(I \otimes L) u = \text{vec}(F) \\
+& = (PI) \otimes (DL) u = \text{vec}(F) \\
+& \implies DL X P = F 
+\end{split}
+\end{equation}
+where $u = \text{vec}(X)$. As in the single parameter case, this could be solved using a variation of the Bartels-Stewart algorithn, however would require a huge amount of memory to compute and store the Schur forms of $DL$. Instead, we multiply by $P^{-1}$ to obtain the matrix equation:
+\begin{equation}
+DL X = F P^{-1}
+\end{equation}
+We can now, as before, solve this form using \texttt{spsolve}. However, in this case, we should expect to be able to solve for larger problem sizes than when solving the linear system as we have maintained the sparsity of the coefficient matrix. Results of doing so are given in \ref{table:galerkin multiple matrix}.
 
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
-$N$ & $n$ & $K$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}}$ & eoc & eog \\
+$N$ & $n$ & $K$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
 \hline
 \multirow{4}{*}{2} & 125 & 1 & 0.057401 & $5.4475 \times 10^{-5}$ & $2.7192 \times 10^{-5}$ & - & - \\
 & 250 & 1 & 0.29013 & $1.6508 \times 10^{-5}$ & $7.8571 \times 10^{-6}$ & - & - \\
@@ -1504,17 +1521,27 @@ $N$ & $n$ & $K$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ & $|| u - u_h ||_{L^{2}
 \cline{4-8}
 & 4000 & 1 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
-\multirow{4}{*}{8} & 125 & 1 & & & & - & - \\
-& 250 & 1 & & & & - & - \\
-& 500 & 1 & & & & - & - \\
-\cline{4-8}
-& 1000 & 1 & \multicolumn{5}{c|}{Time limit reached} \\
-\hline
 \end{tabular}
 \captionsetup{justification=centering}
-\caption{Results using the stochastic Galerkin method with multiple uncertain parameters to solve a linear system using \texttt{spsolve}.}
-\label{table:galerkin multiple}
+\caption{Results using the stochastic Galerkin method with multiple uncertain parameters to solve a matrix equation using \texttt{spsolve}.}
+\label{table:galerkin multiple matrix}
 \end{table}
+
+\newpage
+
+\subsection{Conclusion}
+
+In the single parameter case, we demonstrated that we can firstly form the random PDE as a Sylvester equation and solve it using the Monte Carlo method, that is, use the best solver from Section 3 and repeatedly solve the PDE $M$ times and take the average to obtain the solution. We then showed that we can solve the problem more accurately by using the stochastic Galerkin method, and demonstrated that forming the problem as Sylvester equation in the case can result in increased efficiency compared to  the linear system and alternative matrix equation. For comparison, the eogs of the Monte Carlo method and the stochastic Galerkin method solving different forms of the problem are displayed in Figure \ref{fig:single eogs}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=.6]{img/singleeog.png}
+\caption{The experimental orders of growth for the single parameter problem.}
+\label{fig:single eogs}
+\end{figure}
+
+Similarly, in the multiple parameter case we first formed the random PDE and solved using the Monte Carlo method.
+
 
 \newpage
 

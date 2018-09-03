@@ -234,33 +234,33 @@ u_{n1} & u_{n2} & \dots & u_{nj} & \dots & u_{nn}
 A variety of methods can now be used to solve this equation. These methods will be explored in Section 3. 
 
 \subsection{Organisation}
-The organisation of this report is as follows. Section 2 sets out the objectives and planning of the project. Section 3 explores different methods for solving a specific Sylvester equation. Section 4 introduces uncertainty into the problem studied in Section 3, and explores ways of solving this problem by building upon the knowledge gained in the previous section. Finally, Section 5 is an evaluation of the project's success.
+The organisation of this report is as follows: Section 2 sets out the objectives and planning of the project, Section 3 explores different methods for solving a specific Sylvester equation, Section 4 introduces uncertainty into the problem studied in Section 3 and explores ways of solving this problem by building upon the knowledge gained in the previous section and finally, Section 5 is an evaluation of the project's success.
 
 \newpage
 
 \section{Scope and Schedule}
 \subsection{Aim}
-The aim of this project is to first study, implement and compare a range of matrix equation solvers. Following this, the project will look at ways of solving random PDEs and how the methods implemented can be applied to PDEs of this type.
+The first aim of this project is to study, implement and compare a range of matrix equation solvers. Following this, the project will look at ways of solving random PDEs and how the methods implemented can be applied to PDEs of this type.
 
 \subsection{Objectives}
 The objectives of this project are as follows:
 \begin{itemize}
-\item To carry out an extensive literature review on methods for solving matrix equations (both direct and iterative) from a variety of different sources. To decide which of these methods are appropriate to implement and to gain a solid understanding of how they work.
-\item To study ways of solving random PDEs and adapt methods that have previously been studied so that they can be used to solve PDEs of this type. 
+\item To carry out an extensive literature review on methods for solving matrix equations (both direct and iterative) from a variety of different sources, and to decide which of these methods are appropriate to implement by gaining a solid understanding of how they work.
+\item To study ways of solving random PDEs and adapt methods that have already been considered in the project so that they can be used to solve PDEs of this type. 
 \item To use and expand upon my programming experience to implement the chosen methods for solving matrix equations and random PDEs. 
-\item To evaluate the implementation in each section by comparing and contrasting the methods implemented to decide which is the best method for solving the given problem.
+\item To evaluate the implementation in each section by comparing and contrasting the methods implemented to decide which is the best suited for solving the given problem.
 \item To clearly present the work carried out during the project by using and building upon my report writing skills.
 \end{itemize}
 
 \subsection{Deliverables}
 The deliverables of this project include:
 \begin{itemize}
-\item The final report that will include the details of the methods that have been studied, how the methods were implemented, an evaluation and comparison of the implemented methods and finally an evaluation of the success of the project.  
+\item The final report containing the details of the methods that have been studied, how they were implemented, an analysis and comparison of these methods, and then finally an evaluation of the success of the project.  
 \item Code that successfully implements what has been studied in the project.
 \end{itemize}
 
 \subsection{Methodology}
-The methodology of this project will first involve studying academic publishings to gain an understanding of various methods for solving matrix equations and ways of solving random PDEs. Python will be used as the programming language of choice for the implementation because of my familiarity with it, the extensive amount of documentation available for it and the excellent libraries it has available. GitHub will be used for version control and the final report will be written using \LaTeX. 
+The methodology of this project will involve studying academic publishings to gain an understanding of various methods for solving matrix equations and ways of solving random PDEs. Python will be the programming language of choice for the implementation because of my familiarity with it, the extensive amount of documentation available for it and the excellent libraries it has available. GitHub will be used for version control and the final report will be written using \LaTeX. 
 
 %\subsection{Tasks, Milestones and Timeline}
 %The steps of this project will be divided into iterations, with the problem in each iteration becoming successively more complex and difficult to solve. This is because understanding is a key part of this project, and so each iteration will build on the understanding of the last. Each iteration will consist of studying and applying matrix methods to the problem, implementing them in Python to solve the problem, evaluating the results and write up. Also rough deadlines will be given for when each iteration should be completed by, to ensure the project is on track at any given stage.
@@ -311,7 +311,7 @@ where $T=-\frac{1}{h^2} \, \text{tridiag}(1,-2,1)$, $U_{ij} = u(x_i, y_j)$ and $
 \label{fig:solution}
 \end{figure} 
 
-Throughout the following section, each of the implemented methods will be given a maximum execution time of 6000 seconds to compute a solution. If a method does not compute a solution in this time for a certain problem size, then this will be specified in the results. If a method does not compute a solution because it needs more memory than is available, then this will also be specified. All tests in this section (and throughout the report) will be run on a DEC-10 computer with 32GB of RAM and 8 cores. 
+Throughout the following section, each of the implemented methods will be given a maximum execution time of 6000 seconds to compute a solution. If a method does not compute a solution in this time for a certain problem size, this will be specified in the results. If a method does not compute a solution because it needs more memory than is available, this will also be specified. All tests in this section (and throughout the report) will be run on a DEC-10 computer with 32GB of RAM and 8 cores. 
 
 The following measurements will be given to evaluate the performance of each of the methods implemented:
 \begin{itemize}
@@ -1381,19 +1381,19 @@ As before, the number of samples will be increased by a factor of 4 as the mesh 
 $N$ & $n$ & $M$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
 \hline
 \multirow{4}{*}{2} & 125 & 10 & 0.13827 & 0.097171 & 0.039979 & - & - \\
-& 250 & 40 & 2.1282 & 0.050053 & 0.020736 & - & - \\
-& 500 & 160 & 40.034 & 0.036890 & 0.017075 & - & - \\
-& 1000 & 640 & 580.94 & 0.032707 & 0.016318 & - & - \\
+& 250 & 40 & 2.1282 & 0.050053 & 0.020736 & 0.96259 & 3.9441 \\
+& 500 & 160 & 40.034 & 0.036890 & 0.017075 & 0.44150 & 4.2335 \\
+& 1000 & 640 & 580.94 & 0.032707 & 0.016318 & 0.17388 & 3.8591 \\
 \hline
 \multirow{4}{*}{4} & 125 & 10 & 0.13955 & 0.088060 & 0.035807 & - & - \\
-& 250 & 40 & 2.1259 & 0.081807 & 0.036437 & - & - \\
-& 500 & 160 & 39.872 & 0.057317 & 0.026807 & - & - \\
+& 250 & 40 & 2.1259 & 0.081807 & 0.036437 & 0.10688 & 3.9292 \\
+& 500 & 160 & 39.872 & 0.057317 & 0.026807 & 0.51474 & 4.2292 \\
 \cline{4-8}
 & 1000 & 640 & \multicolumn{5}{c|}{Time limit reached} \\
 \hline
 \multirow{4}{*}{8} & 125 & 10 & 0.13894 & 0.10960 & 0.044472 & - & - \\
-& 250 & 40 & 2.2092 & 0.054684 & 0.022630 & - & - \\
-& 500 & 160 & & & & - & - \\
+& 250 & 40 & 2.2092 & 0.054684 & 0.022630 & 1.0088 & 3.9910 \\
+& 500 & 160 & 34.502 & 0.047838 & 0.021733 & 0.19352 & 3.9651 \\
 \cline{4-8}
 & 1000 & 640 & \multicolumn{5}{c|}{Time limit reached} \\
 \hline
@@ -1463,20 +1463,20 @@ Results in a memory error for much lower values of $n$ than the single parameter
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-$N$ & $n$ & $K$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
+$N$ & $n$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
 \hline
-\multirow{4}{*}{2} & 125 & 1 & 1.1174 & $5.4475 \times 10^{-5}$ & $2.7192 \times 10^{-5}$ & - & - \\
-& 250 & 1 & 7.8475 & $1.6508 \times 10^{-5}$ & $7.8571 \times 10^{-6}$ & - & - \\
-& 500 & 1 & 63.485 & $6.9480 \times 10^{-6}$ & $3.0622 \times 10^{-6}$  & - & - \\
-\cline{4-8}
-& 1000 & 1 & \multicolumn{5}{c|}{Memory Error} \\
+\multirow{4}{*}{2} & 125 & 1.1174 & $5.4475 \times 10^{-5}$ & $2.7192 \times 10^{-5}$ & - & - \\
+& 250 & 7.8475 & $1.6508 \times 10^{-5}$ & $7.8571 \times 10^{-6}$ & 1.7324 & 2.8121 \\
+& 500 & 63.485 & $6.9480 \times 10^{-6}$ & $3.0622 \times 10^{-6}$ & 1.2521 & 3.0161 \\
+\cline{3-7}
+& 1000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
-\multirow{4}{*}{4} & 125 & 1 & 34.658 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
-& 250 & 1 & 221.33 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & - & - \\
-\cline{4-8}
-& 500 & 1 & \multicolumn{5}{c|}{Memory Error} \\
+\multirow{4}{*}{4} & 125 & 34.658 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
+& 250 & 221.33 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 2.0001 & 2.6749 \\
+\cline{3-7}
+& 500 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -1501,25 +1501,25 @@ We can now, as before, solve this form using \texttt{spsolve}. However, in this 
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-$N$ & $n$ & $K$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
+$N$ & $n$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[u] - \mu ||_{L^{2}}$ & eoc & eog \\
 \hline
-\multirow{4}{*}{2} & 125 & 1 & 0.057401 & $5.4475 \times 10^{-5}$ & $2.7192 \times 10^{-5}$ & - & - \\
-& 250 & 1 & 0.29013 & $1.6508 \times 10^{-5}$ & $7.8571 \times 10^{-6}$ & - & - \\
-& 500 & 1 & 1.6387 & $6.9480 \times 10^{-6}$ & $3.0622 \times 10^{-6}$  & - & - \\
-& 1000 & 1 & 11.469 & $4.9213 \times 10^{-6}$ & $1.9335 \times 10^{-6}$ & & \\
-& 2000 & 1 & 77.098 & $4.4465 \times 10^{-6}$ & $1.6728 \times 10^{-6}$ & & \\
-\cline{4-8}
-& 4000 & 1 & \multicolumn{5}{c|}{Memory Error} \\
+\multirow{4}{*}{2} & 125 & 0.057401 & $5.4475 \times 10^{-5}$ & $2.7192 \times 10^{-5}$ & - & - \\
+& 250 & 0.29013 & $1.6508 \times 10^{-5}$ & $7.8571 \times 10^{-6}$ & 1.7324 & 2.3376 \\
+& 500 & 1.6387 & $6.9480 \times 10^{-6}$ & $3.0622 \times 10^{-6}$ & 1.2521 & 2.4978 \\
+& 1000 & 11.469 & $4.9213 \times 10^{-6}$ & $1.9335 \times 10^{-6}$ & 0.49828 & 2.8071 \\
+& 2000 & 77.098 & $4.4465 \times 10^{-6}$ & $1.6728 \times 10^{-6}$ & 0.14647 & 2.7490 \\
+\cline{3-7}
+& 4000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
-\multirow{4}{*}{4} & 125 & 1 & 0.081032 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
-& 250 & 1 & 0.40200 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & - & - \\
-& 500 & 1 & 2.1681 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & - & - \\
-& 1000 & 1 & 13.925 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & - & - \\
-& 2000 & 1 & 88.442 & $2.0540 \times 10^{-7}$ & $1.0270 \times 10^{-7}$ & - & - \\
-\cline{4-8}
-& 4000 & 1 & \multicolumn{5}{c|}{Memory Error} \\
+\multirow{4}{*}{4} & 125 & 0.081032 & $5.1807 \times 10^{-5}$ & $2.5904 \times 10^{-5}$ & - & - \\
+& 250 & 0.40200 & $1.3054 \times 10^{-5}$ & $6.5275 \times 10^{-6}$ & 2.0001 & 2.3106 \\
+& 500 & 2.1681 & $3.2767 \times 10^{-6}$ & $1.6384 \times 10^{-6}$ & 1.9999 & 2.4312 \\
+& 1000 & 13.925 & $8.2082 \times 10^{-7}$ & $4.1041 \times 10^{-7}$ & 2.0000 & 2.6832 \\
+& 2000 & 88.442 & $2.0540 \times 10^{-7}$ & $1.0270 \times 10^{-7}$ & 2.0000 & 2.6671 \\
+\cline{3-7}
+& 4000 & \multicolumn{5}{c|}{Memory Error} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}

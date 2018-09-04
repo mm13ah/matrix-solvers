@@ -27,9 +27,13 @@
 \contentsline {subsection}{\numberline {4.2}Multiple Parameters}{36}
 \contentsline {subsubsection}{\numberline {4.2.1}Monte Carlo}{37}
 \contentsline {subsubsection}{\numberline {4.2.2}Stochastic Galerkin}{38}
-\contentsline {subsubsection}{\numberline {4.2.3}Matrix Equation}{40}
+\contentsline {subsubsection}{\numberline {4.2.3}Matrix Equation}{41}
 \contentsline {subsection}{\numberline {4.3}Conclusion}{42}
 \contentsline {section}{\numberline {5}Evaluation}{43}
 \contentsline {subsection}{\numberline {5.1}Aims}{43}
 \contentsline {subsection}{\numberline {5.2}Extensions}{43}
-\contentsline {subsection}{\numberline {5.3}Conclusion}{44}
+\contentsline {subsection}{\numberline {5.3}Personal Reflection}{44}
+\contentsline {subsection}{\numberline {5.4}Conclusion}{44}
+\contentsline {section}{Appendices}{47}
+\contentsline {section}{\numberline {A}External Materials}{47}
+\contentsline {section}{\numberline {B}Ethical Issuses}{48}

@@ -48,6 +48,12 @@ J.~Brewer.
 \newblock {\em IEEE Transactions on Circuits and Systems}, 25(9):772--781,
   September 1978.
 
+\bibitem{Castelan}
+E.~B. Castelan and V.~G. da~Silva.
+\newblock On the solution of a {S}ylvester equation appearing in descriptor
+  systems control theory.
+\newblock {\em Systems \& Control Letters}, 54(2):109 -- 117, 2005.
+
 \bibitem{Paul}
 P.~Constantine.
 \newblock A {P}rimer on {S}tochastic {G}alerkin {M}ethods.
@@ -76,6 +82,12 @@ G.~Golub, S.~Nash, and C.~V. Loan.
 M.~Grau-Sánchez, M.~Noguera, and J.~M. Gutiérrez.
 \newblock On some computational orders of convergence.
 \newblock {\em Applied Mathematics Letters}, 23(4):472 -- 478, 2010.
+
+\bibitem{Scottedward}
+A.~S. Hodel and P.~Misra.
+\newblock Solution of underdetermined {S}ylvester equations in sensor array
+  signal processing.
+\newblock {\em Linear Algebra and its Applications}, 249(1):1 -- 14, 1996.
 
 \bibitem{Holm}
 D.~D. {Holm}.

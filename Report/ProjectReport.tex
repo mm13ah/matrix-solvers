@@ -81,23 +81,61 @@
 
 \onehalfspacing
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define a new environment for the dissertation summary
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newenvironment{dissertationsummary}
+ 	{\cleardoublepage \null 
+ 		\begin{center}%
+			\textbf{Summary}
+		\end{center}}%
+	{\vfill \null }
+
 \begin{document}
 
 \frontcover
 
-\newpage
-
-\textbf{Summary}
-
-
-\newpage
-
-\textbf{Acknowledgements}
-I would sincerely like to thank my project supervisor, Thomas Ranner, for his invaluable guidance and support during this project. His encouragement and feedback throughout has made it a thoroughly rewarding experience. I would also like to thank the University of Leeds and the School of Computing, as well as all the lecturers who have taught me throughout this year, as I have thoroughly enjoyed studying my MSc.
-
-\newpage
+\clearpage
 
 \pagenumbering{roman}
+
+\noindent The candidate confirms that the following have been submitted.\\
+\begin{table}[ht!]
+\begin{tabular}{|>{\centering\arraybackslash}p{0.15\textwidth}|>{\centering\arraybackslash}p{0.475\textwidth}|>{\centering\arraybackslash}p{0.275\textwidth}|}
+\hline 
+\textbf{Items} & \textbf{Format} & \textbf{Recipient(s) and Date} \\ 
+\hline 
+Deliverable 1 & Report & SSO (04/09/18) \\ 
+\hline 
+Deliverable 2 & Source code & Supervisor, Assessor \\
+& https://github.com/mm13ah/matrix-solvers & (04/09/18) \\
+\hline
+\end{tabular} 
+\end{table}
+
+\noindent Type of project: Theoretical Study
+\vspace{\fill}\\
+\noindent The candidate confirms that the work submitted is their own and the appropriate credit has been given where reference has been made to the work of others.
+\vspace{\fill}\\
+\noindent I understand that failure to attribute material which is obtained from another source may be considered as plagiarism.
+\vspace{\fill}\\
+\flushright(Signature of Student) \rule{50mm}{1pt}
+\flushleft
+\vspace{\fill}
+\textcopyright~\session~The University of Leeds and~\fullname
+
+% Summary
+
+\begin{dissertationsummary}
+\input{summary.tex}
+\end{dissertationsummary}
+
+\clearpage
+\centering\textbf{Acknowledgements}
+\flushleft
+\input{acknowledge.tex}
+
+\newpage
 
 \tableofcontents
 
@@ -351,17 +389,17 @@ A simple approach to solving this equation is to use the Kronecker product to re
 \begin{equation}
 \mathcal{A}x = c
 \end{equation}
-with $\mathcal{A} = I \otimes A + B^* \otimes I$, where $I$ is the identity matrix, $B^*$ denotes the conjugate transpose of $B$, $x = \text{vec}(X)$\footnote{The vec operator reshapes a matrix into a vector by stacking the columns one after another.}, $c = \text{vec}(C)$ and $\otimes$ denotes the Kronecker product.
+with $\mathcal{A} = I \otimes A + B^* \otimes I$, where $I$ is the identity matrix, $B^*$ denotes the conjugate transpose of $B$, $x = \text{vec}(X)$\footnote{The vec operator reshapes a matrix into a vector by stacking the columns one after another.}, $c = \text{vec}(C)$ and $\otimes$ denotes the Kronecker product. Here $\mathcal{A}$ has dimension $n^2 \times n^2$ and $x$ and $c$ are both vectors of size $n^2$.
 
 The equivalent linear system for the matrix equation $TU + UT = F$ is:
 \begin{equation}
 \mathcal{T}u = f
 \end{equation}
-where $\mathcal{T} = I \otimes T + T \otimes I$, $u = \text{vec}(U)$ and $f = \text{vec}(F)$.
+where $\mathcal{T} = I \otimes T + T \otimes I$ has dimension $n^2$, and $u = \text{vec}(U)$ and $f = \text{vec}(F)$ are vectors of size $n^2$.
 
-This is the exact linear system that would be obtained from equation (1.5), that is, stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. \texttt{sparse.linalg.spsolve} is a direct sparse solver from the SciPy library that uses a LU decomposition to solve a linear system. Using a LU decomposition to solve a linear system of size $n$ has time complexity, at most, $O(n^3)$. However, as we have used the Kronecker product to form our linear system, it has size $n^2$. We can therefore expect this method to run in worse than $O(n^3)$ (and no more than $O(n^6)$).
+This is the exact linear system that would be obtained from equation (1.5), that is, stacking all unknowns $u_{ij}$ into a single vector in the first place. Since the matrix $\mathcal{T}$ is sparse, this equation can be solved using a standard direct sparse solver. This approach provides a good base case for comparison. \texttt{sparse.linalg.spsolve} is a direct sparse solver from the SciPy library that uses a LU decomposition to solve a linear system. Using a LU decomposition to solve a linear system of size $n$ has time complexity, at most, $O(n^3)$. However, in this case our linear system has size $n^2$. We can therefore expect this method to run in worse than $O(n^3)$ (and no more than $O(n^6)$, but probably much lower than this as $\mathcal{T}$ is sparse).
 
-Results solving the equation using the Kronecker product to from a linear system and solving the system using \texttt{sparse.linalg.spsolve} are shown in Table \ref{table:kron direct}. As can be seen from the results, both of the errors decrease as the problem size $n$ is increased and the eoc is close to 2 for all $n$. This demonstrates that this method is solving the problem more and more accurately as the problem size is increased. As we increase $n$ the eog grows beyond $3$, which shows that this algorithm has worse than cubic time complexity for large $n$, as expected. For $n=4000$, this method results in a memory error. This is because \texttt{spsolve} tries to compute a (incomplete) LU decomposition of $\mathcal{T}$ which destroys the sparsity of the matrix and therefore requires much more memory to store it. The SciPy documentation notes that ``this solver assumes the resulting matrix X is sparse...If the resulting X is dense...consider converting A to a dense matrix and using \texttt{scipy.linalg.solve} or its variants.'' \texttt{scipy.linalg.solve} was tested to see how it would compare to the sparse solver. It was much slower for the problem sizes it was able to solve and resulted in a memory error for $n=500$.
+Results solving (3.5) using the Kronecker product to form a linear system and solving the system using \texttt{sparse.linalg.spsolve} are shown in Table \ref{table:kron direct}. As can be seen from the results, both of the errors decrease as the problem size $n$ is increased and the eoc is close to 2 for all $n$. This demonstrates that this method is solving the problem more and more accurately as the problem size is increased, achieving the second-order convergence of the centred finite difference approximations. As we increase $n$ the eog grows beyond $3$, which shows that this algorithm has worse than cubic time complexity for large $n$, as expected. For $n=4000$, this method results in a memory error. This is because \texttt{spsolve} tries to compute a (incomplete) LU decomposition of $\mathcal{T}$ which destroys the sparsity of the matrix and therefore requires much more memory to store it. The SciPy documentation notes that ``this solver assumes the resulting matrix X is sparse...If the resulting X is dense...consider converting A to a dense matrix and using \texttt{scipy.linalg.solve} or its variants.'' \texttt{scipy.linalg.solve} was tested to see how it would compare to the sparse solver. It was much slower for the problem sizes it was able to solve and resulted in a memory error for $n=500$.
 
 \begin{table}[H]
 \centering
@@ -444,7 +482,7 @@ $n$ & Time(s) & $|| u - u_h ||_{L^{\infty}}$ &$|| u - u_h ||_{L^{2}}$ & eoc & eo
 
 \subsubsection*{Simplified Implementation}
 
-Results using the simplified version of this algorithm are shown in Table \ref{table:bartels simplified}. These results demonstrate that this simplified implementation is much faster than the SciPy solver. The errors up until $n=2000$ are very similar to the errors in the previous methods, and the eoc is again very close to 2 up until $n=4000$. After this point, the eoc starts decreasing rapidly and when $n=16000$ the error becomes bigger than when $n=8000$. These can be explained by the fact that \texttt{linalg.schur} is used to compute the Schur decomposition in the first step. \texttt{linalg.schur} uses the QR algorithm to approximate the eigenpairs of $T$ (as there is no general formula for calculating the eigenpairs of an arbitrary matrix of size $n>4$). From these results we can see that this approximation has a significant impact on the error for large $n$. The eog here demonstrates that this algorithm has better than cubic time complexity.
+Results using the simplified version of this algorithm are shown in Table \ref{table:bartels simplified}. These results demonstrate that this simplified implementation is much faster than the SciPy solver. The errors up until $n=2000$ are very similar to the errors in the previous methods, and the eoc is again very close to 2 up until $n=4000$. After this point, the eoc starts decreasing rapidly and when $n=16000$ the error becomes bigger than when $n=8000$. These can be explained by the fact that \texttt{linalg.schur} is used to compute the Schur decomposition in the first step. \texttt{linalg.schur} uses the QR algorithm to approximate the eigenpairs of $T$ (as there is no general formula for calculating the eigenpairs of an arbitrary matrix of dimension $n>4$). From these results we can see that this approximation has a significant impact on the error for large $n$. The eog here demonstrates that this algorithm has better than cubic time complexity.
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
@@ -633,7 +671,7 @@ A projection method \cite{Simoncini} can be used to solve $AX + XB = C$. This me
 \end{enumerate}
 where $S = \text{diag}(s_1, \dots, s_n)$ are the eigenvalues of $B$, the columns of $W$ are the eigenvectors of $B$ and $(\hat{X})_i$ denotes the $i^{\text{th}}$ column of $\hat{X}$.
 
-Calculating the eigenpairs in the first step generally runs in $O(n^3)$ \cite{Laub}, and then computing the inverse is approximately $O(n^2)$. The second step solves $n$ linear systems. Solving a linear system directly is no more than $O(n^3)$ (for example, using Gaussian elimination), and so if a direct solver is used (for example, \texttt{spsolve}), then solving $n$ of these linear systems is of time complexity no greater than $O(n^4)$. The last step is a simple matrix multiplication which is no greater than $O(n^3)$. Therefore, this algorithm should run in time complexity, at most, $O(n^4)$.
+Calculating the eigenpairs in the first step generally runs in $O(n^3)$ \cite{Laub}, and then computing the inverse is approximately $O(n^2)$. The second step solves $n$ linear systems. Solving a linear system directly is no more than $O(n^3)$ (for example, using a LU decomposition), and so if a direct solver is used (for example, \texttt{spsolve}), then solving $n$ of these linear systems is of time complexity no greater than $O(n^4)$. The last step is a simple matrix multiplication which is no greater than $O(n^3)$. Therefore, this algorithm should run in time complexity, at most, $O(n^4)$.
 
 In the case of $TU + UT = F$, the steps are as follows:
 \begin{enumerate}
@@ -1264,7 +1302,7 @@ One way to solve this is by using a variation of the Bartels-Stewart algorithm. 
 \item Solve $\hat{L} Y \hat{P} = \hat{F}$ for $Y$, where $\hat{L}$ and $\hat{P}$ are upper triangular.
 \item Compute solution $X = UYV^*$.
 \end{enumerate}
-The problem with this method is that the Schur forms in the first step are computed using the QR algorithm. The matrices produced in the decomposition using this algorithm are dense. Therefore a huge amount of memory is required to compute and store the Schur form of $L$ (of size $n^2 \times n^2$), which is impractical even for a relatively small problem size. This method was tested on the problem with $n=125$ and $K=1$, and resulted in a memory error when computing the Schur forms, which confirms that this method is not appropriate for this problem.
+The problem with this method is that the Schur forms in the first step are computed using the QR algorithm. The matrices produced in the decomposition using this algorithm are dense. Therefore a huge amount of memory is required to compute and store the Schur form of $L$ (of size $n^2 \times n^2$), which is impractical even for a relatively small problem size. This method was tested on the problem with $n=125$ and resulted in a memory error when computing the Schur forms, which confirms that this method is not appropriate for this problem.
 
 Alternatively, we can right multiply by $P^{-1}$ to obtain:
 \begin{equation}
@@ -1302,13 +1340,15 @@ where $u = \text{vec}(X)$, $(G_0)_{ij} = \langle \Psi_i \Psi_j \rangle$ and $(G_
 \begin{equation}
 AX + XB = C
 \end{equation}
-where $A = L^{-1}2L$, $B = G_1 G_0^{-1}$ and $C = L^{-1} F G_0^{-1}$. This can now be solved using any of the methods from Section 3, assuming that they can be adapted for sparse matrices. Computing $L^{-1}$ directly is very expensive and memory inefficient, as it has large dimension and although $L$ is sparse its inverse, in general, will not be. We do not, however, need to compute $L^{-1}$ directly, we just need its effect on the equation. The matrix $A$ is easily computed as $L^{-1}2L = 2L^{-1}L = 2I$. To compute $C$, we form the linear system:
+where $A = L^{-1}2L$, $B = G_1 G_0^{-1}$ and $C = L^{-1} F G_0^{-1}$. This can now be solved using any of the methods from Section 3, assuming that they can be adapted for sparse matrices. Computing $L^{-1}$ directly is very expensive and memory inefficient, as it has large dimension and although $L$ is sparse its inverse, in general, will not be. We do not, however, need to compute $L^{-1}$ directly, we just need its affect on the equation. The matrix $A$ is easily computed as: 
+\[ A = L^{-1}2L = 2L^{-1}L = 2I \]
+To compute $C$, we form the linear system:
 \begin{equation}
 (L \otimes I)\text{vec}(C) = \text{vec}(FG_0^{-1})
 \end{equation}
 where $I$ is the identity matrix of dimension $(P+1)$. We can then solve for $C$ and reshape it back into a vector, which vastly speeds up computation time and drastically reduces memory requirements. The eigenvalues and eigenvectors of $A$ are simply 2 and the columns of the identity matrix, respectively. As $B$ is a square matrix with dimension $(P+1)=2$ (as we have set $P=1$), computing the eigenpairs of $B$ will be cheap and approximating them will not have a large impact on the error. We can therefore use \texttt{numpy.linalg.eig} to calculate the eigenpairs.
 
-Results using the conjugate gradient method \texttt{sparse.linalg.cg}, with a convergence tolerance of $10^{-9}$ to solve for $C$ and the similarity transformation method to solve for $X$, are given in Table \ref{table:stochastic sylvester}.
+Results using the conjugate gradient method \texttt{sparse.linalg.cg}, with a convergence tolerance of $10^{-9}$ to solve for $C$ and the similarity transformation method to solve for $X$, are given in Table \ref{table:stochastic sylvester}. From these results we can see that, in terms of timing, errors and the eoc, solving this problem as a Sylvester equation is faster and more efficient than solving it as a linear system or alternative matrix equation. The eog here is less than the eog when solving it as a linear system for $n<8000$, and then only slightly higher when $n=8000$. This could be explained by the fact that it is solving two problems (solving for $C$ and then for $X$) rather than just one, and therefore the cost increases when $n$ is large. As with solving the linear system, when $n=16000$ solving the system in this form resulted in a memory error.
 
 \begin{table}[H]
 \centering
@@ -1330,9 +1370,7 @@ $n$ & $K$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[
 \captionsetup{justification=centering}
 \caption{Results using the stochastic Galerkin method with a single uncertain parameter by solving the Sylvester equation using \texttt{sparse.linalg.cg} and the similarity transformation method.}
 \label{table:stochastic sylvester}
-\end{table}
-
-From these results we can see that, in terms of timing, errors and the eoc, solving this problem as a Sylvester equation is faster and more efficient than solving it as a linear system or alternative matrix equation. The eog here is less than the eog when solving it as a linear system for $n<8000$, and then only slightly higher when $n=8000$. This could be explained by the fact that it is solving two problems (solving for $C$ and then for $X$) rather than just one, and therefore the cost increases when $n$ is large. As with solving the linear system, when $n=16000$ solving the system in this form resulted in a memory error. 
+\end{table} 
 
 We have now shown that the stochastic Galerkin method significantly outperforms the Monte Carlo method in the single parameter case. We have also shown that forming the stochastic Galerkin problem as a Sylvester equation has significant advantage compared to forming the problem as a linear system or alternative matrix equation. We now move on to introduce multiple unknown parameters into the problem.
 
@@ -1389,7 +1427,9 @@ Similarly to Section 4.1.1, the number of samples will be increased by a factor 
 
 One thing to note is that the summation of $\varepsilon_{pq}$ depends on the spatial dimensions $x$ and $y$. In other words, the summation changes and therefore needs to be recalculated depending on the grid point. Because of this, constructing the problem will take an increasingly long time as both $n$ and $N$ are increased. However, we are only interested in how long this method takes to solve the problem and so we will only time how long this method takes to compute a solution. 
 
-Results of this method are given in Table \ref{table:monte carlo multiple}. The first thing to note is that the errors here start off smaller than for the single parameter Monte Carlo case. However, this is a consequence of the expectation rather than the method, as clearly the expectation is simpler in this case than in the single parameter case. We can see from both the errors and the eoc that the errors are decreasing at a slower rate than the single parameter case as the problem size and number of samples are increased, as there is more variation in the solution than in the single parameter. We can also see that the time taken for each problem size is approximately the same regardless of the value of $N$, which is not surprising as the method is solving the same number of PDEs for each problem size. This also explains why the eog is approximately the same for different problem sizes for each $n$.
+Results of this method are given in Table \ref{table:monte carlo multiple}. The first thing to note is that the errors here start off smaller than in the single parameter Monte Carlo case. However, this is a consequence of the expectation rather than the method, as the expectation is simpler in this case than in the single parameter case. We can see from both the errors and the eoc that the errors are decreasing at a slower rate than the single parameter case as the problem size and number of samples are increased, as there is more possible variation in the solution than when there was only a single parameter. Also, in most cases, the eoc is smaller for larger $N$, which is to be expected as more random variables slow the reduction rate in error. We can also see from these results that the time taken for each problem size is approximately the same regardless of the value of $N$, which is not surprising as the method is solving the same number of PDEs for each problem size. This also explains why the eog is approximately the same for different problem sizes for each $N$.
+
+When $n=1000$ for $N=4$ and $N=8$, we were not able to compute a solution to the problem because constructing the problem took a significantly long time (more than several days) as the test needed to be repeated for each seed. However, we would expect the errors to be larger, the eoc to be smaller, and the time taken to compute a solution and the eog to be approximately the same, as when $N=2$.
 
 \begin{table}[H]
 \centering
@@ -1401,18 +1441,20 @@ $N$ & $n$ & $M$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \math
 & 250 & 40 & 2.1282 & 0.050053 & 0.020736 & 0.96259 & 3.9441 \\
 & 500 & 160 & 40.034 & 0.036890 & 0.017075 & 0.44150 & 4.2335 \\
 & 1000 & 640 & 580.94 & 0.032707 & 0.016318 & 0.17388 & 3.8591 \\
+\cline{4-8}
+& 2000 & 2560 & \multicolumn{5}{c|}{Time limit reached} \\
 \hline
 \multirow{4}{*}{4} & 125 & 10 & 0.13955 & 0.088060 & 0.035807 & - & - \\
 & 250 & 40 & 2.1259 & 0.081807 & 0.036437 & 0.10688 & 3.9292 \\
 & 500 & 160 & 39.872 & 0.057317 & 0.026807 & 0.51474 & 4.2292 \\
 \cline{4-8}
-& 1000 & 640 & \multicolumn{5}{c|}{Time limit reached} \\
+& 1000 & 640 & \multicolumn{5}{c|}{Could not construct problem} \\
 \hline
 \multirow{4}{*}{8} & 125 & 10 & 0.13894 & 0.10960 & 0.044472 & - & - \\
 & 250 & 40 & 2.2092 & 0.054684 & 0.022630 & 1.0088 & 3.9910 \\
 & 500 & 160 & 34.502 & 0.047838 & 0.021733 & 0.19352 & 3.9651 \\
 \cline{4-8}
-& 1000 & 640 & \multicolumn{5}{c|}{Time limit reached} \\
+& 1000 & 640 & \multicolumn{5}{c|}{Could not construct problem} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
@@ -1476,14 +1518,7 @@ Au = f
 \end{equation}
 where $A=\left( P \otimes D \right) \left( I \otimes L \right)$ has dimension $n^2(P+1) \times n^2(P+1)$ and $f = \text{vec}(F)$ and $u$ are vectors of dimension $n^2(P+1)$. Here $I$ is the identity matrix of size $(P+1)$. We can now use a standard sparse solver to solve the system. From this formulation it is not clear that $A$ has symmetric structure and so, instead of using the conjugate gradient method, we use \texttt{sparse.linalg.spsolve} to solve the system. Results of doing so are given in Table \ref{table:galerkin multiple linear}.
 
-We can see from these results that the errors here are much lower than the Monte Carlo method, demonstrating that this method is solving the problem more accurately (and are also lower than in the single parameter stochastic Galerkin case, as expected). The errors are also very close the some of the errors given in Section 3. This is because the expectation is the same as the exact solution in the previous section. 
-
-
-The errors for $N=2$ are bigger than when $N=4$, and while it is not clear why this is 
-
-unlike the Monte Carlo method, the time taken grows as $N$ is increased, which is not surprising as an increase in $N$ causes an increase in the dimension of $P$ and therefore the problem size grows. 
-
-This method results in a memory error for much lower values of $n$ than the single parameter case as the coefficient matrix $A$ is much less sparse.
+We can see from these results that the errors here are much lower than the Monte Carlo method, demonstrating that this method is solving the problem more accurately (and are also lower than in the single parameter stochastic Galerkin case, as expected). The errors are also very close the some of the errors given in Section 3. This is because the expectation is the same as the exact solution in the previous section. The errors for $N=2$ are bigger than when $N=4$. It is not completely clear why this has occurred, but this is reflected in the eoc for $N=2$. Unlike the Monte Carlo method, the time taken to compute a solution grows as $N$ is increased, which is because an increase in $N$ causes an increase in the dimension of $P$ and therefore the problem size. We can see that the eoc is much closer to 2 and the eog is much lower than the Monte Carlo method. This method results in a memory error for much lower values of $n$ than the single parameter case as the coefficient matrix $A$ is much less sparse. The eog is slightly lower for $N=4$ than when $N=2$, which is not expected but could be related to the error when $N=2$.
 
 \begin{table}[H]
 \centering
@@ -1521,9 +1556,7 @@ where $u = \text{vec}(X)$. As in the single parameter case, this could be solved
 \begin{equation}
 DL X = F P^{-1}
 \end{equation}
-We can now solve this form using \texttt{spsolve}. However, in this case, we should expect to be able to solve the problem for larger problem sizes than when solving the linear system as we have maintained the sparsity of the coefficient matrix. Results of doing so are given in Table \ref{table:galerkin multiple matrix}.
-
-We can see from these results that we are able to solve for much larger problem sizes than when solving the linear system. Also, as $N$ is increased, the increase in time taken to compute a solution is much lower than.
+We can now solve this form using \texttt{spsolve}. However, in this case, we should expect to be able to solve the problem for larger problem sizes than when solving the linear system as we have maintained the sparsity of the coefficient matrix. Results of doing so are given in Table \ref{table:galerkin multiple matrix}. We can see from these results that we are able to solve for much larger problem sizes than when solving the linear system. Also, as $N$ is increased, the increase in time taken to compute a solution is much lower than when solving the linear system, as the increase in the dimension of $P$ does not affect the dimension of the coefficient matrix $DL$. As with solving the linear system, the errors when $N=2$ are bigger than $N=4$ and we can see from the eoc that the error decreases at a slower rate as the problem size increases when $N=2$ than when $N=4$. As previously stated it is not completely clear why this occurs, however we can see that both of the errors are much smaller than the Monte Carlo method. We can also see that the eog is slightly higher when $N=2$ than when $N=4$, which is not expected but could be related to the error when $N=2$, as with the linear system. 
 
 \begin{table}[H]
 \centering
@@ -1557,16 +1590,16 @@ $N$ & $n$ & Time(s) & $|| \mathbb{E}[u] - \mu ||_{L^{\infty}}$ & $|| \mathbb{E}[
 
 \subsection{Conclusion}
 
-In the single parameter case, we demonstrated that we can firstly form the random PDE as a Sylvester equation and solve it using the Monte Carlo method, that is, solve it using the best solver from Section 3 $M$ times and take the average to obtain the solution. We then showed that we can solve the problem more accurately by using the stochastic Galerkin method, and demonstrated that forming the problem as Sylvester equation in this case can result in increased efficiency compared to both the linear system and alternative matrix equation. For comparison, the eogs of the Monte Carlo method and the stochastic Galerkin method solving different forms of the problem are displayed in Figure \ref{fig:single eogs}.
+In the single parameter case, we demonstrated that we can firstly form the random PDE as a Sylvester equation and solve it using the Monte Carlo method, that is, solve it using the best solver from Section 3 repeatedly using different samples of $\varepsilon$ and take the average to obtain a solution. We then showed that we can solve the problem more accurately by using the stochastic Galerkin method, and demonstrated that forming the problem as Sylvester equation in this case can result in increased efficiency compared to both the linear system and alternative matrix equation. For comparison, the eogs of the Monte Carlo method and the stochastic Galerkin method solving different forms of the problem are displayed in Figure \ref{fig:single eogs}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=.6]{img/singleeog.png}
+\includegraphics[scale=.5]{img/singleeog.png}
 \caption{The experimental orders of growth for the single parameter problem.}
 \label{fig:single eogs}
 \end{figure}
 
-Similarly, in the multiple parameter case we first formed the random PDE and solved the problem using the Monte Carlo method.
+Similarly, in the multiple parameter case we first formed the random PDE as a Sylvester equation and solved the problem using the Monte Carlo method. We then proceeded to use the stochastic Galerkin method and showed that this resulted in much lower errors than the Monte Carlo method. Finally, we showed that forming the problem as a matrix equation and using a standard sparse solver was much more memory efficient than forming the problem as a linear system and using the same sparse solver. The eogs for the multiple parameter problem are shown in Figure \ref{fig:multiple eogs} (the case where $N=8$ has not been shown here as Monte Carlo was the only method that was able to solve the problem in this case). 
 
 \begin{figure}[H]
 \centering
@@ -1574,7 +1607,7 @@ Similarly, in the multiple parameter case we first formed the random PDE and sol
 \includegraphics[height=2in]{img/n2.png}}%
 \qquad
 \subfigure[$N=4$]{%
-\includegraphics[height=2in]{img/n2.png}}%
+\includegraphics[height=2in]{img/n4.png}}%
 \caption{The experimental orders of growth for the multiple parameter problem.}
 \label{fig:multiple eogs}
 \end{figure}
@@ -1583,7 +1616,7 @@ Similarly, in the multiple parameter case we first formed the random PDE and sol
 \newpage
 
 \section{Evaluation}
-This section will evaluate whether the project's aims and objectives given in Section 2 were met. It will then go on to state possible project extensions and give a brief conclusion of the success of the project.
+This section will evaluate whether the project's aims and objectives given in Section 2 were met. It will then go on to state possible project extensions, give a personal reflection on the project and then give a brief conclusion of the success of the project.
 
 \subsection{Aims}
 There were two main aims of this project. The first was to study, implement and compare a variety of different methods for solving matrix equations (or more specifically, Sylvester equations). This has clearly been achieved in Section 3, as a number of different methods, both direct and iterative, were studied and analysed, implemented correctly and then compared and evaluated. Also, where possible, general methods were improved upon by taking advantage of the problem's structure. This demonstrates that a deep understanding of what was studied has been achieved.
@@ -1597,12 +1630,17 @@ There are a number of possible extensions that, given additional time, could be 
 \item Additional methods for solving random PDEs: In this project we chose to study two general methods for solving random PDEs, Monte Carlo and stochastic Galerkin, so that these could be studied in depth and we could relate them to what was studied in Section 3. Given additional time, other ways of solving random PDEs could have also been studied, for example, reduced basis methods \cite{Powell} and multi-level Monte Carlo methods \cite{Barth}.
 \item Random variables with other distributions: The uncertain parameters studied in Section 4 were modelled as random variables with a uniform distribution. A potential extension to this project could be to study the effect of uncertain parameters with other distributions. A few possible examples include the Gaussian, gamma, beta, Poisson, binomial and hypergeometric distributions. See \cite{Xiu} for more details on how these distributions relate to specific classes of orthogonal polynomials.
 \item Application problem: The initial plan of the project was to end up with an application problem that could be solved using the knowledge gained from Sections 3 and 4. However, during the project, it was decided to instead analyse the content in Sections 3 and 4 in more detail. A possible extension of this project could be to apply what has been studied to a particular application problem, for example, something similar to \cite{Barreira} involving randomness.
+\item Error in multiple stochastic Galerkin: When $N=2$, there seemed to be some source of error causing the errors in the solution to decrease at a slower rate than when $N=4$. Because of time constraints, this was not addressed, however given more time this problem would be fixed. 
 \end{itemize}
 
 \subsection{Personal Reflection}
 
+Although this project has been very challenging, it has also been incredibly rewarding. I have learnt a great deal about various topics in computer science and mathematics, including scientific computing, numerical analysis, linear algebra and probability theory. It has allowed me to build upon and develop many skills. These include, but are not limited to, areas such as analysis (research and analysis of algorithms), programming (implementation of algorithms), mathematics (proofs and analysis), time keeping (meeting deadlines), communication (ongoing dialogue with my supervisor) and report writing (using \LaTeX). Therefore, I feel that this project has been a success.
+
+
 \subsection{Conclusion}
-A comprehensive understanding of methods for solving both matrix equations and random PDEs has been displayed throughout this project by analysing, implementing, comparing and evaluating these topics. Therefore, the objectives have clearly been met. Although this project has been very challenging, it has also been incredibly rewarding as it has allowed me to build upon and develop many skills. These include, but are not limited to, areas such as analysis (research and analysis of algorithms), programming (implementation of algorithms), mathematics (proofs and analysis), time keeping (meeting deadlines), communication (ongoing dialogue with my supervisor) and report writing (using \LaTeX). Therefore, I feel that this project has been a success.
+Throughout this project, a variety of different sources have been used to gain a thorough understanding of methods for solving both matrix equations and random PDEs. An extensive amount of programming has been carried out to implement what was studied. Following this, we have thoroughly compared and evaluated what was implemented. In summary, this project provided a very challenging and rewarding experience, and has allowed many of my skills to be developed. Therefore, the objectives of this project have been met. 
+
 
 \newpage
 
